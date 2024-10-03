@@ -7,6 +7,11 @@ This project offers some flexibility in how you can process your log files.  You
 
 #### Getting Started
 ---
+
+```bash
+pip install simple_template_log_parser
+```
+
 The foundational principle in this project is designing templates that fit repetitive log file formats.
 
 Example log line:
