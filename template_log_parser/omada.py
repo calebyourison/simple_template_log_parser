@@ -1,14 +1,14 @@
-from source.log_type_classes import BuiltInLogFileType
+from template_log_parser.log_type_classes import BuiltInLogFileType
 
-from source.log_functions import process_log
-from source.column_functions import (
+from template_log_parser.log_functions import process_log
+from template_log_parser.column_functions import (
     calc_time,
     calc_data_usage,
     split_name_and_mac,
 )
 
-from source.omada_templates import omada_template_dict
-from source.sample import omada_sample_log
+from template_log_parser.omada_templates import omada_template_dict
+from template_log_parser.sample import omada_sample_log
 
 # Three columns need cleanup, connection time, data usage, and client_name/mac
 omada_column_process_dict = {

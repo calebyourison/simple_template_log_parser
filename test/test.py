@@ -3,14 +3,14 @@ import unittest
 import pandas as pd
 from parse import parse
 
-from source.column_functions import (
+from template_log_parser.column_functions import (
     split_name_and_mac,
     calc_time,
     calc_data_usage,
     isolate_ip_from_parentheses,
 )
 
-from source.log_functions import (
+from template_log_parser.log_functions import (
     parse_function,
     log_pre_process,
     run_functions_on_columns,
@@ -19,7 +19,7 @@ from source.log_functions import (
     process_log,
 )
 
-from source.log_functions import (
+from template_log_parser.log_functions import (
     event_type_column,
     event_data_column,
     parsed_info_column,
@@ -27,10 +27,10 @@ from source.log_functions import (
     unparsed_text_column,
 )
 
-from source.sample import sample_df
+from template_log_parser.sample import sample_df
 
-from source.omada import omada
-from source.synology import synology
+from template_log_parser.omada import omada
+from template_log_parser.synology import synology
 
 
 built_ins = [omada, synology]

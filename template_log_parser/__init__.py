@@ -1,4 +1,4 @@
-from source.log_functions import (
+from template_log_parser.log_functions import (
     parse_function,
     log_pre_process,
     process_log,

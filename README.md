@@ -48,7 +48,7 @@ my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
 ---
 Parse a single event:
 ```bash
-from template-log-parser import parse_function
+from template_log_parser import parse_function
 event_type, parsed_info = parse_function(my_line, my_template_dict)
 
 print(event_type)
@@ -66,7 +66,7 @@ print(parsed_info)
 ```
 Parse an entire log file and return a Pandas DataFrame:
 ```bash
-from template-log-parser import log_pre_process
+from template_log_parser import log_pre_process
 df = log_pre_process('log_file.log', my_template_dict)
 
 print(df.columns)
@@ -88,7 +88,7 @@ Essentially, each key from the parsed_info dictionary will become its own column
 By default, this procedure returns a dictionary of Pandas DataFrames, formatted as {'event_type': df}.
 
 ```bash
-from template-log-parser import process_log
+from template_log_parser import process_log
 my_df_dict = process_log('log_file.log', my_template_dict)
 
 print(my_df_dict.keys())
@@ -97,7 +97,7 @@ dict_keys(['login_attempt', 'event_type_2', 'event_type_3'...])
 
 Alternatively as one large DataFrame:
 ```bash
-from template-log-parser import process_log
+from template_log_parser import process_log
 my_df = process_log('log_file.log', my_template_dict, dict_format=False)
 
 print(my_df.columns)
@@ -121,14 +121,14 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 #### Built-Ins
 This project includes log process functions for Omada Controller, and Synology DSM, though these are still being actively developed as not all event types have been accounted for.
 ```bash
-from template-log-parser.omada import omada_process_log
+from template_log_parser.omada import omada_process_log
 
 my_omada_log_dict = omada_process_log('omada.log')
 
 ```
 
 ```bash
-from template-log-parser.synology import synology_process_log
+from template_log_parser.synology import synology_process_log
 
 my_synology_log_dict = synology_process_log('synology.log')
 ```

@@ -1,8 +1,8 @@
 import pandas as pd
 
-omada_sample_log = "../source/sample_log_files/omada_sample_log.log"
+omada_sample_log = "../template_log_parser/sample_log_files/omada_sample_log.log"
 synology_sample_log = (
-    "../source/sample_log_files/synology_sample_log.log"
+    "../template_log_parser/sample_log_files/synology_sample_log.log"
 )
 
 # Sample df that contains columns suitable for testing of built-in column functions
