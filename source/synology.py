@@ -1,13 +1,13 @@
-from simple_template_log_parser.log_type_classes import BuiltInLogFileType
+from source.log_type_classes import BuiltInLogFileType
 
-from simple_template_log_parser.log_functions import process_log
-from simple_template_log_parser.column_functions import (
+from source.log_functions import process_log
+from source.column_functions import (
     calc_data_usage,
     isolate_ip_from_parentheses,
 )
 
-from simple_template_log_parser.synology_templates import synology_template_dict
-from simple_template_log_parser.sample import synology_sample_log
+from source.synology_templates import synology_template_dict
+from source.sample import synology_sample_log
 
 
 synology_column_process_dict = {

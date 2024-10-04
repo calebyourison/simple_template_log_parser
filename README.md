@@ -1,6 +1,6 @@
-# simple_template_log_parser : Log Files into Tabular Data
+# template-log-parser : Log Files into Tabular Data
 ---
-`simple_template_log_parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` are the only dependencies. Full credit to those well-designed projects.
+`template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` are the only dependencies. Full credit to those well-designed projects.
 
 This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Omada Controller, Synology DSM) or build your own method. 
 
@@ -9,7 +9,7 @@ This project offers some flexibility in how you can process your log files.  You
 ---
 
 ```bash
-pip install simple_template_log_parser
+pip install template-log-parser
 ```
 
 The foundational principle in this project is designing templates that fit repetitive log file formats.
@@ -32,7 +32,7 @@ Note that templates will be looking for an exact match.  Items like timestamps, 
 ---
 After creating templates, they should be added to a dictionary with the following format:
 ```bash
-ex_dict = {'search_string': [template_name, expected_values, 'event_name'], ...}
+ex_dict = {'search_string': [template_name, expected_values, 'event_type'], ...}
 ```
 
 Using the example template:
@@ -42,16 +42,16 @@ my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
 - 'search_string' will be text that was NOT enclosed in braces {}. The parsing function will first check if this text is present within the log line before attempting to check the template against it.
 - template_name is the user defined template
 - expected_values is the integer number of items enclosed with braces {}.
-- 'event_name' is the arbitrary name assigned to this type of occurrence
+- 'event_type' is an arbitrary name assigned to this type of occurrence
 
 #### Basic Usage Examples
 ---
 Parse a single event:
 ```bash
-from simple_template_log_parser import parse_function
-event_name, parsed_info = parse_function(my_line, my_template_dict)
+from template-log-parser import parse_function
+event_type, parsed_info = parse_function(my_line, my_template_dict)
 
-print(event_name)
+print(event_type)
 'login_attempt' 
 
 print(parsed_info)
@@ -66,13 +66,13 @@ print(parsed_info)
 ```
 Parse an entire log file and return a Pandas DataFrame:
 ```bash
-from simple_template_log_parse import log_pre_process
+from template-log-parser import log_pre_process
 df = log_pre_process('log_file.log', my_template_dict)
 
 print(df.columns)
 Index(['event_data', 'event_type', 'parsed_info'])
 ```
-This just a tabular data form of many single parsed events.
+This is just a tabular data form of many single parsed events.
  - event_data column holds the raw string data for each log line
  - event_type column value is determined based on the matching template
  - parsed_info column holds a dictionary of the parsed details
@@ -88,7 +88,7 @@ Essentially, each key from the parsed_info dictionary will become its own column
 By default, this procedure returns a dictionary of Pandas DataFrames, formatted as {'event_type': df}.
 
 ```bash
-from simple_template_log_parser import process_log
+from template-log-parser import process_log
 my_df_dict = process_log('log_file.log', my_template_dict)
 
 print(my_df_dict.keys())
@@ -97,10 +97,10 @@ dict_keys(['login_attempt', 'event_type_2', 'event_type_3'...])
 
 Alternatively as one large DataFrame:
 ```bash
-from simple_template_log_parser import process_log
+from template-log-parser import process_log
 my_df = process_log('log_file.log', my_template_dict, dict_format=False)
 
-print(my_df.columns
+print(my_df.columns)
 Index(['event_type', 'time', 'server_name', 'service_process', 'service_id', 'result', 'username'])
 ```
 
@@ -121,13 +121,14 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 #### Built-Ins
 This project includes log process functions for Omada Controller, and Synology DSM, though these are still being actively developed as not all event types have been accounted for.
 ```bash
-from simple_template_log_parser.omada import omada_process_log
+from template-log-parser.omada import omada_process_log
 
 my_omada_log_dict = omada_process_log('omada.log')
 
 ```
 
 ```bash
-from simple_template_log_parse.synology import synology_process_log
+from template-log-parser.synology import synology_process_log
 
 my_synology_log_dict = synology_process_log('synology.log')
+```
