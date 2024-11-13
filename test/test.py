@@ -255,11 +255,15 @@ class TestLogFunctions(unittest.TestCase):
                 self.assertIsInstance(row[parsed_info_column], dict)
 
             # Assert df has the same number of lines as the original log file
+            print('checking log file length against Dataframe shape')
             with open(built_in.sample_log_file, "r") as raw_log:
                 lines = len(raw_log.readlines())
+                print("lines in logfile: ", lines)
                 self.assertEqual(lines, df.shape[0])
+                print('rows in dataframe: ', df.shape[0])
                 # Assert template dictionary has the same number of items as the log file has lines
                 self.assertEqual(len(built_in.templates), lines)
+                print('length of template dictionary: ', len(built_in.templates))
             if other_type_column in df[event_type_column].tolist():
                 print(df[df[event_type_column]==other_type_column])
 

@@ -48,6 +48,7 @@ my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
 Parse a single event:
 ```bash
 from template_log_parser import parse_function
+
 event_type, parsed_info = parse_function(my_line, my_template_dict)
 
 print(event_type)
@@ -66,6 +67,7 @@ print(parsed_info)
 Parse an entire log file and return a Pandas DataFrame:
 ```bash
 from template_log_parser import log_pre_process
+
 df = log_pre_process('log_file.log', my_template_dict)
 
 print(df.columns)
@@ -88,6 +90,7 @@ By default, this procedure returns a dictionary of Pandas DataFrames, formatted 
 
 ```bash
 from template_log_parser import process_log
+
 my_df_dict = process_log('log_file.log', my_template_dict)
 
 print(my_df_dict.keys())
@@ -97,6 +100,7 @@ dict_keys(['login_attempt', 'event_type_2', 'event_type_3', ...])
 Alternatively as one large DataFrame:
 ```bash
 from template_log_parser import process_log
+
 my_df = process_log('log_file.log', my_template_dict, dict_format=False)
 
 print(my_df.columns)
