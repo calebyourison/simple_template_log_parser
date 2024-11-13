@@ -1,9 +1,8 @@
 # template-log-parser : Log Files into Tabular Data
 ---
-`template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` are the only dependencies. Full credit to those well-designed projects.
+`template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` perform the heavy lifting. Full credit to those well-designed projects.
 
-This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Omada Controller, Synology DSM) or build your own method. 
-
+This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (PiHole, Omada Controller, Open Media Vault, or Synology DSM) or build your own workflow. 
 
 #### Getting Started
 ---
@@ -26,7 +25,7 @@ template = '{time} {server_name} {service_process}[{service_id}] {result} login 
 
 The words within the braces will eventually become column names in a DataFrame.  You can capture as much or as little data from the line as you see fit.  For instance, you could opt to omit {result} from the template and thus look to match only rejected logins for this example.
 
-Note that templates will be looking for an exact match.  Items like timestamps, time elapsed, and data used should be captured as they are unique to that log line instance.
+Note that templates will be looking for an exact match.  Items like timestamps, time elapsed, and data usage should be captured as they are unique to that log line instance.
 
 #### Template Dictionaries
 ---
@@ -41,7 +40,7 @@ my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
 ```
 - 'search_string' will be text that was NOT enclosed in braces {}. The parsing function will first check if this text is present within the log line before attempting to check the template against it.
 - template_name is the user defined template
-- expected_values is the integer number of items enclosed with braces {}.
+- expected_values is the integer number of items enclosed within braces {}.
 - 'event_type' is an arbitrary name assigned to this type of occurrence
 
 #### Basic Usage Examples
@@ -92,7 +91,7 @@ from template_log_parser import process_log
 my_df_dict = process_log('log_file.log', my_template_dict)
 
 print(my_df_dict.keys())
-dict_keys(['login_attempt', 'event_type_2', 'event_type_3'...])
+dict_keys(['login_attempt', 'event_type_2', 'event_type_3', ...])
 ```
 
 Alternatively as one large DataFrame:
@@ -106,12 +105,12 @@ Index(['event_type', 'time', 'server_name', 'service_process', 'service_id', 're
 
 ###### Some Notes
 ---
-- By default `drop_columns=True` which instructs `process_log()` to discard 'event_data' and 'parsed_info' along with any other columns modified by column functions (SEE NEXT).
-- (OPTIONAL ARGUMENT) `additional_column_functions` allows user to apply functions to specific columns.  The original column will be deleted if `drop_columns=True`.  This argument takes a dictionary formatted as:
+- By default `drop_columns=True` instructs `process_log()` to discard 'event_data' and 'parsed_info' along with any other columns modified by column functions (SEE NEXT).
+- (OPTIONAL ARGUMENT) `additional_column_functions` allows user to apply functions to specific columns.  These functions will create a new column, or multiple columns if so specified.  The original column will be deleted if `drop_columns=True`.  This argument takes a dictionary formatted as:
 ```bash
 add_col_func = {column_to_run_function_on: [function, new_column_name_OR_list_of_new_colum_names]}
  ```
-- (OPTIONAL ARGUMENT) `merge_dictionary` allows user to concatenate DataFrames that are deemed to be related.  Original DataFrames will be discarded, and the newly merged DF will be available within the dictionary by its new key.  This argument takes a dictionary formatted as:
+- (OPTIONAL ARGUMENT) `merge_dictionary` allows user to concatenate DataFrames that are deemed to be related.  Original DataFrames will be discarded, and the newly merged DF will be available within the dictionary by its new key.  when `dict_format=False`, this argument has no effect.  This argument takes a dictionary formatted as:
 ```bash
 my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 ```
@@ -119,12 +118,24 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 - (OPTIONAL ARGUMENT) `localize_time_columns` takes a list of columns whose timezone should be eliminated (column must also be included in the `datetime_columns` argument).
 ---
 #### Built-Ins
-This project includes log process functions for Omada Controller, and Synology DSM, though these are still being actively developed as not all event types have been accounted for.
+This project includes log process functions for PiHole, Omada Controller, Open Media Vault, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
+As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.   Submissions for improvement are welcome.
+
+```bash
+from template_log_parser.pihole import pihole_process_log
+
+my_pihole_log_dict = pihole_process_log('pihole.log')
+```
+
 ```bash
 from template_log_parser.omada import omada_process_log
 
 my_omada_log_dict = omada_process_log('omada.log')
+```
+```bash
+from template_log_parser.omv import omv_process_log
 
+my_omv_log_dict = omv_process_log('omv.log')
 ```
 
 ```bash
@@ -132,3 +143,16 @@ from template_log_parser.synology import synology_process_log
 
 my_synology_log_dict = synology_process_log('synology.log')
 ```
+
+As both PiHole and Open Media Vault can run on Debian, their templates are combined with a Debian template dictionary.  This can be used separately if desired.  However, at the moment it serves as only a cursory classification mechanism for some basic events since PiHole and Open Media Vault are the focus.  
+```bash
+from template_log_parser.debian import debian_process_log
+
+my_debian_log_dict = debian_process_log('debian.log')
+```
+
+## DISCLAIMER
+
+This project is in no way affiliated with the products mentioned (PiHole, Omada, Open Media Vault, Synology,  or Debian).
+Any usage of their services is subject to their respective terms of use.  This project does not undermine or expose their source code, 
+but simply aims to ease the consumption of their log files.

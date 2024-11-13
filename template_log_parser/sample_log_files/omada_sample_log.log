@@ -20,3 +20,6 @@
 2024-09-22T14:12:54.491234+01:00 controller_X  2024-09-22 06:12:42 Controller - - - Auto Backup executed with generating file autobackup_generic_version_information.cfg.
 2024-09-22T21:33:00.148793+01:00 controller_X  2024-09-22 13:32:50 Controller - - - [client:sbc_one:DC-D6-32-73-4e-a9] went offline from network "LAN 100" on [switch:switch_one:49-22-57-4D-F2-D7](connected time:9m connected, traffic: 475.81KB).
 2024-09-25T17:46:02.402207+01:00 controller_X  2024-09-25 09:45:50 Controller - - - [client:mobile_two:32-B9-65-12-2D-6A] (IP: 10.99.0.19, Username: unknown) went online on [ap:first_AP:45-22-54-9F-EB-54] with SSID "Another SSID" on channel 1.
+2024-10-19T20:46:10.900145+01:00 controller_X  2024-10-19 20:44:56 Controller - - - [gateway:Main_Router:54-AF-98-2D-07-90]: The online detection result of [WAN] was online.#015
+2024-11-07T04:38:58.155324+01:00 controller_X  2024-11-07 04:38:11 Controller - - - [gateway:Main_Router:54-AF-98-2D-07-90] was upgrade to firmware version 199.199.199 Build 20000828 Rel. 846 online.
+2024-11-09T16:27:27.572324+01:00 controller_X  2024-11-09 16:26:25 Controller - - - [client:10-B7-C6-17-BD-0D:10-B7-C6-17-BD-0D] failed to connect to [ap:first_AP:45-22-54-9F-EB-54] with SSID "SSID 9" on channel 11 because the user was blocked by MAC block/MAC Filter/Lock To AP.(1 time in the last minute)

@@ -29,11 +29,14 @@ from template_log_parser.log_functions import (
 
 from template_log_parser.sample import sample_df
 
+from template_log_parser.debian import debian
 from template_log_parser.omada import omada
+from template_log_parser.omv import omv
+from template_log_parser.pihole import pihole
 from template_log_parser.synology import synology
 
 
-built_ins = [omada, synology]
+built_ins = [debian, omada, omv, pihole, synology]
 
 
 class TestColumnFunctions(unittest.TestCase):
@@ -232,6 +235,7 @@ class TestLogFunctions(unittest.TestCase):
         """Test function to assert that log_pre_process returns a Pandas DataFrame with the correct three columns"""
         # Check against all built-in log file types
         for built_in in built_ins:
+            print(built_in.name, ' test log_pre_process')
             # Generate pre_process df using built_in sample_log_file and templates
             df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # Assert df instance, and the existence of correct three columns
@@ -254,6 +258,17 @@ class TestLogFunctions(unittest.TestCase):
             with open(built_in.sample_log_file, "r") as raw_log:
                 lines = len(raw_log.readlines())
                 self.assertEqual(lines, df.shape[0])
+                # Assert template dictionary has the same number of items as the log file has lines
+                self.assertEqual(len(built_in.templates), lines)
+            if other_type_column in df[event_type_column].tolist():
+                print(df[df[event_type_column]==other_type_column])
+
+            # Assert no "Other" event types
+            self.assertTrue(other_type_column not in df[event_type_column].tolist())
+
+            # Assert all event types are present in the df, equal to the template dictionary values, third item
+            self.assertEqual(sorted(list([event[2] for event in built_in.templates.values()])), sorted(df[event_type_column].tolist()))
+            print('    log_pre_process ok')
 
     def test_run_functions_on_columns(self):
         """Defines a test function to ensure run functions on columns is operating correctly"""
@@ -342,10 +357,12 @@ class TestLogFunctions(unittest.TestCase):
 
         # Using all built ins
         for built_in in built_ins:
+            print(built_in.name, ' test process_event_types')
             # Create sample df with correct three columns
             df = log_pre_process(built_in.sample_log_file, built_in.templates)
 
             # First run, using drop columns, and setting datetime columns
+            print('    Using drop columns')
             dict_of_df = process_event_types(
                 df.copy(),
                 built_in.column_functions,
@@ -362,8 +379,12 @@ class TestLogFunctions(unittest.TestCase):
             )
 
             # Set of columns that were processed
-            drop_columns_list = list(built_in.column_functions.keys())
-            drop_columns = set(drop_columns_list)
+            if built_in.column_functions:
+                drop_columns_list = list(built_in.column_functions.keys())
+                drop_columns = set(drop_columns_list)
+            else:
+                drop_columns_list = []
+                drop_columns = set(drop_columns_list)
 
             # Loop over all dfs
             for df in dict_of_df.values():
@@ -384,8 +405,9 @@ class TestLogFunctions(unittest.TestCase):
                     for column in built_in.localize_datetime_columns:
                         if column in df.columns:
                             self.assertTrue(df[column].dt.tz is None)
-
+            print('    ok')
             # New df
+            print('    Not using drop columns')
             new_df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # Do not drop columns on this run
             non_drop_dict_of_df = process_event_types(
@@ -396,6 +418,8 @@ class TestLogFunctions(unittest.TestCase):
             # Verify that every column is still present within the large df, meaning not dropped
             for column in drop_columns_list:
                 self.assertTrue(column in concat_df.columns)
+            print('    ok')
+            print('    process_event_types ok')
 
     def test_merge_event_type_dfs(self):
         """Defines a test function to assert that dfs specified to be merged are done so correctly"""
@@ -423,10 +447,15 @@ class TestLogFunctions(unittest.TestCase):
 
         # All built in log template classes
         for built_in in built_ins:
+            print(built_in.name, ' test process_log')
             # Opting to type 8 configurations visually for ease of viewing instead of using itertools
             funcs_merges_drop = [built_in.column_functions, built_in.merge_events, True]
             funcs_no_merges_drop = [built_in.column_functions, None, True]
-            funcs_merges_no_drop = [built_in.column_functions, built_in.merge_events, False,]
+            funcs_merges_no_drop = [
+                built_in.column_functions,
+                built_in.merge_events,
+                False,
+            ]
             funcs_no_merge_no_drop = [built_in.column_functions, None, False]
             no_funcs_merges_no_drop = [None, built_in.merge_events, False]
             no_funcs_merges_drop = [None, built_in.merge_events, True]
@@ -452,6 +481,8 @@ class TestLogFunctions(unittest.TestCase):
                 configuration + [True] for configuration in base_list
             ]
 
+            # Each configuration is a list:
+            # [additional_column_functions (or None), merge_dictionary (or None), drop_columns True/False, dict_format True/False]
             def test_correct_dict_keys(merge_events=None):
                 """Defines a function to determine expected keys for a given dictionary"""
                 # Using the template dict, the event_type is the third item [2] in the list
@@ -471,8 +502,9 @@ class TestLogFunctions(unittest.TestCase):
                     ]
                     expected_keys.extend(new_merge_events)
 
+                # Set to remove duplicates, then back to list
                 # Sort the resulting list for easier assertion evaluation
-                expected_keys = sorted(expected_keys)
+                expected_keys = sorted(list(set(expected_keys)))
                 return expected_keys
 
             def test_correct_mini_df_columns(
@@ -482,17 +514,17 @@ class TestLogFunctions(unittest.TestCase):
 
                 # Running parse on individual templates against template dictionary in a comprehension
                 # to return {'event_type': [column1, column2,...], ...}
-                # Every event_type now has a list of columns associated with it, adding event_type at the end
+                # Every event_type now has a list of columns associated with it, adding 'event_type' at the end
                 expected_columns_by_template = {
                     value[2]: list(parse(value[0], value[0]).named.keys())
                     + [event_type_column]
                     for value in built_in.templates.values()
                 }
 
-                # Expected columns are empty to avoid per-assignment error
+                # Expected columns are empty to avoid pre-assignment error
                 expected_columns = []
 
-                # If there are no merge events, the expected columns by template covers it
+                # If there are no merge events, the expected columns by template covers the situation
                 if merge_events is None:
                     expected_columns = expected_columns_by_template[event_type_key]
 
@@ -515,8 +547,7 @@ class TestLogFunctions(unittest.TestCase):
                             )
                         )
                         expected_columns = merged_columns
-
-                    # Otherwise expected columns by template covers it
+                    # Otherwise use expected_columns_by_template if event isn't in merge_events
                     else:
                         expected_columns = expected_columns_by_template[event_type_key]
 
@@ -539,7 +570,7 @@ class TestLogFunctions(unittest.TestCase):
                                 columns_to_add.extend(
                                     additional_column_functions[column][1]
                                 )
-                            # Column to provided data for function appended to delete columns
+                            # Original column that was used to provide data for the function appended to delete columns
                             columns_to_delete.append(column)
 
                 # event_data and parsed_info are the only two dropped columns by default
@@ -561,18 +592,17 @@ class TestLogFunctions(unittest.TestCase):
                         if column not in all_columns_to_drop
                     ]
                 )
-
+                expected_columns = sorted(list(set(expected_columns)))
                 return expected_columns
 
-            def test_correct_big_df_columns(
-                    additional_column_functions, drop_columns
-            ):
+            def test_correct_big_df_columns(additional_column_functions, drop_columns):
                 """Defines a function to determine the correct columns for a large log file df"""
                 columns_accounted_for_by_templates = [
                     list(parse(value[0], value[0]).named.keys())
                     for value in built_in.templates.values()
                 ]
 
+                # Remove duplicates, this is a list of all possible columns
                 columns_accounted_for_by_templates = list(
                     set(
                         [
@@ -587,13 +617,16 @@ class TestLogFunctions(unittest.TestCase):
                 standard_drop_columns = [event_data_column, parsed_info_column]
                 columns_to_add = []
                 columns_to_delete = []
+
+                # New column or columns created by functions, add/extend accordingly
+                # Second item in the function_info list will be either a string or list for new column(s)
                 if additional_column_functions:
-                    for old_column, new_cols in additional_column_functions.items():
+                    for old_column, function_info in additional_column_functions.items():
                         columns_to_delete.append(old_column)
-                        if type(new_cols[1]) is str:
-                            columns_to_add.append(new_cols[1])
-                        if type(new_cols[1]) is list:
-                            columns_to_add.extend(new_cols[1])
+                        if type(function_info[1]) is str:
+                            columns_to_add.append(function_info[1])
+                        if type(function_info[1]) is list:
+                            columns_to_add.extend(function_info[1])
 
                 if drop_columns is True:
                     columns_to_delete = columns_to_delete + standard_drop_columns
@@ -605,6 +638,7 @@ class TestLogFunctions(unittest.TestCase):
 
                 columns_accounted_for_by_templates.extend(columns_to_add)
 
+                # Remove duplicates once again just to be safe and sort
                 expected_columns = sorted(
                     list(
                         set(
@@ -619,10 +653,14 @@ class TestLogFunctions(unittest.TestCase):
 
                 return expected_columns
 
+            # Using the sample log for this test
             with open(built_in.sample_log_file, "r") as raw_log:
                 lines_in_log_file = len(raw_log.readlines())
 
+            # 8 total configurations for dictionary output
             for config in dict_configurations:
+                print('    Dictionary Output')
+                print('    Configuration: ', config)
                 big_dict = process_log(
                     file=built_in.sample_log_file,
                     template_dictionary=built_in.templates,
@@ -635,10 +673,13 @@ class TestLogFunctions(unittest.TestCase):
                 expected_correct_keys = test_correct_dict_keys(config[1])
 
                 self.assertTrue(expected_correct_keys == sorted(list(big_dict.keys())))
+                print('    Matching Keys ok')
 
                 total_log_lines_accounted_for = 0
 
+                # Check each df within the dictionary
                 for event_type, df in big_dict.items():
+                    print('       ', event_type)
                     self.assertIsInstance(event_type, str)
                     self.assertIsInstance(df, pd.DataFrame)
 
@@ -652,14 +693,20 @@ class TestLogFunctions(unittest.TestCase):
                     self.assertTrue(
                         expected_correct_columns == sorted(df.columns.tolist())
                     )
+                    print('        Mini DF Matching Columns ok')
 
                     total_log_lines_accounted_for = (
                         total_log_lines_accounted_for + df.shape[0]
                     )
 
                 self.assertEqual(total_log_lines_accounted_for, lines_in_log_file)
+                print('    All log file lines accounted for')
+            print('    Dictionary Outputs ok')
 
+            # 8 Total configurations for DF output
             for config in df_configurations:
+                print('    DF Output')
+                print('    Configuration: ', config)
                 big_df = process_log(
                     file=built_in.sample_log_file,
                     template_dictionary=built_in.templates,
@@ -677,5 +724,10 @@ class TestLogFunctions(unittest.TestCase):
                 )
 
                 self.assertTrue(correct_df_columns == sorted(big_df.columns.tolist()))
+                print('    Matching Columns ok')
+
+                self.assertEqual(big_df.shape[0], lines_in_log_file)
+                print('    All log file lines accounted for')
 
                 self.assertEqual(lines_in_log_file, big_df.shape[0])
+            print('    process_log ok')

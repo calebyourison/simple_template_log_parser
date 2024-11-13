@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "template-log-parser"
-version = "0.1"
+version = "0.3"
 dependencies = [
   "pandas>=2.0.0",
   "parse==1.20.2",
@@ -15,9 +15,9 @@ authors = [
 ]
 description = "Parsing Log Files With User Defined Templates"
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+license = {file = "LICENSE"}
 keywords = ['log', 'parse', 'template']
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "Programming Language :: Python"
+  "Programming Language :: Python :: 3"
 ]

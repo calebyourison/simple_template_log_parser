@@ -1,141 +1,143 @@
 # Base templates for Omada Log Analysis
 
-# Disconnects, hardwired and wireless, with/ without reconnect
-disc_hw = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
-    'was disconnected from network "{network}" on [{network_device_type}:{network_device}:{network_device_mac}]'
-    "(connected time:{time} connected, traffic: {data})."
-)
-
-disc_w = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
-    'is disconnected from SSID "{ssid}" on [{network_device_type}:{network_device}:{network_device_mac}] '
-    "({time} connected, {data})."
-)
-
-disc_hw_recon = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
-    'was disconnected from network "{network}" on '
-    "[{network_device_type}:{network_device}:{network_device_mac}](connected time:{time} "
-    'connected, traffic: {data}) and connected to network "{recon_network}" on '
-    "[{recon_network_device_type}:{recon_network_device}:{recon_network_device_mac}]."
-)
-
-disc_w_recon = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
-    'is disconnected from SSID "{ssid}" on [{network_device_type}:{network_device}:{network_device_mac}] '
-    '({time} connected, {data}) and connected to SSID "{recon_ssid}" on '
-    "[{recon_network_device_type}:{recon_network_device}:{recon_network_device_mac}]."
-)
-
-# DHCP server assigned an address
-dhcp_assign = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
-    "DHCP Server allocated IP address {client_ip} for the client[MAC: {client_mac}].#015"
-)
-
-dhcp_reject = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - DHCP Server rejected the request"
-    " of the client[MAC: {client_mac} IP: {client_ip}].#015"
-)
-
-# DHCPS initialization
-dhcps = "{utc} {hardware_controller}  {local_time} {controller} - - - DHCPS initialization {result}.#015"
-
-# Connections, hardwired and wireless
+# Client Activity
 conn_hw = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     "is connected to [{network_device_type}:{network_device}:{network_device_mac}] on {network} network."
 )
 
 conn_w = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     'is connected to [{network_device_type}:{network_device}:{network_device_mac}] with SSID "{ssid}" '
     "on channel {channel}."
 )
 
-# Wireless roaming
-roaming = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
-    "is roaming from [{network_device_type}:{network_device}:{network_device_mac}][{channel}] to "
-    "[{roaming_network_device_type}:{roaming_network_device}:{roaming_network_device_mac}][{roaming_channel}] "
-    "with SSID {roaming_ssid}"
-)
-
-# Logins
-login = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
-    "{user} logged in to the controller from {login_ip}."
-)
-
-failed_login = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
-    "{user} failed to log in to the controller from {login_ip}."
-)
-
-# Blocked connections
 blocked = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     "failed to connected to [{network_device_type}:{network_device}:{network_device_mac}] "
     'with SSID "{ssid}" on channel {channel} because the user '
     "is blocked by Access Control.({number} {discard_text})"
 )
 
-# Auto backup
-auto_backup = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
-    "Auto Backup executed with generating file {filename}."
+blocked_mac = ('{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}]'
+               ' failed to connect to [{network_device_type}:{network_device}:{network_device_mac}] with SSID "{ssid}" '
+               'on channel {channel} because the user was blocked by MAC block/MAC Filter/Lock To AP.({number} {discard_text})')
+
+disc_hw = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
+    'was disconnected from network "{network}" on [{network_device_type}:{network_device}:{network_device_mac}]'
+    "(connected time:{connected_time} connected, traffic: {data})."
 )
 
-# Online/Offline Devices, hardwired and wireless
+disc_w = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
+    'is disconnected from SSID "{ssid}" on [{network_device_type}:{network_device}:{network_device_mac}] '
+    "({connected_time} connected, {data})."
+)
+
+roaming = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
+    "is roaming from [{network_device_type}:{network_device}:{network_device_mac}][{channel}] to "
+    "[{roaming_network_device_type}:{roaming_network_device}:{roaming_network_device_mac}][{roaming_channel}] "
+    "with SSID {roaming_ssid}"
+)
+
+disc_hw_recon = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
+    'was disconnected from network "{disc_network}" on '
+    "[{network_device_type}:{network_device}:{network_device_mac}](connected time:{connected_time} "
+    'connected, traffic: {data}) and connected to network "{recon_network}" on '
+    "[{recon_network_device_type}:{recon_network_device}:{recon_network_device_mac}]."
+)
+
+disc_w_recon = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
+    'is disconnected from SSID "{disc_ssid}" on [{network_device_type}:{network_device}:{network_device_mac}] '
+    '({connected_time} connected, {data}) and connected to SSID "{recon_ssid}" on '
+    "[{recon_network_device_type}:{recon_network_device}:{recon_network_device_mac}]."
+)
+
 online_hw = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     "went online on [{network_device_type}:{network_device}:{network_device_mac}] on {network} network."
 )
 
 offline_hw = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     'went offline from network "{network}" on '
-    "[{network_device_type}:{network_device}:{network_device_mac}](connected time:{time} "
+    "[{network_device_type}:{network_device}:{network_device_mac}](connected time:{connected_time} "
     "connected, traffic: {data})."
 )
 
 online_w = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     "(IP: {client_ip}, Username: {username} went online on "
     '[{network_device_type}:{network_device}:{network_device_mac}] with SSID "{ssid}" on channel {channel}.'
 )
 
 offline_w = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - [client:{client_name_and_mac}] "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - [client:{client_name_and_mac}] "
     '(IP: {client_ip}, Username: {username}) went offline from SSID "{ssid}" on '
-    "[{network_device_type}:{network_device}:{network_device_mac}] ({time} connected, {data})."
+    "[{network_device_type}:{network_device}:{network_device_mac}] ({connected_time} connected, {data})."
 )
 
-# Network devices connected/disconnected
+dhcp_assign = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
+    "DHCP Server allocated IP address {client_ip} for the client[MAC: {client_mac}].#015"
+)
+
+dhcp_reject = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - DHCP Server rejected the request"
+    " of the client[MAC: {client_mac} IP: {client_ip}].#015"
+)
+
+# Logins
+login = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
+    "{user} logged in to the controller from {login_ip}."
+)
+
+failed_login = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
+    "{user} failed to log in to the controller from {login_ip}."
+)
+
+# Auto backup
+auto_backup = (
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
+    "Auto Backup executed with generating file {filename}."
+)
+
+# Network device activity
 device_connected = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}] was connected."
 )
 
 device_disconnected = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}] was disconnected."
 )
 
-# Network devices obtaining IP Addresses
+dhcps = "{time} {hardware_controller}  {omada_time} {controller} - - - DHCPS initialization {result}.#015"
+
 got_ip_address = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}] "
     "got IP address {ip_address}/{subnet_mask}."
 )
 
-# Interface up/down
+online_detection = ("{time} {hardware_controller}  {omada_time} {controller} - - - "
+                    "[{network_device_type}:{network_device}:{network_device_mac}]: "
+                    "The online detection result of [{interface}] was {state}.#015")
+
 up_or_down = (
-    "{utc} {hardware_controller}  {local_time} {controller} - - - "
+    "{time} {hardware_controller}  {omada_time} {controller} - - - "
     "[{interface}] of [{network_device_type}:{network_device}:{network_device_mac}] is {state}.#015"
 )
 
+upgrade = ("{time} {hardware_controller}  {omada_time} {controller} - - - "
+           "[{network_device_type}:{network_device}:{network_device_mac}] was upgrade to {result}")
 
 # Dictionary of templates 'search_string' : [template, number_of_expected_values, event name]
 # Some notes: use of the search string increases the speed of the parsing function
@@ -144,28 +146,50 @@ up_or_down = (
 # In order to confirm that the correct template was used, its results will be tested for correct number of values
 # The event name will be that value that populates the event_type column as the search string isn't terrific
 
-omada_template_dict = {
-    "is disconnected from SSID": [disc_w, 11, "disc_w"],
-    "disconnected from SSID": [disc_w_recon, 15, "disc_w_recon"],
-    "was disconnected from network": [disc_hw, 11, "disc_hw"],
-    "disconnected from network": [disc_hw_recon, 15, "disc_hw_recon"],
+client_activity_dict = {
+    "is connected to": [conn_hw, 9, "hardwired_connection"],
+    "connected to": [conn_w, 10, "wireless_connection"],
+
+    "blocked by Access Control": [blocked, 12, "blocked"],
+    "blocked by MAC": [blocked_mac, 12, "blocked"],
+
+    "was disconnected from network": [disc_hw, 11, "hardwired_disconnect"],
+    "is disconnected from SSID": [disc_w, 11, "wireless_disconnect"],
+
+    "roaming": [roaming, 14, "roaming"],
+
+    "disconnected from network": [disc_hw_recon, 15, "hardwired_reconnect"],
+    "disconnected from SSID": [disc_w_recon, 15, "wireless_reconnect"],
+
+    "went online": [online_hw, 9, "hardwired_online"],
+    "went offline from network": [offline_hw, 11, "hardwired_offline"],
+
+    "went online on": [online_w, 12, "wireless_online"],
+    "went offline from SSID": [offline_w, 13, "wireless_offline"],
+
     "allocated IP address": [dhcp_assign, 6, "dhcp_assign"],
     "rejected the request": [dhcp_reject, 6, "dhcp_reject"],
-    "is connected to": [conn_hw, 9, "conn_hw"],
-    "connected to": [conn_w, 10, "conn_w"],
-    "roaming": [roaming, 14, "roaming"],
+}
+
+logins_dict = {
     "logged in to": [login, 6, "login"],
     "failed to log in": [failed_login, 6, "failed_login"],
-    "blocked by Access Control": [blocked, 12, "blocked"],
-    "Auto Backup executed": [auto_backup, 5, "auto_backup"],
-    "DHCPS initialization": [dhcps, 5, "dhcps"],
-    "went online": [online_hw, 9, "online_hw"],
-    "went offline from network": [offline_hw, 11, "offline_hw"],
-    "went online on": [online_w, 12, "online_w"],
-    "went offline from SSID": [offline_w, 13, "offline_w"],
+}
+
+network_devices_activity_dict = {
     "was connected.": [device_connected, 7, "device_connected"],
     "was disconnected.": [device_disconnected, 7, "device_disconnected"],
+    "DHCPS initialization": [dhcps, 5, "dhcps_initialization"],
+    "] of [": [up_or_down, 9, "interface_up_or_down", ],  # This search string is pretty goofy, but it works
     "got IP address": [got_ip_address, 9, "device_dhcp_assign"],
-    "] of [": [up_or_down, 9, "up_or_down"], # This search string is pretty goofy, but it works,
-}  # could potentially be two different templates with 'is up' and 'is down' search strings for better clarity
+    'online detection': [online_detection, 9, 'online_detection'],
+    'upgrade': [upgrade, 8, 'upgrade'],
 
+}
+
+omada_template_dict = {
+    **client_activity_dict,
+    **logins_dict,
+    **network_devices_activity_dict,
+    "Auto Backup executed": [auto_backup, 5, "auto_backup"],
+}

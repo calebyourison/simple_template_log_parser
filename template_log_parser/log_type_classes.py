@@ -1,5 +1,5 @@
 # Defines classes for built-in log file types
-# This simplify referencing built-ins in functions and testing
+# This simplifies referencing built-ins for functions and testing
 
 
 class BuiltInLogFileType:

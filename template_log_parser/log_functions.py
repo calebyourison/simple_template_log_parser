@@ -1,7 +1,6 @@
 import pandas as pd
 from parse import parse
 
-
 # set display options
 pd.options.display.max_columns = 40
 pd.options.display.width = 120
@@ -19,9 +18,11 @@ unparsed_text_column = "Unparsed_text"
 def parse_function(event, template_dictionary):
     """
     Return a tuple of parsed information from a log file string based on matching template
+
         Args:
              event (str):
                 string data, should match a repeated format throughout a text file
+
              template_dictionary (dict):
                 formatted as {search_string: [template, number_of_expected_values, event_type], ...}
 
@@ -41,7 +42,7 @@ def parse_function(event, template_dictionary):
             ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
 
         Note:
-            If event string does not match a provided template, will return ('Other', {'Unparsed_text': event})
+            If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
     """
     # If nothing is found in the entire dictionary
     # Return generic results, unparsed text, new template will be needed
@@ -60,12 +61,12 @@ def parse_function(event, template_dictionary):
             if parsed_result is not None:
                 # Check to make sure the number of values equals the expected number, list of attributes second position
                 if len(parsed_result.named) == attributes[1]:
-                    # If so, update the template (attributes position 2), and return the dictionary of item_names: values
+                    # If so, update the valid template (position 2), and return the dictionary of item_names: values
                     valid_template = attributes[2]
                     # result.named is the dictionary attribute of a Result object
                     result = parsed_result.named
                     break
-            # Catchall in case a weird result is None
+            # If no parsed result is returned, use default values for "Other"
             elif parsed_result is None:
                 valid_template = other_type_column
                 result = {unparsed_text_column: event}
@@ -94,7 +95,7 @@ def log_pre_process(file, template_dictionary):
             See parse_function() for specific information on templates
     """
     # Read log file
-    pre_df = pd.read_table(file, header=None, names=[event_data_column])
+    pre_df = pd.read_table(file, header=None, names=[event_data_column], on_bad_lines='warn')
 
     # Parse event data, create event_type column to streamline the next process
     pre_df[[event_type_column, parsed_info_column]] = pre_df.apply(
@@ -114,7 +115,7 @@ def run_functions_on_columns(
 ):
     """
     Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
-    along with a list of columns that were processed
+        along with a list of columns that were processed
         Args:
             df (Pandas DataFrame):
 
@@ -137,9 +138,9 @@ def run_functions_on_columns(
         Notes:
             This function (excepting datetime columns) is designed to create new columns and provide a list
             of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.
-            An example of this would be the calc_time_minutes() function which converts strings such as '1h12m'
-            to integer 72.  In many scenarios, the old column is not needed.  However, if it is desirable to rename
-            and process the existing column, simply provide the original column name in place of 'new_column_name'
+            An example of this would be the calc_time() function which can convert strings such as '1h12m'
+            to integer 72.  In many scenarios, the old column is not needed.  However, if it is desirable to process
+            the existing column, simply provide the original column name in place of 'new_column_name'
 
             Sometimes a function is designed to expand one column into two or more new columns.
             In this instance, one can provide a list of new column names. Please see example.
@@ -148,7 +149,7 @@ def run_functions_on_columns(
             Assign kwargs variable as: kwargs = dict(keyword_1='some_string', keyword_2=1000, keyword_3=[1,2,3])
             and then insert this variable into the list in the third index location after the new column name(s).
 
-            If only df argument is supplied, function will return the same df and an empty list
+            If only df argument is supplied, function will return the original df and an empty list
     """
     processed_columns = []
     # Dictionary should be in the format of: {existing_column: [function, new_column_name(s)]}
@@ -218,7 +219,7 @@ def process_event_types(
             df (Pandas DataFrame):
                 Required to have a columns labeled 'event_type' and 'parsed_info' from log_pre_process()
 
-            additional_column_functions(dict) (optional):
+            additional_column_functions (dict) (optional):
                 formatted as {'column_to_run_function_on',: [function, 'new_column_name'],
                               'column_2_to_run_function_on': [function_2, ['new_col_2, 'new_col_3']], ...}
 
@@ -241,29 +242,27 @@ def process_event_types(
     final_dict = {}
     # For every unique event_type, create a copy df
     for event_type in df[event_type_column].unique().tolist():
-        event_df = df[df[event_type_column] == event_type].copy()
+        temp_df = df[df[event_type_column] == event_type].copy()
 
-        # New columns, based on that event type, keys from parsed info
-        # Take the keys of the first indexed item, parsed info keys will be uniform for every event type based on template
-        # These keys will become the new columns for this event_type
-        event_df[list(event_df.iloc[0][parsed_info_column].keys())] = event_df.apply(
-            lambda row: list(row[parsed_info_column].values()),
-            axis="columns",
-            result_type="expand",
+        # Parsed info column has dictionary of columns: data, json_normalize will create new column for each key
+        df_explode_events = pd.json_normalize(temp_df[parsed_info_column])
+        # Create new df by concatenating the expanded values onto the original df
+        event_df = pd.concat(
+            [temp_df.reset_index(drop=True), df_explode_events.reset_index(drop=True)],
+            axis=1,
         )
 
         # Default Columns to be dropped
         columns_to_drop = [parsed_info_column, event_data_column]
 
-        # Process columns if specified
-        if additional_column_functions is not None:
-            event_df, additional_drop_columns = run_functions_on_columns(
-                df=event_df,
-                additional_column_functions=additional_column_functions,
-                datetime_columns=datetime_columns,
-                localize_timezone_columns=localize_timezone_columns,
-            )
-            columns_to_drop.extend(additional_drop_columns)
+        # Process columns
+        event_df, additional_drop_columns = run_functions_on_columns(
+            df=event_df,
+            additional_column_functions=additional_column_functions,
+            datetime_columns=datetime_columns,
+            localize_timezone_columns=localize_timezone_columns,
+        )
+        columns_to_drop.extend(additional_drop_columns)
 
         if drop_columns is True:
             event_df = event_df.drop(columns=columns_to_drop)
@@ -298,13 +297,19 @@ def merge_event_type_dfs(df_dictionary, merge_dictionary):
 
     # Using new df_name, and a list of existing dfs
     for new_df_name, list_of_existing_dfs in merge_dictionary.items():
-        # Create new concat df
-        df_dictionary[new_df_name] = pd.concat(
-            [df_dictionary[old_name] for old_name in list_of_existing_dfs]
-        )
-        # Delete old dfs since the new concat df contains its contents
+        # Empty list to be filled with dfs that will be merged under a new key name
+        list_of_dfs_to_concatenate = []
+
         for old_name in list_of_existing_dfs:
-            del df_dictionary[old_name]
+            # Check to ensure that a key exists for each type of df to prevent an error
+            if old_name in df_dictionary.keys():
+                # If so add it to the list and remove it from the main dictionary
+                list_of_dfs_to_concatenate.append(df_dictionary[old_name])
+                del df_dictionary[old_name]
+        # Assuming at least one df got appended
+        if list_of_dfs_to_concatenate:
+            # Create new concat df
+            df_dictionary[new_df_name] = pd.concat(list_of_dfs_to_concatenate)
 
     return df_dictionary
 

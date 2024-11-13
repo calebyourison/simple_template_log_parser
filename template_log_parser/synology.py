@@ -6,7 +6,7 @@ from template_log_parser.column_functions import (
     isolate_ip_from_parentheses,
 )
 
-from template_log_parser.synology_templates import synology_template_dict
+from template_log_parser.synology_templates import synology_template_dict, backup_dict, general_system_dict, user_activity_dict
 from template_log_parser.sample import synology_sample_log
 
 
@@ -16,14 +16,21 @@ synology_column_process_dict = {
     "client_ip": [isolate_ip_from_parentheses, "client_ip_address"],
 }
 
+# Merging events for consolidation
+synology_merge_events_dict = {
+    'backups': [value[2] for value in backup_dict.values()],
+    'general_system': [value[2] for value in general_system_dict.values()],
+    'user_activity': [value[2] for value in user_activity_dict.values()]
+}
+
 synology = BuiltInLogFileType(
     name="synology",
     sample_log_file=synology_sample_log,
     templates=synology_template_dict,
     column_functions=synology_column_process_dict,
-    merge_events=None,
+    merge_events=synology_merge_events_dict,
     datetime_columns=["time"],
-    localize_datetime_columns=["time"],
+    localize_datetime_columns=None,
 )
 
 

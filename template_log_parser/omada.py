@@ -7,22 +7,21 @@ from template_log_parser.column_functions import (
     split_name_and_mac,
 )
 
-from template_log_parser.omada_templates import omada_template_dict
+from template_log_parser.omada_templates import omada_template_dict, client_activity_dict, logins_dict, network_devices_activity_dict
 from template_log_parser.sample import omada_sample_log
 
 # Three columns need cleanup, connection time, data usage, and client_name/mac
 omada_column_process_dict = {
-    "time": [calc_time, "conn_time_min"],
+    "connected_time": [calc_time, "conn_time_min"],
     "data": [calc_data_usage, "data_usage_MB"],
     "client_name_and_mac": [split_name_and_mac, ["client_name", "client_mac"]],
 }
 
 # Merging events for consolidation
 omada_merge_events_dict = {
-    "client_connections": ["conn_hw", "conn_w"],
-    "client_disconnections": ["disc_hw", "disc_w", "disc_hw_recon", "disc_w_recon"],
-    "logins": ["login", "failed_login"],
-    "online": ["online_hw", "online_w"],
+    'client_activity': [value[2] for value in client_activity_dict.values()],
+    'logins': [value[2] for value in logins_dict.values()],
+    "network_device_activity": [value[2] for value in network_devices_activity_dict.values()]
 }
 
 omada = BuiltInLogFileType(
@@ -31,7 +30,7 @@ omada = BuiltInLogFileType(
     templates=omada_template_dict,
     column_functions=omada_column_process_dict,
     merge_events=omada_merge_events_dict,
-    datetime_columns=["utc", "local_time"],
+    datetime_columns=["time", "omada_time"],
     localize_datetime_columns=None,
 )
 

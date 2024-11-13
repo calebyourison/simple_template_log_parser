@@ -4,6 +4,7 @@
 def split_name_and_mac(name_and_mac):
     """
     Return a tuple of two strings including client name and client mac address after splitting string at colon
+
         Args:
             name_and_mac (str):
                 must either be in the format of 'client_name:client_mac_address', or simply 'client_mac_address'
@@ -30,7 +31,9 @@ def split_name_and_mac(name_and_mac):
 
 def calc_time(time_string, increment="minutes"):
     """
-    Return float values of time in deciphered from string data including h,m,s, converted to seconds, minutes, or hours
+    Return float value of time in specified increment deciphered from string data
+     including h,m,s, converted to seconds, minutes, or hours
+
         Args:
             time_string (str):
                 formatted as 23h4m, 47m, or 45s
@@ -39,7 +42,7 @@ def calc_time(time_string, increment="minutes"):
 
         Returns:
             float:
-                float values of time calculated in requested increment
+                float value of time calculated in requested increment
     """
     # Default conversion to minutes, values that will be used to divide once data is converted to a numeric type
     s, m, h = 60, 1, 1
@@ -74,7 +77,8 @@ def calc_time(time_string, increment="minutes"):
 
 def calc_data_usage(data_string, increment="MB"):
     """
-    Return float of data usage in specified increment deciphered from string data including bytes, KB, MB, or GB
+    Return float value of data usage in specified increment deciphered from string data including bytes, KB, MB, or GB
+
         Args:
             data_string (str):
                 formatted as '0 bytes', '313.5KB', '535MB', or '12GB', spaces will be removed
@@ -115,10 +119,16 @@ def calc_data_usage(data_string, increment="MB"):
 
 def isolate_ip_from_parentheses(ip_string):
     """
-    Defines a function to isolate an ip address from surrounding parentheses
+    Isolate and return an ip address from surrounding parentheses
+
         Args:
             ip_string (str):
                 formatted 10.0.10.10, (10.20.30.6), WORKGROUP(10.90.10.3), etc
+
+        Returns:
+            str: ip address
+
+        Note: Conversion to IPv4/IPv6 Address object is not performed
     """
 
     # Check if parentheses are present before splitting/selecting the appropriate index
