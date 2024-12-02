@@ -2,29 +2,29 @@ from importlib.resources import files
 import pandas as pd
 
 # Sample Log Files for testing built-in types
-log_file_path = 'template_log_parser.sample_log_files'
+log_file_path = "template_log_parser.sample_log_files"
 
-debian_sample_log = files(log_file_path).joinpath('debian_sample_log.log')
+debian_sample_log = files(log_file_path).joinpath("debian_sample_log.log")
 
-omada_sample_log = files(log_file_path).joinpath('omada_sample_log.log')
+omada_sample_log = files(log_file_path).joinpath("omada_sample_log.log")
 
-omv_sample_log = files(log_file_path).joinpath('omv_sample_log.log')
-omv_debian_sample_log = files(log_file_path).joinpath('omv_debian_sample_log.log')
+omv_sample_log = files(log_file_path).joinpath("omv_sample_log.log")
+omv_debian_sample_log = files(log_file_path).joinpath("omv_debian_sample_log.log")
 
-pihole_sample_log = files(log_file_path).joinpath('pihole_sample_log.log')
-pihole_debian_sample_log = files(log_file_path).joinpath('pihole_debian_sample_log.log')
+pihole_sample_log = files(log_file_path).joinpath("pihole_sample_log.log")
+pihole_debian_sample_log = files(log_file_path).joinpath("pihole_debian_sample_log.log")
 
-synology_sample_log = files(log_file_path).joinpath('synology_sample_log.log')
+synology_sample_log = files(log_file_path).joinpath("synology_sample_log.log")
 
 # Create new files by adding debian to omv and pihole respectively.
 pihole_files = [pihole_sample_log, debian_sample_log]
-with open(str(pihole_debian_sample_log), 'w') as outfile:
+with open(str(pihole_debian_sample_log), "w") as outfile:
     for file in pihole_files:
         with open(str(file)) as infile:
             outfile.write(infile.read())
 
 omv_files = [omv_sample_log, debian_sample_log]
-with open(str(omv_debian_sample_log), 'w') as outfile:
+with open(str(omv_debian_sample_log), "w") as outfile:
     for file in omv_files:
         with open(str(file)) as infile:
             outfile.write(infile.read())

@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>template_log_parser.log_functions &mdash; template-log-parser 0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=7f00635f"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            template-log-parser
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">template_log_parser</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">template-log-parser</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">template_log_parser.log_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for template_log_parser.log_functions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="c1"># set display options</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">120</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;max_colwidth&quot;</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+
+<span class="c1"># These variables exist here to avoid hardcoded values all over the project</span>
+<span class="n">event_data_column</span> <span class="o">=</span> <span class="s2">&quot;event_data&quot;</span>
+<span class="n">event_type_column</span> <span class="o">=</span> <span class="s2">&quot;event_type&quot;</span>
+<span class="n">parsed_info_column</span> <span class="o">=</span> <span class="s2">&quot;parsed_info&quot;</span>
+
+<span class="n">other_type_column</span> <span class="o">=</span> <span class="s2">&quot;Other&quot;</span>
+<span class="n">unparsed_text_column</span> <span class="o">=</span> <span class="s2">&quot;Unparsed_text&quot;</span>
+
+
+<div class="viewcode-block" id="parse_function">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.parse_function">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_function</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.</span>
+
+<span class="sd">    :param event: String data, should ideally match a repeated format throughout a text file</span>
+<span class="sd">    :type event: str</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: dict</span>
+
+<span class="sd">    :return: Tuple formatted as (event_type, {&#39;value_1&#39;: &#39;some_value&#39;, &#39;value2&#39;: &#39;some_other_value&#39;, ...})</span>
+<span class="sd">    :rtype: tup</span>
+
+
+<span class="sd">    Examples:</span>
+<span class="sd">        event_string = &#39;2024-09-12 main_server connected to 10.10.10.102&#39;</span>
+
+<span class="sd">        template_one = &#39;{date} {client_name} connected to {host_ip_address}&#39;</span>
+
+<span class="sd">        example_template_dictionary = {&#39;connected to&#39;: [template_one, 3, &#39;host_connection_event&#39;], ...}</span>
+
+<span class="sd">        parsed_event = parse_function(event_string, example_template_dictionary)</span>
+
+<span class="sd">        print(parsed_event)</span>
+
+<span class="sd">        (&#39;host_connection_event&#39;, {&#39;date&#39;: &#39;2024-09-12&#39;, &#39;client_name&#39;: &#39;main_server&#39;, &#39;host_ip_address&#39;: &#39;10.10.10.102&#39;})</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If event string does not match a provided template, it will return (&#39;Other&#39;, {&#39;Unparsed_text&#39;: event})</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If nothing is found in the entire dictionary</span>
+    <span class="c1"># Return generic results, unparsed text, new template will be needed</span>
+    <span class="n">valid_template</span> <span class="o">=</span> <span class="n">other_type_column</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">unparsed_text_column</span><span class="p">:</span> <span class="n">event</span><span class="p">}</span>
+
+    <span class="c1"># Using the dictionary of templates</span>
+    <span class="k">for</span> <span class="n">search_string</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">template_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Check if search string is present within event to ensure only appropriate templates are used</span>
+        <span class="c1"># Multiple template search strings may be present within event, but checking a few templates is still faster</span>
+        <span class="c1"># Than checking all templates</span>
+        <span class="k">if</span> <span class="n">search_string</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+            <span class="c1"># template is located inside list of attributes, first position</span>
+            <span class="n">parsed_result</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">event</span><span class="p">)</span>
+            <span class="c1"># If a parsed_result is returned it means that the template matched so some degree</span>
+            <span class="k">if</span> <span class="n">parsed_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Check to make sure the number of values equals the expected number, list of attributes second position</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span><span class="p">)</span> <span class="o">==</span> <span class="n">attributes</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="c1"># If so, update the valid template (position 2), and return the dictionary of item_names: values</span>
+                    <span class="n">valid_template</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="c1"># result.named is the dictionary attribute of a Result object</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span>
+                    <span class="k">break</span>
+            <span class="c1"># If no parsed result is returned, use default values for &quot;Other&quot;</span>
+            <span class="k">elif</span> <span class="n">parsed_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">valid_template</span> <span class="o">=</span> <span class="n">other_type_column</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">unparsed_text_column</span><span class="p">:</span> <span class="n">event</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">valid_template</span><span class="p">,</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="log_pre_process">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.log_pre_process">[docs]</a>
+<span class="k">def</span> <span class="nf">log_pre_process</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text</span>
+
+<span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
+<span class="sd">    :type file: str</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: dict</span>
+
+<span class="sd">    :return: DataFrame with columns &#39;event_data&#39;, &#39;event_type&#39;, &#39;parsed_info&#39;</span>
+<span class="sd">    :rtype: Pandas.DataFrame</span>
+
+
+<span class="sd">    Note:</span>
+<span class="sd">        event_data is the raw text from within the log file</span>
+
+<span class="sd">        event_type is defined from the template dictionary that matched a line of text</span>
+
+<span class="sd">        parsed_info is a dictionary within the column that contains key/value pairs based on the matching template</span>
+
+<span class="sd">        See parse_function() for specific information on templates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Read log file</span>
+    <span class="n">pre_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">event_data_column</span><span class="p">],</span> <span class="n">on_bad_lines</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Parse event data, create event_type column to streamline the next process</span>
+    <span class="n">pre_df</span><span class="p">[[</span><span class="n">event_type_column</span><span class="p">,</span> <span class="n">parsed_info_column</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pre_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">parse_function</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">event_data_column</span><span class="p">],</span> <span class="n">template_dictionary</span><span class="p">),</span>
+        <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+        <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pre_df</span></div>
+
+
+
+<div class="viewcode-block" id="run_functions_on_columns">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.run_functions_on_columns">[docs]</a>
+<span class="k">def</span> <span class="nf">run_functions_on_columns</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)</span>
+<span class="sd">    along with a list of columns that were processed</span>
+
+<span class="sd">    :param df: DataFrame for processing</span>
+<span class="sd">    :type df: Pandas.DataFrame</span>
+<span class="sd">    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}</span>
+<span class="sd">    :type additional_column_functions: dict</span>
+<span class="sd">    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()</span>
+<span class="sd">    :type datetime_columns: list</span>
+<span class="sd">    :param localize_timezone_columns: (optional) Columns to drop timezone</span>
+<span class="sd">    :type localize_timezone_columns: list</span>
+
+<span class="sd">    :return: DataFrame with newly processed columns, list of columns that were processed</span>
+<span class="sd">    :rtype: tup</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        my_kwargs = dict(keyword_1=&#39;some_string&#39;, keyword_2=1000, keyword_3=[1,2,3])</span>
+
+<span class="sd">        my_column_functions = {</span>
+<span class="sd">            &#39;column_to_run_function_on&#39;: [function, &#39;new_column_name&#39;],</span>
+<span class="sd">            &#39;column_2_to_run_function_on&#39;: [create_two_columns, [&#39;new_col_2, &#39;new_col_3&#39;]],</span>
+<span class="sd">            &#39;column_4_to_run_function_on&#39;: [function_with_kwargs, &#39;new_col_4&#39;, my_kwargs],</span>
+<span class="sd">            }</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function (excepting datetime columns) is designed to create new columns and provide a list</span>
+<span class="sd">        of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.</span>
+<span class="sd">        An example of this would be the calc_time() function which can convert strings such as &#39;1h12m&#39;</span>
+<span class="sd">        to integer 72.</span>
+
+<span class="sd">        Sometimes a function is designed to expand one column into two or more new columns.</span>
+<span class="sd">        In this instance, one can provide a list of new column names. Please see example.</span>
+
+<span class="sd">        If only df parameter is supplied, function will return the original df and an empty list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">processed_columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Dictionary should be in the format of: {existing_column: [function, new_column_name(s)]}</span>
+    <span class="c1"># New column names can be list as well: {existing_column: [function, [list_of_new_columns]]}</span>
+    <span class="c1"># if functions are supplied</span>
+    <span class="k">if</span> <span class="n">additional_column_functions</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">new_features</span> <span class="ow">in</span> <span class="n">additional_column_functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="c1"># Single column function application</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span>
+                        <span class="p">)</span>
+                    <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+                <span class="c1"># Multi column function expansion</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                    <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span>
+                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                            <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                            <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+                <span class="n">processed_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+    <span class="c1"># If datetime columns are present</span>
+    <span class="k">if</span> <span class="n">datetime_columns</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">datetime_column</span> <span class="ow">in</span> <span class="n">datetime_columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">datetime_column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">])</span>
+
+    <span class="c1"># If timezones need to be dropped from certain columns</span>
+    <span class="k">if</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">processed_columns</span></div>
+
+
+
+<div class="viewcode-block" id="process_event_types">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.process_event_types">[docs]</a>
+<span class="k">def</span> <span class="nf">process_event_types</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">drop_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of Pandas DataFrames whose keys are event types</span>
+
+<span class="sd">    :param df: DataFrame for processing</span>
+<span class="sd">    :type df: Pandas.DataFrame</span>
+<span class="sd">    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}</span>
+<span class="sd">    :type additional_column_functions: dict</span>
+<span class="sd">    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()</span>
+<span class="sd">    :type datetime_columns: list</span>
+<span class="sd">    :param localize_timezone_columns: (optional) Columns to drop timezone</span>
+<span class="sd">    :type localize_timezone_columns: list</span>
+<span class="sd">    :param drop_columns: (optional) If True, &#39;parsed_info&#39;, &#39;event_data&#39; will be dropped along with columns processed by additional_column_functions, True by default</span>
+<span class="sd">    :type drop_columns: bool</span>
+
+<span class="sd">    :return: DataFrame Dictionary formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...}</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">final_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># For every unique event_type, create a copy df</span>
+    <span class="k">for</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
+        <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Parsed info column has dictionary of columns: data, json_normalize will create new column for each key</span>
+        <span class="n">df_explode_events</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">temp_df</span><span class="p">[</span><span class="n">parsed_info_column</span><span class="p">])</span>
+        <span class="c1"># Create new df by concatenating the expanded values onto the original df</span>
+        <span class="n">event_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">temp_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">df_explode_events</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Default Columns to be dropped</span>
+        <span class="n">columns_to_drop</span> <span class="o">=</span> <span class="p">[</span><span class="n">parsed_info_column</span><span class="p">,</span> <span class="n">event_data_column</span><span class="p">]</span>
+
+        <span class="c1"># Process columns</span>
+        <span class="n">event_df</span><span class="p">,</span> <span class="n">additional_drop_columns</span> <span class="o">=</span> <span class="n">run_functions_on_columns</span><span class="p">(</span>
+            <span class="n">df</span><span class="o">=</span><span class="n">event_df</span><span class="p">,</span>
+            <span class="n">additional_column_functions</span><span class="o">=</span><span class="n">additional_column_functions</span><span class="p">,</span>
+            <span class="n">datetime_columns</span><span class="o">=</span><span class="n">datetime_columns</span><span class="p">,</span>
+            <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="n">localize_timezone_columns</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">columns_to_drop</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_drop_columns</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">drop_columns</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">event_df</span> <span class="o">=</span> <span class="n">event_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns_to_drop</span><span class="p">)</span>
+        <span class="c1"># Add the df to the final dict with a key of its event type</span>
+        <span class="n">final_dict</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span>
+
+    <span class="k">return</span> <span class="n">final_dict</span></div>
+
+
+
+<div class="viewcode-block" id="merge_event_type_dfs">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.merge_event_type_dfs">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_event_type_dfs</span><span class="p">(</span><span class="n">df_dictionary</span><span class="p">,</span> <span class="n">merge_dictionary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and</span>
+<span class="sd">    deleting the old DataFrames</span>
+
+<span class="sd">    :param df_dictionary: Dictionary of DataFrames, formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...}</span>
+<span class="sd">    :type df_dictionary: dict</span>
+<span class="sd">    :param merge_dictionary: Formatted as {&#39;new_df_name&#39;, [&#39;existing_df_1&#39;, &#39;existing_df_2&#39;, ...], ...}</span>
+<span class="sd">    :type merge_dictionary: dict</span>
+
+<span class="sd">    :return: Dictionary of DataFrames formatted as {&#39;new_df_name&#39;: new_df, &#39;existing_event_type_3&#39;: existing_df_3, ...}</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Certain log events are categorically similar despite being parsed with different templates.</span>
+<span class="sd">        For example, client wireless connections and client hardwired connections might be easier to analyze when</span>
+<span class="sd">        grouped into the same DataFrame.</span>
+
+<span class="sd">        This function performs that concatenation and deletes the old DataFrames.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Merge_dictionary format {&#39;new_df_name&#39;: [&#39;existing_df_1&#39;, &#39;existing_df2&#39;, ...]}</span>
+
+    <span class="c1"># Using new df_name, and a list of existing dfs</span>
+    <span class="k">for</span> <span class="n">new_df_name</span><span class="p">,</span> <span class="n">list_of_existing_dfs</span> <span class="ow">in</span> <span class="n">merge_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Empty list to be filled with dfs that will be merged under a new key name</span>
+        <span class="n">list_of_dfs_to_concatenate</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">list_of_existing_dfs</span><span class="p">:</span>
+            <span class="c1"># Check to ensure that a key exists for each type of df to prevent an error</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">df_dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># If so add it to the list and remove it from the main dictionary</span>
+                <span class="n">list_of_dfs_to_concatenate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_dictionary</span><span class="p">[</span><span class="n">old_name</span><span class="p">])</span>
+                <span class="k">del</span> <span class="n">df_dictionary</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+        <span class="c1"># Assuming at least one df got appended</span>
+        <span class="k">if</span> <span class="n">list_of_dfs_to_concatenate</span><span class="p">:</span>
+            <span class="c1"># Create new concat df</span>
+            <span class="n">df_dictionary</span><span class="p">[</span><span class="n">new_df_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">list_of_dfs_to_concatenate</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_dictionary</span></div>
+
+
+
+<div class="viewcode-block" id="process_log">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.process_log">[docs]</a>
+<span class="k">def</span> <span class="nf">process_log</span><span class="p">(</span>
+    <span class="n">file</span><span class="p">,</span>
+    <span class="n">template_dictionary</span><span class="p">,</span>
+    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">merge_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">drop_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">dict_format</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,</span>
+<span class="sd">    utilizing templates.</span>
+
+<span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
+<span class="sd">    :type file: str</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: dict</span>
+<span class="sd">    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}</span>
+<span class="sd">    :type additional_column_functions: dict</span>
+<span class="sd">    :param merge_dictionary: Formatted as {&#39;new_df_name&#39;, [&#39;existing_df_1&#39;, &#39;existing_df_2&#39;, ...], ...}</span>
+<span class="sd">    :type merge_dictionary: dict</span>
+<span class="sd">    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()</span>
+<span class="sd">    :type datetime_columns: list, None</span>
+<span class="sd">    :param localize_timezone_columns: (optional) Columns to drop timezone</span>
+<span class="sd">    :type localize_timezone_columns: list, None</span>
+<span class="sd">    :param drop_columns: (optional) If True, &#39;parsed_info&#39;, &#39;event_data&#39; will be dropped along with processed columns, True by default</span>
+<span class="sd">    :type drop_columns: bool</span>
+<span class="sd">    :param dict_format: Return a dictionary of DataFrames when True, one large DataFrame when False, True by default</span>
+<span class="sd">    :type dict_format: (optional) bool</span>
+
+<span class="sd">    :return: Dict formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...} or DataFrame with all event types and all columns</span>
+<span class="sd">    :rtype: dict, Pandas.DataFrame</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function incorporates several smaller functions.</span>
+<span class="sd">        For more specific information, please see help for individual functions:</span>
+
+<span class="sd">        parse_function() \n</span>
+<span class="sd">        log_pre_process() \n</span>
+<span class="sd">        run_functions_on_columns() \n</span>
+<span class="sd">        process_event_types() \n</span>
+<span class="sd">        merge_event_types() \n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initial parsing</span>
+    <span class="n">pre_df</span> <span class="o">=</span> <span class="n">log_pre_process</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">)</span>
+
+    <span class="c1"># Process each event type</span>
+    <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">process_event_types</span><span class="p">(</span>
+        <span class="n">pre_df</span><span class="p">,</span>
+        <span class="n">additional_column_functions</span><span class="o">=</span><span class="n">additional_column_functions</span><span class="p">,</span>
+        <span class="n">datetime_columns</span><span class="o">=</span><span class="n">datetime_columns</span><span class="p">,</span>
+        <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="n">localize_timezone_columns</span><span class="p">,</span>
+        <span class="n">drop_columns</span><span class="o">=</span><span class="n">drop_columns</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Merge event DataFrames for consolidation, if specified</span>
+    <span class="k">if</span> <span class="n">merge_dictionary</span><span class="p">:</span>
+        <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">merge_event_type_dfs</span><span class="p">(</span><span class="n">dict_of_dfs</span><span class="p">,</span> <span class="n">merge_dictionary</span><span class="p">)</span>
+
+    <span class="c1"># If dictionary format is False, all dataframes will be concatenated into one, with many NaN columns</span>
+    <span class="k">if</span> <span class="n">dict_format</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dict_of_dfs</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+
+    <span class="k">return</span> <span class="n">dict_of_dfs</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Caleb Yourison.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

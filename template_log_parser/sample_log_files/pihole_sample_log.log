@@ -24,3 +24,4 @@
 2024-10-18T01:25:25+01:00 my_add_blocker pihole Oct 18 01:25:25 dnsmasq[422]: compile time options: misc_fake_info other_fake_info ipv6
 2024-10-19T07:05:16+01:00 my_add_blocker pihole Oct 19 07:05:16 dnsmasq[422]: Pi-hole hostname MY_Host_name is fe80::37a:10ff:fdd9:9e9b
 2024-10-20T04:03:15+01:00 my_add_blocker pihole Oct 20 04:03:15 dnsmasq[422]: read /fake_path/fake_pihole_pihole/custom.list - 0 names
+2024-11-23T12:31:34+01:00 my_add_blocker pihole Nov 23 12:31:34 dnsmasq[420]: Rate-limiting support.mozilla.org is REFUSED (EDE: blocked)

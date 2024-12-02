@@ -24,6 +24,7 @@
 2024-10-18T01:25:25+01:00 my_add_blocker pihole Oct 18 01:25:25 dnsmasq[422]: compile time options: misc_fake_info other_fake_info ipv6
 2024-10-19T07:05:16+01:00 my_add_blocker pihole Oct 19 07:05:16 dnsmasq[422]: Pi-hole hostname MY_Host_name is fe80::37a:10ff:fdd9:9e9b
 2024-10-20T04:03:15+01:00 my_add_blocker pihole Oct 20 04:03:15 dnsmasq[422]: read /fake_path/fake_pihole_pihole/custom.list - 0 names
+2024-11-23T12:31:34+01:00 my_add_blocker pihole Nov 23 12:31:34 dnsmasq[420]: Rate-limiting support.mozilla.org is REFUSED (EDE: blocked)
 2024-10-01T08:32:28+01:00 debian_pc anacron[2173208]: Anacron 2.3 started on 2024-10-01
 2024-10-01T10:22:30+01:00 debian_pc apt.systemd.daily[2179593]: verbose level 1
 2024-10-02T04:49:39+01:00 debian_pc avahi-daemon[1892615]: Got SIGTERM, quitting.
@@ -70,3 +71,10 @@
 2024-10-18T01:25:07+01:00 debian_pc dhclient[328]: Copyright 2004-2022 Internet Systems Consortium.
 2024-10-18T01:25:04+01:00 debian_pc fake-hwclock[94]: Thu Oct  3 11:05:49 UTC 2024
 2024-10-18T01:25:07+01:00 debian_pc ifup[328]: Copyright 2004-2022 Internet Systems Consortium.
+2024-11-13T20:55:36+01:00 debian_pc run-parts[115922]: Write cache enabled
+2024-11-13T20:56:41+01:00 debian_pc blkdeactivate[116247]: Deactivating block devices:
+2024-11-14T06:15:22-07:00 debian_pc groupadd[90397]: group added to /etc/path: name=fake_something_group
+2024-11-14T09:25:36+01:00 debian_pc usermod[111794]: add 'user_x' to shadow group 'disk'
+2024-11-14T10:15:33+01:00 debian_pc useradd[131345]: new group: name=some_group, GID=1011
+2024-11-17T00:00:01+01:00 debian_pc logrotate[495105]: some fake message
+2024-12-01T07:06:18+01:00 debian_pc dbus-send[116463]: generic message

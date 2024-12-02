@@ -16,33 +16,32 @@ unparsed_text_column = "Unparsed_text"
 
 
 def parse_function(event, template_dictionary):
-    """
-    Return a tuple of parsed information from a log file string based on matching template
+    """Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.
 
-        Args:
-             event (str):
-                string data, should match a repeated format throughout a text file
+    :param event: String data, should ideally match a repeated format throughout a text file
+    :type event: str
+    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict
 
-             template_dictionary (dict):
-                formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    :return: Tuple formatted as (event_type, {'value_1': 'some_value', 'value2': 'some_other_value', ...})
+    :rtype: tup
 
-        Returns:
-            tup:
-                formatted as (event_type, {'value_1': 'some_value', 'value2': 'some_other_value', ...})
 
-        Examples:
-            event_string = '2024-09-12 main_server connected to 10.10.10.102'
-            template_one = '{date} {client_name} connected to {host_ip_address}'
-            example_template_dictionary = {'connected to': [template_one, 3, 'host_connection_event'], ...}
+    Examples:
+        event_string = '2024-09-12 main_server connected to 10.10.10.102'
 
-            parsed_event = parse_function(event_string, example_template_dictionary)
+        template_one = '{date} {client_name} connected to {host_ip_address}'
 
-            print(parsed_event)
+        example_template_dictionary = {'connected to': [template_one, 3, 'host_connection_event'], ...}
 
-            ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
+        parsed_event = parse_function(event_string, example_template_dictionary)
 
-        Note:
-            If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
+        print(parsed_event)
+
+        ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
+
+    Note:
+        If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
     """
     # If nothing is found in the entire dictionary
     # Return generic results, unparsed text, new template will be needed
@@ -75,27 +74,30 @@ def parse_function(event, template_dictionary):
 
 
 def log_pre_process(file, template_dictionary):
-    """
-    Return a Pandas DataFrame from a log file with an event_type/parsed_info columns based on parsed event data text
-        Args:
-            file (text log file):
-                most commonly in the format of some_log_process.log
-            template_dictionary (dict):
-                formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    """Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text
 
-        Returns:
-            Pandas DataFrame:
-                Three columns ['event_data', 'event_type', 'parsed_info']
+    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
+    :type file: str
+    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict
 
-        Notes:
-            event_data is the raw text from within the log file
-            event_type is defined from the template dictionary that matched a line of text
-            parsed_info is a dictionary within the column that contains key/value pairs based on the matching template
+    :return: DataFrame with columns 'event_data', 'event_type', 'parsed_info'
+    :rtype: Pandas.DataFrame
 
-            See parse_function() for specific information on templates
+
+    Note:
+        event_data is the raw text from within the log file
+
+        event_type is defined from the template dictionary that matched a line of text
+
+        parsed_info is a dictionary within the column that contains key/value pairs based on the matching template
+
+        See parse_function() for specific information on templates
     """
     # Read log file
-    pre_df = pd.read_table(file, header=None, names=[event_data_column], on_bad_lines='warn')
+    pre_df = pd.read_table(
+        file, header=None, names=[event_data_column], on_bad_lines="warn"
+    )
 
     # Parse event data, create event_type column to streamline the next process
     pre_df[[event_type_column, parsed_info_column]] = pre_df.apply(
@@ -113,43 +115,40 @@ def run_functions_on_columns(
     datetime_columns=None,
     localize_timezone_columns=None,
 ):
-    """
-    Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
-        along with a list of columns that were processed
-        Args:
-            df (Pandas DataFrame):
+    """Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
+    along with a list of columns that were processed
 
-            additional_column_functions (dict) (optional):
-                formatted as {'column_to_run_function_on',: [function, 'new_column_name'],
-                              'column_2_to_run_function_on': [function_2, ['new_col_2, 'new_col_3']],
-                              'column_4_to_run_function_on': [function_3, 'new_col_4', kwargs]}
+    :param df: DataFrame for processing
+    :type df: Pandas.DataFrame
+    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
+    :type additional_column_functions: dict
+    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
+    :type datetime_columns: list
+    :param localize_timezone_columns: (optional) Columns to drop timezone
+    :type localize_timezone_columns: list
 
-            datetime_columns (list) (optional):
-                list of columns which should be converted using pd.to_datetime()
+    :return: DataFrame with newly processed columns, list of columns that were processed
+    :rtype: tup
 
-            localize_timezone_columns (list) (optional):
-                list of columns to drop timezone, at user discretion, many log files are stamped via UTC timezone
+    Examples:
+        my_kwargs = dict(keyword_1='some_string', keyword_2=1000, keyword_3=[1,2,3])
 
-        Returns:
-            tup:
-                formatted as
-                (df_with_newly_created_columns, ['column_to_run_function_on','column_2_to_run_function_on', ...])
+        my_column_functions = {
+            'column_to_run_function_on': [function, 'new_column_name'],
+            'column_2_to_run_function_on': [create_two_columns, ['new_col_2, 'new_col_3']],
+            'column_4_to_run_function_on': [function_with_kwargs, 'new_col_4', my_kwargs],
+            }
 
-        Notes:
-            This function (excepting datetime columns) is designed to create new columns and provide a list
-            of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.
-            An example of this would be the calc_time() function which can convert strings such as '1h12m'
-            to integer 72.  In many scenarios, the old column is not needed.  However, if it is desirable to process
-            the existing column, simply provide the original column name in place of 'new_column_name'
+    Note:
+        This function (excepting datetime columns) is designed to create new columns and provide a list
+        of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.
+        An example of this would be the calc_time() function which can convert strings such as '1h12m'
+        to integer 72.
 
-            Sometimes a function is designed to expand one column into two or more new columns.
-            In this instance, one can provide a list of new column names. Please see example.
+        Sometimes a function is designed to expand one column into two or more new columns.
+        In this instance, one can provide a list of new column names. Please see example.
 
-            Functions with keyword arguments accepted (see arg example for 'additional_column_functions').
-            Assign kwargs variable as: kwargs = dict(keyword_1='some_string', keyword_2=1000, keyword_3=[1,2,3])
-            and then insert this variable into the list in the third index location after the new column name(s).
-
-            If only df argument is supplied, function will return the original df and an empty list
+        If only df parameter is supplied, function will return the original df and an empty list
     """
     processed_columns = []
     # Dictionary should be in the format of: {existing_column: [function, new_column_name(s)]}
@@ -213,31 +212,21 @@ def process_event_types(
     localize_timezone_columns=None,
     drop_columns=True,
 ):
-    """
-    Return a dictionary of Pandas DataFrames whose keys are event types
-        Args:
-            df (Pandas DataFrame):
-                Required to have a columns labeled 'event_type' and 'parsed_info' from log_pre_process()
+    """Return a dictionary of Pandas DataFrames whose keys are event types
 
-            additional_column_functions (dict) (optional):
-                formatted as {'column_to_run_function_on',: [function, 'new_column_name'],
-                              'column_2_to_run_function_on': [function_2, ['new_col_2, 'new_col_3']], ...}
+    :param df: DataFrame for processing
+    :type df: Pandas.DataFrame
+    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
+    :type additional_column_functions: dict
+    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
+    :type datetime_columns: list
+    :param localize_timezone_columns: (optional) Columns to drop timezone
+    :type localize_timezone_columns: list
+    :param drop_columns: (optional) If True, 'parsed_info', 'event_data' will be dropped along with columns processed by additional_column_functions, True by default
+    :type drop_columns: bool
 
-            datetime_columns (list) (optional):
-                list of columns which should be converted using pd.to_datetime()
-
-            localize_timezone_columns (list) (optional):
-                list of columns to drop timezone, at user discretion, many log files are stamped via UTC timezone
-
-                Please see run_function_on_columns() for more information
-
-            drop_columns (bool) (True by default):
-                drop columns ['parsed_info', 'event_data'] along with any other columns that were processed in the
-                additional_column_functions dictionary, else keep all columns
-
-        Returns:
-            dict:
-                formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
+    :return: DataFrame Dictionary formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
+    :rtype: dict
     """
     final_dict = {}
     # For every unique event_type, create a copy df
@@ -273,25 +262,23 @@ def process_event_types(
 
 
 def merge_event_type_dfs(df_dictionary, merge_dictionary):
-    """
-    Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and
-    deleting the old dfs
-        Args:
-            df_dictionary (dict):
-                dictionary of Pandas Dataframes whose keys are the event types
-                formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
+    """Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and
+    deleting the old DataFrames
 
-            merge_dictionary (dict):
-                formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
+    :param df_dictionary: Dictionary of DataFrames, formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
+    :type df_dictionary: dict
+    :param merge_dictionary: Formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
+    :type merge_dictionary: dict
 
-        Returns:
-            dict:
-                formatted as {'new_df_name': new_df, 'existing_event_type_3': existing_df_3, ...}
+    :return: Dictionary of DataFrames formatted as {'new_df_name': new_df, 'existing_event_type_3': existing_df_3, ...}
+    :rtype: dict
 
-        Notes:
-            Certain log events are categorically similar despite being parsed with different templates.
-            For example, client wireless connections and client hardwired connections might be easier to analyze when
-            grouped into the same df.  This function performs that concatenation and then deletes the old dfs.
+    Note:
+        Certain log events are categorically similar despite being parsed with different templates.
+        For example, client wireless connections and client hardwired connections might be easier to analyze when
+        grouped into the same DataFrame.
+
+        This function performs that concatenation and deletes the old DataFrames.
     """
     # Merge_dictionary format {'new_df_name': ['existing_df_1', 'existing_df2', ...]}
 
@@ -324,49 +311,38 @@ def process_log(
     drop_columns=True,
     dict_format=True,
 ):
-    """
-    Return a single Pandas Dataframe or dictionary of dfs whose keys are the log file event types
-        Args:
-            file (text log file):
-                most commonly in the format of some_log_process.log
+    """Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
+    utilizing templates.
 
-            template_dictionary (dict):
-                formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
+    :type file: str
+    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict
+    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
+    :type additional_column_functions: dict
+    :param merge_dictionary: Formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
+    :type merge_dictionary: dict
+    :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
+    :type datetime_columns: list, None
+    :param localize_timezone_columns: (optional) Columns to drop timezone
+    :type localize_timezone_columns: list, None
+    :param drop_columns: (optional) If True, 'parsed_info', 'event_data' will be dropped along with processed columns, True by default
+    :type drop_columns: bool
+    :param dict_format: Return a dictionary of DataFrames when True, one large DataFrame when False, True by default
+    :type dict_format: (optional) bool
 
-            additional_column_functions (dict) (optional):
-                formatted as {'column_to_run_function_on',: [function, 'new_column_name'],
-                              'column_2_to_run_function_on': [function_2, ['new_col_2, 'new_col_3']]}
+    :return: Dict formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...} or DataFrame with all event types and all columns
+    :rtype: dict, Pandas.DataFrame
 
-            datetime_columns (list) (optional):
-                list of columns which should be converted using pd.to_datetime()
+    Note:
+        This function incorporates several smaller functions.
+        For more specific information, please see help for individual functions:
 
-            localize_timezone_columns (list) (optional):
-                list of columns to drop timezone, at user discretion, many log files are stamped via UTC timezone
-
-            merge_dictionary (dict) (optional):
-                formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
-
-            drop_columns (bool) (True by default):
-                drop columns ['parsed_info', 'event_data'] along with any other columns that were processed in the
-                additional_column_functions dictionary
-
-            dict_format (bool) (True by default):
-                If False, function returns a concatenated df of all event types with numerous NaN values.
-                Use with caution as this will consume more memory.
-
-        Returns:
-              dict or Pandas DataFrame:
-                dict formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
-                Pandas Dataframe will include all event types and all columns
-
-        Notes:
-            This function incorporates several smaller functions.
-            For more specific information, please see help for individual functions:
-                parse_function()
-                log_pre_process()
-                run_functions_on_columns()
-                process_event_types()
-                merge_event_types()
+        parse_function() \n
+        log_pre_process() \n
+        run_functions_on_columns() \n
+        process_event_types() \n
+        merge_event_types() \n
     """
     # Initial parsing
     pre_df = log_pre_process(file, template_dictionary)
@@ -380,7 +356,7 @@ def process_log(
         drop_columns=drop_columns,
     )
 
-    # Merge event dfs to consolidate a bit, if specified
+    # Merge event DataFrames for consolidation, if specified
     if merge_dictionary:
         dict_of_dfs = merge_event_type_dfs(dict_of_dfs, merge_dictionary)
 

@@ -2,17 +2,16 @@
 
 
 def split_name_and_mac(name_and_mac):
-    """
-    Return a tuple of two strings including client name and client mac address after splitting string at colon
+    """Return a tuple of two strings including client name and client mac address after splitting string at colon.
 
-        Args:
-            name_and_mac (str):
-                must either be in the format of 'client_name:client_mac_address', or simply 'client_mac_address'
-        Returns:
-            tup:
-                (client_name, client_mac_address) or ('unnamed', client_mac_address) if string includes only mac address
+    :param name_and_mac: must either be in the format of 'my_pc:00-00-00-00-00-00', or simply '00-00-00-00-00-00'
+    :type name_and_mac: str
+
+    :return: (client_name, client_mac_address) or ('unnamed', client_mac_address) if string includes only mac address
+    :rtype: tup
+
     """
-    # Split at colon
+    # Split
     client_name_and_mac = name_and_mac.split(":")
     # Unnamed by default
     client_name = "unnamed"
@@ -30,19 +29,16 @@ def split_name_and_mac(name_and_mac):
 
 
 def calc_time(time_string, increment="minutes"):
-    """
-    Return float value of time in specified increment deciphered from string data
-     including h,m,s, converted to seconds, minutes, or hours
+    """Return float value of time in specified increment deciphered and converted from string data
+    including h,m,s, converted to seconds, minutes, or hours
 
-        Args:
-            time_string (str):
-                formatted as 23h4m, 47m, or 45s
-            increment (optional) (default 'minutes') {'seconds', 'minutes', 'hours'}:
-                type of desired time conversion
+    :param time_string: Formatted as '23h4m', '47m', or '45s'
+    :type time_string: str
+    :param increment: (optional) Type of desired time conversion, default minutes
+    :type increment: str {'seconds', 'minutes', 'hours'}
 
-        Returns:
-            float:
-                float value of time calculated in requested increment
+    :return: Value of time converted to requested increment
+    :rtype: float
     """
     # Default conversion to minutes, values that will be used to divide once data is converted to a numeric type
     s, m, h = 60, 1, 1
@@ -76,20 +72,18 @@ def calc_time(time_string, increment="minutes"):
 
 
 def calc_data_usage(data_string, increment="MB"):
-    """
-    Return float value of data usage in specified increment deciphered from string data including bytes, KB, MB, or GB
+    """Return data usage in specified increment deciphered and converted from string data including bytes, KB, MB, or GB
 
-        Args:
-            data_string (str):
-                formatted as '0 bytes', '313.5KB', '535MB', or '12GB', spaces will be removed
-            increment (optional) (default 'MB') {'KB', 'MB', 'GB'}:
-                type of desired data conversion
+    :param data_string: Formatted as '0 bytes', '313.5KB', '535MB', or '12GB', spaces will be removed
+    :type data_string: str
+    :param increment: (optional) Type of desired data conversion, default "MB"
+    :type increment: str {'KB', 'MB', 'GB'}
 
-        Returns:
-            float:
-                data usage in specified increment
-        Notes:
-            Conversions are performed using factors of 10 for simplicity.
+    :return: Value of data converted to requested increment
+    :rtype: float
+
+    Note:
+        Conversions are performed using factors of 10 for simplicity.
     """
     # Default conversion to MB, function will select appropriate conversion rates if a different selection is made
     b, k, m, g = 1000000, 1000, 1, (1 / 1000)
@@ -118,17 +112,16 @@ def calc_data_usage(data_string, increment="MB"):
 
 
 def isolate_ip_from_parentheses(ip_string):
-    """
-    Isolate and return an ip address from surrounding parentheses
+    """Return an ip address from surrounding parentheses
 
-        Args:
-            ip_string (str):
-                formatted 10.0.10.10, (10.20.30.6), WORKGROUP(10.90.10.3), etc
+    :param ip_string: Formatted as: '10.0.10.10', '(10.20.30.6)', 'WORKGROUP(10.90.10.3)', etc.
+    :type ip_string: str
 
-        Returns:
-            str: ip address
+    :return: IP address
+    :rtype: str
 
-        Note: Conversion to IPv4/IPv6 Address object is not performed
+    Note:
+        Conversion to IPv4/IPv6 Address object is not performed
     """
 
     # Check if parentheses are present before splitting/selecting the appropriate index

@@ -1,4 +1,4 @@
-from template_log_parser.debian_templates import debian_template_dict
+from template_log_parser.templates.debian_templates import debian_template_dict
 
 # Base templates for Open Media Vault log analysis
 

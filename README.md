@@ -38,10 +38,10 @@ Using the example template:
 ```bash
 my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
 ```
-- 'search_string' will be text that was NOT enclosed in braces {}. The parsing function will first check if this text is present within the log line before attempting to check the template against it.
-- template_name is the user defined template
+- 'search_string' is text expected to be found in the log file line.  The parsing function will only check the template against the line if the text is present.
+- template_name is the user defined template.
 - expected_values is the integer number of items enclosed within braces {}.
-- 'event_type' is an arbitrary name assigned to this type of occurrence
+- 'event_type' is an arbitrary name assigned to this type of occurrence.
 
 #### Basic Usage Examples
 ---
@@ -126,37 +126,24 @@ This project includes log process functions for PiHole, Omada Controller, Open M
 As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.   Submissions for improvement are welcome.
 
 ```bash
-from template_log_parser.pihole import pihole_process_log
+from template_log_parser.built_ins import built_in_process_log
 
-my_pihole_log_dict = pihole_process_log('pihole.log')
-```
+my_omada_log_dict = built_in_process_log(built_in='omada', file='my_omada_file.log')
 
-```bash
-from template_log_parser.omada import omada_process_log
+my_omv_log_dict = built_in_process_log(built_in='omv', file='my_omv_file.log')
 
-my_omada_log_dict = omada_process_log('omada.log')
-```
-```bash
-from template_log_parser.omv import omv_process_log
+my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log.log')
 
-my_omv_log_dict = omv_process_log('omv.log')
-```
-
-```bash
-from template_log_parser.synology import synology_process_log
-
-my_synology_log_dict = synology_process_log('synology.log')
+my_synology_log_dict = built_in_process_log(built_in='synology', file='my_synology_log.log')
 ```
 
 As both PiHole and Open Media Vault can run on Debian, their templates are combined with a Debian template dictionary.  This can be used separately if desired.  However, at the moment it serves as only a cursory classification mechanism for some basic events since PiHole and Open Media Vault are the focus.  
 ```bash
-from template_log_parser.debian import debian_process_log
-
-my_debian_log_dict = debian_process_log('debian.log')
+my_debian_log_dict = built_in_process_log(built_in='debian', file='my_debian_log.log')
 ```
 
 ## DISCLAIMER
 
-This project is in no way affiliated with the products mentioned (PiHole, Omada, Open Media Vault, Synology,  or Debian).
+**This project is in no way affiliated with the products mentioned (PiHole, Omada, Open Media Vault, Synology,  or Debian).
 Any usage of their services is subject to their respective terms of use.  This project does not undermine or expose their source code, 
-but simply aims to ease the consumption of their log files.
+but simply aims to ease the consumption of their log files.**

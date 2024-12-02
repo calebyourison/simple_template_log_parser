@@ -29,14 +29,7 @@ from template_log_parser.log_functions import (
 
 from template_log_parser.sample import sample_df
 
-from template_log_parser.debian import debian
-from template_log_parser.omada import omada
-from template_log_parser.omv import omv
-from template_log_parser.pihole import pihole
-from template_log_parser.synology import synology
-
-
-built_ins = [debian, omada, omv, pihole, synology]
+from template_log_parser.log_type_classes import built_in_log_file_types
 
 
 class TestColumnFunctions(unittest.TestCase):
@@ -44,32 +37,27 @@ class TestColumnFunctions(unittest.TestCase):
 
     def test_split_name_and_mac(self):
         """Test function to determine name:mac returns two strings, unnamed if client name not included"""
-        without_name = "10-F7-D6-07-BD-8A"
-        with_name = "client_device:10-F7-D6-07-BD-8A"
+        client_name = "client_device"
 
-        # Function should return a tuple
-        self.assertIsInstance(split_name_and_mac(without_name), tuple)
+        mac_without_name = "10-F7-D6-07-BD-8A"
+        with_name = client_name + ":" + mac_without_name
+
+        # In any case a tuple should be returned
+        self.assertIsInstance(split_name_and_mac(mac_without_name), tuple)
         self.assertIsInstance(split_name_and_mac(with_name), tuple)
 
-        unnamed, unnamed_mac = split_name_and_mac(without_name)
+        no_name, no_name_mac = split_name_and_mac(mac_without_name)
         name, mac = split_name_and_mac(with_name)
 
-        # First variable should be a string
-        self.assertIsInstance(unnamed, str)
-        self.assertIsInstance(unnamed_mac, str)
+        # All items within tuples should be strings
+        for item in [no_name, no_name_mac, name, mac]:
+            self.assertIsInstance(item, str)
 
-        # Second variable should also be string
-        self.assertIsInstance(name, str)
-        self.assertIsInstance(mac, str)
-
-        # Name should be returned as 'unnamed' if string is mac only
-        self.assertEqual(unnamed, "unnamed")
-        # Mac address should be returned from unnamed client
-        self.assertEqual(unnamed_mac, "10-F7-D6-07-BD-8A")
-
-        # Name and mac address should be extracted properly from the named client
-        self.assertEqual(name, "client_device")
-        self.assertEqual(mac, "10-F7-D6-07-BD-8A")
+        # Assert correct values for each variable
+        self.assertEqual(no_name, "unnamed")
+        self.assertEqual(no_name_mac, mac_without_name)
+        self.assertEqual(name, client_name)
+        self.assertEqual(mac, mac_without_name)
 
     def test_calc_time(self):
         """Test function to ensure correct float values are returned from generic time counts"""
@@ -111,6 +99,7 @@ class TestColumnFunctions(unittest.TestCase):
         for tup in zip(all_conversions, correct_values):
             self.assertEqual(tup[0], tup[1])
 
+    # noinspection PyPep8Naming
     def test_calc_data_usage(self):
         """Defines a test function to ensure correct MB float values are return from generic data usage strings"""
         bytes_amount = "100 bytes"
@@ -234,8 +223,8 @@ class TestLogFunctions(unittest.TestCase):
     def test_log_pre_process(self):
         """Test function to assert that log_pre_process returns a Pandas DataFrame with the correct three columns"""
         # Check against all built-in log file types
-        for built_in in built_ins:
-            print(built_in.name, ' test log_pre_process')
+        for built_in in built_in_log_file_types:
+            print(built_in.name, " test log_pre_process")
             # Generate pre_process df using built_in sample_log_file and templates
             df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # Assert df instance, and the existence of correct three columns
@@ -255,24 +244,27 @@ class TestLogFunctions(unittest.TestCase):
                 self.assertIsInstance(row[parsed_info_column], dict)
 
             # Assert df has the same number of lines as the original log file
-            print('checking log file length against Dataframe shape')
+            print("checking log file length against Dataframe shape")
             with open(built_in.sample_log_file, "r") as raw_log:
                 lines = len(raw_log.readlines())
                 print("lines in logfile: ", lines)
                 self.assertEqual(lines, df.shape[0])
-                print('rows in dataframe: ', df.shape[0])
+                print("rows in dataframe: ", df.shape[0])
                 # Assert template dictionary has the same number of items as the log file has lines
                 self.assertEqual(len(built_in.templates), lines)
-                print('length of template dictionary: ', len(built_in.templates))
+                print("length of template dictionary: ", len(built_in.templates))
             if other_type_column in df[event_type_column].tolist():
-                print(df[df[event_type_column]==other_type_column])
+                print(df[df[event_type_column] == other_type_column])
 
             # Assert no "Other" event types
             self.assertTrue(other_type_column not in df[event_type_column].tolist())
 
             # Assert all event types are present in the df, equal to the template dictionary values, third item
-            self.assertEqual(sorted(list([event[2] for event in built_in.templates.values()])), sorted(df[event_type_column].tolist()))
-            print('    log_pre_process ok')
+            self.assertEqual(
+                sorted(list([event[2] for event in built_in.templates.values()])),
+                sorted(df[event_type_column].tolist()),
+            )
+            print("    log_pre_process ok")
 
     def test_run_functions_on_columns(self):
         """Defines a test function to ensure run functions on columns is operating correctly"""
@@ -360,13 +352,13 @@ class TestLogFunctions(unittest.TestCase):
         """Defines a function to assert that process_event_types returns a dictionary of dfs correctly"""
 
         # Using all built ins
-        for built_in in built_ins:
-            print(built_in.name, ' test process_event_types')
+        for built_in in built_in_log_file_types:
+            print(built_in.name, " test process_event_types")
             # Create sample df with correct three columns
             df = log_pre_process(built_in.sample_log_file, built_in.templates)
 
             # First run, using drop columns, and setting datetime columns
-            print('    Using drop columns')
+            print("    Using drop columns")
             dict_of_df = process_event_types(
                 df.copy(),
                 built_in.column_functions,
@@ -409,9 +401,9 @@ class TestLogFunctions(unittest.TestCase):
                     for column in built_in.localize_datetime_columns:
                         if column in df.columns:
                             self.assertTrue(df[column].dt.tz is None)
-            print('    ok')
+            print("    ok")
             # New df
-            print('    Not using drop columns')
+            print("    Not using drop columns")
             new_df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # Do not drop columns on this run
             non_drop_dict_of_df = process_event_types(
@@ -422,13 +414,13 @@ class TestLogFunctions(unittest.TestCase):
             # Verify that every column is still present within the large df, meaning not dropped
             for column in drop_columns_list:
                 self.assertTrue(column in concat_df.columns)
-            print('    ok')
-            print('    process_event_types ok')
+            print("    ok")
+            print("    process_event_types ok")
 
     def test_merge_event_type_dfs(self):
         """Defines a test function to assert that dfs specified to be merged are done so correctly"""
         # Using all built_ins
-        for built_in in built_ins:
+        for built_in in built_in_log_file_types:
             # First create dictionary of dfs:
             pre_df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # No column manipulation or dropping for this test as it is addressed in other test functions
@@ -450,8 +442,8 @@ class TestLogFunctions(unittest.TestCase):
         # This is a really nasty way of testing all the output combinations, but it works for now
 
         # All built in log template classes
-        for built_in in built_ins:
-            print(built_in.name, ' test process_log')
+        for built_in in built_in_log_file_types:
+            print(built_in.name, " test process_log")
             # Opting to type 8 configurations visually for ease of viewing instead of using itertools
             funcs_merges_drop = [built_in.column_functions, built_in.merge_events, True]
             funcs_no_merges_drop = [built_in.column_functions, None, True]
@@ -597,6 +589,7 @@ class TestLogFunctions(unittest.TestCase):
                     ]
                 )
                 expected_columns = sorted(list(set(expected_columns)))
+
                 return expected_columns
 
             def test_correct_big_df_columns(additional_column_functions, drop_columns):
@@ -625,7 +618,10 @@ class TestLogFunctions(unittest.TestCase):
                 # New column or columns created by functions, add/extend accordingly
                 # Second item in the function_info list will be either a string or list for new column(s)
                 if additional_column_functions:
-                    for old_column, function_info in additional_column_functions.items():
+                    for (
+                        old_column,
+                        function_info,
+                    ) in additional_column_functions.items():
                         columns_to_delete.append(old_column)
                         if type(function_info[1]) is str:
                             columns_to_add.append(function_info[1])
@@ -663,8 +659,8 @@ class TestLogFunctions(unittest.TestCase):
 
             # 8 total configurations for dictionary output
             for config in dict_configurations:
-                print('    Dictionary Output')
-                print('    Configuration: ', config)
+                print("    Dictionary Output")
+                print("    Configuration: ", config)
                 big_dict = process_log(
                     file=built_in.sample_log_file,
                     template_dictionary=built_in.templates,
@@ -677,13 +673,13 @@ class TestLogFunctions(unittest.TestCase):
                 expected_correct_keys = test_correct_dict_keys(config[1])
 
                 self.assertTrue(expected_correct_keys == sorted(list(big_dict.keys())))
-                print('    Matching Keys ok')
+                print("    Matching Keys ok")
 
                 total_log_lines_accounted_for = 0
 
                 # Check each df within the dictionary
                 for event_type, df in big_dict.items():
-                    print('       ', event_type)
+                    print("       ", event_type)
                     self.assertIsInstance(event_type, str)
                     self.assertIsInstance(df, pd.DataFrame)
 
@@ -697,20 +693,20 @@ class TestLogFunctions(unittest.TestCase):
                     self.assertTrue(
                         expected_correct_columns == sorted(df.columns.tolist())
                     )
-                    print('        Mini DF Matching Columns ok')
+                    print("        Mini DF Matching Columns ok")
 
                     total_log_lines_accounted_for = (
                         total_log_lines_accounted_for + df.shape[0]
                     )
 
                 self.assertEqual(total_log_lines_accounted_for, lines_in_log_file)
-                print('    All log file lines accounted for')
-            print('    Dictionary Outputs ok')
+                print("    All log file lines accounted for")
+            print("    Dictionary Outputs ok")
 
             # 8 Total configurations for DF output
             for config in df_configurations:
-                print('    DF Output')
-                print('    Configuration: ', config)
+                print("    DF Output")
+                print("    Configuration: ", config)
                 big_df = process_log(
                     file=built_in.sample_log_file,
                     template_dictionary=built_in.templates,
@@ -728,10 +724,10 @@ class TestLogFunctions(unittest.TestCase):
                 )
 
                 self.assertTrue(correct_df_columns == sorted(big_df.columns.tolist()))
-                print('    Matching Columns ok')
+                print("    Matching Columns ok")
 
                 self.assertEqual(big_df.shape[0], lines_in_log_file)
-                print('    All log file lines accounted for')
+                print("    All log file lines accounted for")
 
                 self.assertEqual(lines_in_log_file, big_df.shape[0])
-            print('    process_log ok')
+            print("    process_log ok")

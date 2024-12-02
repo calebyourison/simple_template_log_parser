@@ -44,3 +44,10 @@
 2024-10-18T01:25:07+01:00 debian_pc dhclient[328]: Copyright 2004-2022 Internet Systems Consortium.
 2024-10-18T01:25:04+01:00 debian_pc fake-hwclock[94]: Thu Oct  3 11:05:49 UTC 2024
 2024-10-18T01:25:07+01:00 debian_pc ifup[328]: Copyright 2004-2022 Internet Systems Consortium.
+2024-11-13T20:55:36+01:00 debian_pc run-parts[115922]: Write cache enabled
+2024-11-13T20:56:41+01:00 debian_pc blkdeactivate[116247]: Deactivating block devices:
+2024-11-14T06:15:22-07:00 debian_pc groupadd[90397]: group added to /etc/path: name=fake_something_group
+2024-11-14T09:25:36+01:00 debian_pc usermod[111794]: add 'user_x' to shadow group 'disk'
+2024-11-14T10:15:33+01:00 debian_pc useradd[131345]: new group: name=some_group, GID=1011
+2024-11-17T00:00:01+01:00 debian_pc logrotate[495105]: some fake message
+2024-12-01T07:06:18+01:00 debian_pc dbus-send[116463]: generic message
