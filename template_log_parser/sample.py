@@ -11,6 +11,8 @@ omada_sample_log = files(log_file_path).joinpath("omada_sample_log.log")
 omv_sample_log = files(log_file_path).joinpath("omv_sample_log.log")
 omv_debian_sample_log = files(log_file_path).joinpath("omv_debian_sample_log.log")
 
+pfsense_sample_log = files(log_file_path).joinpath('pfsense_sample_log.log')
+
 pihole_sample_log = files(log_file_path).joinpath("pihole_sample_log.log")
 pihole_debian_sample_log = files(log_file_path).joinpath("pihole_debian_sample_log.log")
 
@@ -38,5 +40,7 @@ sample_df = pd.DataFrame(
         "client_name_and_mac": ["name_1:E4-A8-EF-4A-40-DC", "name2:b8-3e-9d-41-0b-6d"],
         "time_elapsed": ["26h5m", "30s"],
         "ip_address_raw": ["192.168.0.1", "(10.0.0.1)"],
+        "delimited_data": ["10, 10", "11, 11"],
+        "delimited_by_periods": ["10.10", "11.11"],
     }
 )

@@ -1,7 +1,7 @@
 # Pre-built functions to run on columns that need additional processing
 
 
-def split_name_and_mac(name_and_mac):
+def split_name_and_mac(name_and_mac: str) -> tuple[str, str]:
     """Return a tuple of two strings including client name and client mac address after splitting string at colon.
 
     :param name_and_mac: must either be in the format of 'my_pc:00-00-00-00-00-00', or simply '00-00-00-00-00-00'
@@ -28,7 +28,7 @@ def split_name_and_mac(name_and_mac):
     return client_name, client_mac
 
 
-def calc_time(time_string, increment="minutes"):
+def calc_time(time_string: str, increment: str = "minutes") -> float:
     """Return float value of time in specified increment deciphered and converted from string data
     including h,m,s, converted to seconds, minutes, or hours
 
@@ -71,7 +71,7 @@ def calc_time(time_string, increment="minutes"):
     return time
 
 
-def calc_data_usage(data_string, increment="MB"):
+def calc_data_usage(data_string: str, increment: str = "MB") -> float:
     """Return data usage in specified increment deciphered and converted from string data including bytes, KB, MB, or GB
 
     :param data_string: Formatted as '0 bytes', '313.5KB', '535MB', or '12GB', spaces will be removed
@@ -111,7 +111,7 @@ def calc_data_usage(data_string, increment="MB"):
     return data_usage
 
 
-def isolate_ip_from_parentheses(ip_string):
+def isolate_ip_from_parentheses(ip_string: str) -> str:
     """Return an ip address from surrounding parentheses
 
     :param ip_string: Formatted as: '10.0.10.10', '(10.20.30.6)', 'WORKGROUP(10.90.10.3)', etc.
@@ -131,3 +131,19 @@ def isolate_ip_from_parentheses(ip_string):
         ip_string = ip_string.split(")")[0]
 
     return ip_string
+
+
+def split_by_delimiter(string_data:str, delimiter: str = ',') -> list[str]:
+    """Split data by delimiter and return list of values
+
+    :param string_data: String to split
+    :type string_data: str
+    :param delimiter: Character to split on
+    :type delimiter: str
+
+    :return: List of strings
+    :rtype: list
+    """
+    list_of_split_values = string_data.split(delimiter)
+
+    return list_of_split_values

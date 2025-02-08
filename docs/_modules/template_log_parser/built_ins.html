@@ -69,19 +69,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for template_log_parser.built_ins</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">template_log_parser.log_functions</span> <span class="kn">import</span> <span class="n">process_log</span>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.log_functions</span> <span class="kn">import</span> <span class="n">process_log</span>
 
 <span class="kn">from</span> <span class="nn">template_log_parser.log_type_classes</span> <span class="kn">import</span> <span class="n">built_in_log_file_types</span>
 
 
 <div class="viewcode-block" id="built_in_process_log">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.built_ins.built_in_process_log">[docs]</a>
-<span class="k">def</span> <span class="nf">built_in_process_log</span><span class="p">(</span><span class="n">built_in</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">dict_format</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">built_in_process_log</span><span class="p">(</span><span class="n">built_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">dict_format</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,</span>
 <span class="sd">    utilizing predefined templates.  This function is tailored to Built-In log file types using Built-In templates.</span>
 
 <span class="sd">    :param built_in: built in log file parameter</span>
-<span class="sd">    :type built_in: str {&#39;debian&#39;, &#39;omada&#39;, &#39;omv&#39;, &#39;pihole&#39;, &#39;synology&#39;}</span>
+<span class="sd">    :type built_in: str {&#39;debian&#39;, &#39;omada&#39;, &#39;omv&#39;, &#39;pfsense&#39;, &#39;pihole&#39;, &#39;synology&#39;}</span>
 <span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
 <span class="sd">    :type file: str</span>
 <span class="sd">    :param dict_format: (optional) Return a dictionary of DataFrames when True, one large DataFrame when False, True by default</span>

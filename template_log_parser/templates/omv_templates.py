@@ -2,20 +2,30 @@ from template_log_parser.templates.debian_templates import debian_template_dict
 
 # Base templates for Open Media Vault log analysis
 
+openmediavault_id_process = '{time} {server_name} openmediavault-{process}[{id}]: {message}' #
 openmediavault_process = "{time} {server_name} openmediavault-{process} {message}"
+omv_id_process = '{time} {server_name} omv-{process}[{id}]: {message}'
 omv_process = "{time} {server_name} omv-{process}: {message}"
+conf = '{time} {server_name} conf_{version}: {message}'
 
-# Dictionary of templates 'search_string' : [template, number_of_expected_values, event name]
-# Some notes: use of the search string increases the speed of the parsing function
-# Search string must be present in the event data for the parsing function to even attempt using a template
-# Some search strings (ie: disconnected from SSID, connected to) will be present in multiple log event types
-# In order to confirm that the correct template was used, its results will be tested for correct number of values
-# The event name will be that value that populates the event_type column as the search string isn't terrific
-
-omv_template_dict_events = {
-    "openmediavault-": [openmediavault_process, 4, "openmediavault_process"],
+omv_process_dict = {
+    " omv-": [omv_id_process, 5, 'omv_id_process'],
     "omv-": [omv_process, 4, "omv_process"],
+    }
+
+openmediavault_process_dict = {
+    " openmediavault-": [openmediavault_id_process, 5, 'openmediavault_id_process'],
+    "openmediavault-": [openmediavault_process, 4, "openmediavault_process"],
+}
+
+omv_other_events = {
+    'conf_': [conf, 4, 'conf'],
 }
 
 # OMV often runs on debian, so it makes sense to use templates from that dictionary rather than create new ones
-omv_template_dict = {**debian_template_dict, **omv_template_dict_events}
+omv_template_dict = {**debian_template_dict, **omv_process_dict, **openmediavault_process_dict, **omv_other_events}
+
+omv_merge_events_dict = {
+    'omv': [value[2] for value in omv_process_dict.values()],
+    'openmediavault': [value[2] for value in openmediavault_process_dict.values()]
+}

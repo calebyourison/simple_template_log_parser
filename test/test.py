@@ -8,6 +8,7 @@ from template_log_parser.column_functions import (
     calc_time,
     calc_data_usage,
     isolate_ip_from_parentheses,
+    split_by_delimiter,
 )
 
 from template_log_parser.log_functions import (
@@ -99,7 +100,6 @@ class TestColumnFunctions(unittest.TestCase):
         for tup in zip(all_conversions, correct_values):
             self.assertEqual(tup[0], tup[1])
 
-    # noinspection PyPep8Naming
     def test_calc_data_usage(self):
         """Defines a test function to ensure correct MB float values are return from generic data usage strings"""
         bytes_amount = "100 bytes"
@@ -180,6 +180,15 @@ class TestColumnFunctions(unittest.TestCase):
         self.assertEqual(ipv4_with_client_isolated, "10.0.0.101")
         self.assertEqual(clean_ip_isolated, clean_ip)
 
+    def test_split_by_delimiter(self):
+        """Defines a test function to ensure split_by_delimiter correctly returns a list of strings"""
+        delimited_data = 'this, is, five, items, long'
+        split_data = split_by_delimiter(delimited_data)
+
+        self.assertIsInstance(split_data, list)
+        self.assertEqual(len(split_data), 5)
+        for item in split_data:
+            self.assertIsInstance(item, str)
 
 class TestLogFunctions(unittest.TestCase):
     """Defines a class to test functions that process overall log files"""
@@ -281,6 +290,8 @@ class TestLogFunctions(unittest.TestCase):
             "client_name_and_mac": [split_name_and_mac, ["client_name", "client_mac"]],
             "time_elapsed": [calc_time, "time_min"],
             "ip_address_raw": [isolate_ip_from_parentheses, "ip_address_fixed"],
+            'delimited_data': [split_by_delimiter, ['one', 'two']],
+            'delimited_by_periods': [split_by_delimiter, ['period_one', 'period_two'], dict(delimiter='.')]
         }
 
         # Assert function returns a tuple
@@ -315,6 +326,10 @@ class TestLogFunctions(unittest.TestCase):
                     "client_mac",
                     "time_min",
                     "ip_address_fixed",
+                    'one',
+                    'two',
+                    'period_one',
+                    'period_two',
                 ]
                 == df.columns
             ).all()
@@ -327,6 +342,8 @@ class TestLogFunctions(unittest.TestCase):
             self.assertIsInstance(row["client_mac"], str)
             self.assertIsInstance(row["time_min"], float)
             self.assertIsInstance(row["ip_address_fixed"], str)
+            self.assertIsInstance(row['one'], str)
+            self.assertIsInstance(row['two'], str)
 
         # Assert timezone and no timezone for applicable datetime columns
         self.assertTrue(df["utc_time"].dt.tz is not None)
@@ -446,16 +463,19 @@ class TestLogFunctions(unittest.TestCase):
             print(built_in.name, " test process_log")
             # Opting to type 8 configurations visually for ease of viewing instead of using itertools
             funcs_merges_drop = [built_in.column_functions, built_in.merge_events, True]
+
             funcs_no_merges_drop = [built_in.column_functions, None, True]
-            funcs_merges_no_drop = [
-                built_in.column_functions,
-                built_in.merge_events,
-                False,
-            ]
+
+            funcs_merges_no_drop = [built_in.column_functions, built_in.merge_events,False,]
+
             funcs_no_merge_no_drop = [built_in.column_functions, None, False]
+
             no_funcs_merges_no_drop = [None, built_in.merge_events, False]
+
             no_funcs_merges_drop = [None, built_in.merge_events, True]
+
             no_funcs_no_merges_drop = [None, None, True]
+
             no_funcs_no_merges_no_drop = [None, None, False]
 
             base_list = [
@@ -470,7 +490,9 @@ class TestLogFunctions(unittest.TestCase):
             ]
 
             # All base configuration with False appended to the end (dict_format=False)
-            df_configurations = [configuration + [False] for configuration in base_list]
+            df_configurations = [
+                configuration + [False] for configuration in base_list
+            ]
 
             # All base configuration with True append to the end (dict_format=True)
             dict_configurations = [

@@ -10,7 +10,7 @@ mypkg = ["*.log"]
 
 [project]
 name = "template-log-parser"
-version = "0.4"
+version = "0.5"
 dependencies = [
   "pandas>=2.0.0",
   "parse==1.20.2",
@@ -27,3 +27,6 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3"
 ]
+
+[project.urls]
+homepage = "https://github.com/calebyourison/simple_template_log_parser"

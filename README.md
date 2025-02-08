@@ -2,7 +2,7 @@
 ---
 `template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` perform the heavy lifting. Full credit to those well-designed projects.
 
-This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (PiHole, Omada Controller, Open Media Vault, or Synology DSM) or build your own workflow. 
+This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM) or build your own workflow. 
 
 #### Getting Started
 ---
@@ -122,8 +122,13 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 - (OPTIONAL ARGUMENT) `localize_time_columns` takes a list of columns whose timezone should be eliminated (column must also be included in the `datetime_columns` argument).
 ---
 #### Built-Ins
-This project includes log process functions for PiHole, Omada Controller, Open Media Vault, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
+This project includes log process functions for Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
 As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.   Submissions for improvement are welcome.
+
+Notes: 
+
+- PFSense templates match (RFC 5424, with RFC 3339 microsecond precision time stamps)
+- Synology templates match (BSD, RFCF 3164)
 
 ```bash
 from template_log_parser.built_ins import built_in_process_log
@@ -131,6 +136,8 @@ from template_log_parser.built_ins import built_in_process_log
 my_omada_log_dict = built_in_process_log(built_in='omada', file='my_omada_file.log')
 
 my_omv_log_dict = built_in_process_log(built_in='omv', file='my_omv_file.log')
+
+my_pfsense_log_dict = built_in_process_log(built_in='pfsense', file='my_pfsense_file.log')
 
 my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log.log')
 
@@ -144,6 +151,5 @@ my_debian_log_dict = built_in_process_log(built_in='debian', file='my_debian_log
 
 ## DISCLAIMER
 
-**This project is in no way affiliated with the products mentioned (PiHole, Omada, Open Media Vault, Synology,  or Debian).
-Any usage of their services is subject to their respective terms of use.  This project does not undermine or expose their source code, 
-but simply aims to ease the consumption of their log files.**
+**This project is in no way affiliated with the products mentioned (Omada, Open Media Vault, PFSense, PiHole, Synology, or Debian).
+Any usage of their services is subject to their respective terms of use.**

@@ -32,6 +32,8 @@ loadcpufreq = "{time} {server_name} loadcpufreq[{id}]: {message}"
 logrotate = "{time} {server_name} logrotate[{id}]: {message}"
 monit = "{time} {server_name} monit[{id}]: {message}"
 network_manager = "{time} {server_name} NetworkManager[{id}]: {message}"
+passwd = '{time} {server_name} passwd[{id}]: {message}'
+polkitd = '{time} {server_name} polkitd[{id}]: {message}'
 postfix = "{time} {server_name} postfix[{id}]: {message}"
 postfix_process = "{time} {server_name} postfix/{process}[{id}]: {message}"
 quotarpc_process = "{time} {server_name} quotarpc.{process}[{id}]: {message}"
@@ -44,9 +46,11 @@ samba_process = "{time} {server_name} samba-{process}[{id}]: {message}"
 smbd = "{time} {server_name} smbd[{id}]: {message}"
 sm_notify = "{time} {server_name} sm-notify[{id}]: {message}"
 sshd = "{time} {server_name} sshd[{id}]: {message}"
+smartd = '{time} {server_name} smartd[{id}]: {message}'
 systemd = "{time} {server_name} systemd[{id}]: {message}"
 systemd_process = "{time} {server_name} systemd-{process}[{id}]: {message}"
 useradd = "{time} {server_name} useradd[{id}]: {message}"
+userdel = '{time} {server_name} userdel[{id}]: {message}'
 usermod = "{time} {server_name} usermod[{id}]: {message}"
 wpa_supplicant = "{time} {server_name} wpa_supplicant[{id}]: {message}"
 wsdd = "{time} {server_name} wsdd[{id}]: {message}"
@@ -56,15 +60,8 @@ php = "{time} {server_name} php{version}-{process}: {message}"
 rsyslogd = "{time} {server_name} rsyslogd: {message}"
 rsync_sync = "{time} {server_name} rsync-{id} {message}"
 runuser = "{time} {server_name} runuser: {message}"
+session = '{time} {server_name} ({process}): pam_unix(systemd-user:session): {message}'
 sudo = "{time} {server_name} sudo: {message}"
-
-# Dictionary of templates 'search_string' : [template, number_of_expected_values, event name]
-# Some notes: use of the search string increases the speed of the parsing function
-# Search string must be present in the event data for the parsing function to even attempt using a template
-# Some search strings (ie: disconnected from SSID, connected to) will be present in multiple log event types
-# In order to confirm that the correct template was used, its results will be tested for correct number of values
-# The event name will be that value that populates the event_type column as the search string isn't terrific
-
 
 debian_events_with_bracketed_id_dict = {
     "anacron[": [anacron, 4, "anacron"],
@@ -97,6 +94,8 @@ debian_events_with_bracketed_id_dict = {
     "logrotate": [logrotate, 4, "logrotate"],
     "monit": [monit, 4, "monit"],
     "NetworkManager": [network_manager, 4, "network_manager"],
+    'passwd': [passwd, 4, 'passwd'],
+    'polkitd': [polkitd, 4, 'polkitd'],
     "postfix[": [postfix, 4, "postfix"],
     "postfix/": [postfix_process, 5, "postfix_process"],
     "quotarpc": [quotarpc_process, 5, "quotarpc_process"],
@@ -106,12 +105,14 @@ debian_events_with_bracketed_id_dict = {
     "rtkit-daemon": [rtkit_deamon, 4, "rtkit_daemon"],
     "run-parts": [run_parts, 4, "run_parts"],
     "samba-": [samba_process, 5, "samba_process"],
+    'smartd': [smartd, 4, 'smartd'],
     "smbd": [smbd, 4, "smbd"],
     "sm-notify": [sm_notify, 4, "sm_notify"],
     "sshd": [sshd, 4, "sshd"],
     "systemd": [systemd, 4, "systemd"],
     "systemd-": [systemd_process, 5, "systemd_process"],
     "useradd": [useradd, 4, "useradd"],
+    'userdel': [userdel, 4, 'userdel'],
     "usermod": [usermod, 4, "usermod"],
     "wpa_supplicant": [wpa_supplicant, 4, "wpa_supplicant"],
     "wsdd": [wsdd, 4, "wsdd"],
@@ -122,6 +123,7 @@ debian_other_events = {
     "rsyslogd": [rsyslogd, 3, "rsyslogd"],
     "rsync": [rsync_sync, 4, "rsync_sync"],
     " runuser": [runuser, 3, "runuser"],
+    'session': [session, 4, 'session'],
     "sudo": [sudo, 3, "sudo"],
 }
 

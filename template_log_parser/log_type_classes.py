@@ -1,20 +1,35 @@
 # Defines classes for built-in log file types
 # This simplifies referencing built-ins for functions and testing
+from typing import Callable
+
 from template_log_parser.sample import (
     debian_sample_log,
     omada_sample_log,
     omv_debian_sample_log,
+    pfsense_sample_log,
     pihole_debian_sample_log,
     synology_sample_log,
 )
 
 from template_log_parser.templates.debian_templates import debian_template_dict
+
 from template_log_parser.templates.omada_templates import (
     omada_template_dict,
     omada_column_process_dict,
     omada_merge_events_dict,
 )
-from template_log_parser.templates.omv_templates import omv_template_dict
+
+from template_log_parser.templates.omv_templates import (
+    omv_template_dict,
+    omv_merge_events_dict
+)
+
+from template_log_parser.templates.pfsense_templates import (
+    pfsense_template_dict,
+    pfsense_column_process_dict,
+    pfsense_merge_events_dict,
+)
+
 from template_log_parser.templates.pihole_templates import (
     pihole_template_dict,
     pihole_merge_events_dict,
@@ -47,13 +62,13 @@ class BuiltInLogFileType:
 
     def __init__(
         self,
-        name,
-        sample_log_file,
-        templates,
-        column_functions,
-        merge_events,
-        datetime_columns,
-        localize_datetime_columns,
+        name: str,
+        sample_log_file: str,
+        templates: dict[str, list[str, int, str]],
+        column_functions: None | dict[str, list[Callable, str, list[str], dict[str, int]]],
+        merge_events: None | dict[str, list[str]],
+        datetime_columns: None | list[str],
+        localize_datetime_columns: None | list[str],
     ):
         self.name = name
         self.sample_log_file = sample_log_file
@@ -90,9 +105,19 @@ omv = BuiltInLogFileType(
     sample_log_file=omv_debian_sample_log,
     templates=omv_template_dict,
     column_functions=None,
-    merge_events=None,
+    merge_events=omv_merge_events_dict,
     datetime_columns=["time"],
     localize_datetime_columns=None,
+)
+
+pfsense = BuiltInLogFileType(
+    name='pfsense',
+    sample_log_file=pfsense_sample_log,
+    templates=pfsense_template_dict,
+    column_functions=pfsense_column_process_dict,
+    merge_events=pfsense_merge_events_dict,
+    datetime_columns=["time"],
+    localize_datetime_columns=None
 )
 
 pihole = BuiltInLogFileType(
@@ -115,4 +140,4 @@ synology = BuiltInLogFileType(
     localize_datetime_columns=None,
 )
 
-built_in_log_file_types = [debian, omada, omv, pihole, synology]
+built_in_log_file_types = [debian, omada, omv, pfsense, pihole, synology]

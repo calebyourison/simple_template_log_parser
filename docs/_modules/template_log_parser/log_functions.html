@@ -71,6 +71,8 @@
   <h1>Source code for template_log_parser.log_functions</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
 <span class="c1"># set display options</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
@@ -88,7 +90,7 @@
 
 <div class="viewcode-block" id="parse_function">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.parse_function">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_function</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">parse_function</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]],)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.</span>
 
 <span class="sd">    :param event: String data, should ideally match a repeated format throughout a text file</span>
@@ -149,7 +151,7 @@
 
 <div class="viewcode-block" id="log_pre_process">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.log_pre_process">[docs]</a>
-<span class="k">def</span> <span class="nf">log_pre_process</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">log_pre_process</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]],)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text</span>
 
 <span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
@@ -189,11 +191,11 @@
 <div class="viewcode-block" id="run_functions_on_columns">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.run_functions_on_columns">[docs]</a>
 <span class="k">def</span> <span class="nf">run_functions_on_columns</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span>
-    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">additional_column_functions</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)</span>
 <span class="sd">    along with a list of columns that were processed</span>
 
@@ -230,56 +232,78 @@
 <span class="sd">        If only df parameter is supplied, function will return the original df and an empty list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">processed_columns</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># Dictionary should be in the format of: {existing_column: [function, new_column_name(s)]}</span>
-    <span class="c1"># New column names can be list as well: {existing_column: [function, [list_of_new_columns]]}</span>
-    <span class="c1"># if functions are supplied</span>
+
     <span class="k">if</span> <span class="n">additional_column_functions</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">new_features</span> <span class="ow">in</span> <span class="n">additional_column_functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="c1"># Single column function application</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
-                    <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span>
-                        <span class="p">)</span>
-                    <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
-                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
-                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
-                        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">new_features</span> <span class="ow">in</span> <span class="n">additional_column_functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
 
-                <span class="c1"># Multi column function expansion</span>
-                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
-                    <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span>
-                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
-                            <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
-                        <span class="p">)</span>
-                    <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
-                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                        <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-                            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
-                            <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
-                            <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
-                        <span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># Single column function application</span>
+                        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                            <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                                    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 
-                <span class="n">processed_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+                            <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
+                            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                                    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                                    <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                                <span class="p">)</span>
+
+                        <span class="c1"># Multi column expansion</span>
+                        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                            <span class="c1"># If no kwargs are present, new features will have a length of 2</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                                    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">]),</span>
+                                    <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                                    <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+                                <span class="p">)</span>
+
+                            <span class="c1"># If kwargs are provided, new features will have a length of 3</span>
+                            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_features</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">new_features</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                                    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">row</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="o">**</span><span class="n">new_features</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                                    <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+                                    <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+                                <span class="p">)</span>
+
+                        <span class="n">processed_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+
+                    <span class="c1"># Issue with column/function</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Function: &quot;</span><span class="si">{</span><span class="n">new_features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot; produced an error on column: &quot;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Please investigate: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Full entry: </span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">new_features</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Issue with additional_column_functions dictionary itself</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The additional_column_functions dictionary has produced an error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please investigate the cause of the error&#39;</span><span class="p">)</span>
 
     <span class="c1"># If datetime columns are present</span>
     <span class="k">if</span> <span class="n">datetime_columns</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">datetime_column</span> <span class="ow">in</span> <span class="n">datetime_columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">datetime_column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">])</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">datetime_column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">datetime_column</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error converting column: &quot;</span><span class="si">{</span><span class="n">datetime_column</span><span class="si">}</span><span class="s1">&quot; to datetime&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-    <span class="c1"># If timezones need to be dropped from certain columns</span>
-    <span class="k">if</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># If timezones need to be dropped from certain columns, must be included in datetime columns, and present in df</span>
+        <span class="k">if</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">localize_timezone_columns</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">datetime_columns</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                            <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error localizing datetime on column: &quot;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df</span><span class="p">,</span> <span class="n">processed_columns</span></div>
 
@@ -288,12 +312,12 @@
 <div class="viewcode-block" id="process_event_types">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.process_event_types">[docs]</a>
 <span class="k">def</span> <span class="nf">process_event_types</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span>
-    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">drop_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">additional_column_functions</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">drop_columns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of Pandas DataFrames whose keys are event types</span>
 
 <span class="sd">    :param df: DataFrame for processing</span>
@@ -346,16 +370,16 @@
 
 <div class="viewcode-block" id="merge_event_type_dfs">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.merge_event_type_dfs">[docs]</a>
-<span class="k">def</span> <span class="nf">merge_event_type_dfs</span><span class="p">(</span><span class="n">df_dictionary</span><span class="p">,</span> <span class="n">merge_dictionary</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">merge_event_type_dfs</span><span class="p">(</span><span class="n">df_dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">merge_dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and</span>
 <span class="sd">    deleting the old DataFrames</span>
 
 <span class="sd">    :param df_dictionary: Dictionary of DataFrames, formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...}</span>
 <span class="sd">    :type df_dictionary: dict</span>
-<span class="sd">    :param merge_dictionary: Formatted as {&#39;new_df_name&#39;, [&#39;existing_df_1&#39;, &#39;existing_df_2&#39;, ...], ...}</span>
+<span class="sd">    :param merge_dictionary: Formatted as {&#39;new_df_name&#39;, [&#39;event_type_1&#39;, &#39;event_type_2&#39;, ...], ...}</span>
 <span class="sd">    :type merge_dictionary: dict</span>
 
-<span class="sd">    :return: Dictionary of DataFrames formatted as {&#39;new_df_name&#39;: new_df, &#39;existing_event_type_3&#39;: existing_df_3, ...}</span>
+<span class="sd">    :return: Dictionary of DataFrames formatted as {&#39;new_df_name&#39;: new_df, &#39;event_type_3&#39;: df_3, ...}</span>
 <span class="sd">    :rtype: dict</span>
 
 <span class="sd">    Note:</span>
@@ -390,15 +414,15 @@
 <div class="viewcode-block" id="process_log">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.process_log">[docs]</a>
 <span class="k">def</span> <span class="nf">process_log</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">,</span>
-    <span class="n">template_dictionary</span><span class="p">,</span>
-    <span class="n">additional_column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">merge_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">drop_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">dict_format</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span><span class="p">,</span>
+    <span class="n">template_dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">additional_column_functions</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">merge_dictionary</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">localize_timezone_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">drop_columns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">dict_format</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,</span>
 <span class="sd">    utilizing templates.</span>
 

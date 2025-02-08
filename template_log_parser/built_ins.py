@@ -1,14 +1,17 @@
+import pandas as pd
+from io import BytesIO
+
 from template_log_parser.log_functions import process_log
 
 from template_log_parser.log_type_classes import built_in_log_file_types
 
 
-def built_in_process_log(built_in, file, dict_format=True):
+def built_in_process_log(built_in: str, file: str | BytesIO, dict_format: bool = True) -> dict[str, pd.DataFrame] | pd.DataFrame:
     """Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
     utilizing predefined templates.  This function is tailored to Built-In log file types using Built-In templates.
 
     :param built_in: built in log file parameter
-    :type built_in: str {'debian', 'omada', 'omv', 'pihole', 'synology'}
+    :type built_in: str {'debian', 'omada', 'omv', 'pfsense', 'pihole', 'synology'}
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
     :type file: str
     :param dict_format: (optional) Return a dictionary of DataFrames when True, one large DataFrame when False, True by default

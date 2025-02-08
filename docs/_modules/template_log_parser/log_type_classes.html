@@ -71,21 +71,36 @@
   <h1>Source code for template_log_parser.log_type_classes</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Defines classes for built-in log file types</span>
 <span class="c1"># This simplifies referencing built-ins for functions and testing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+
 <span class="kn">from</span> <span class="nn">template_log_parser.sample</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">debian_sample_log</span><span class="p">,</span>
     <span class="n">omada_sample_log</span><span class="p">,</span>
     <span class="n">omv_debian_sample_log</span><span class="p">,</span>
+    <span class="n">pfsense_sample_log</span><span class="p">,</span>
     <span class="n">pihole_debian_sample_log</span><span class="p">,</span>
     <span class="n">synology_sample_log</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">template_log_parser.templates.debian_templates</span> <span class="kn">import</span> <span class="n">debian_template_dict</span>
+
 <span class="kn">from</span> <span class="nn">template_log_parser.templates.omada_templates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">omada_template_dict</span><span class="p">,</span>
     <span class="n">omada_column_process_dict</span><span class="p">,</span>
     <span class="n">omada_merge_events_dict</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">template_log_parser.templates.omv_templates</span> <span class="kn">import</span> <span class="n">omv_template_dict</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.templates.omv_templates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">omv_template_dict</span><span class="p">,</span>
+    <span class="n">omv_merge_events_dict</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.templates.pfsense_templates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">pfsense_template_dict</span><span class="p">,</span>
+    <span class="n">pfsense_column_process_dict</span><span class="p">,</span>
+    <span class="n">pfsense_merge_events_dict</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">template_log_parser.templates.pihole_templates</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">pihole_template_dict</span><span class="p">,</span>
     <span class="n">pihole_merge_events_dict</span><span class="p">,</span>
@@ -120,13 +135,13 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
-        <span class="n">sample_log_file</span><span class="p">,</span>
-        <span class="n">templates</span><span class="p">,</span>
-        <span class="n">column_functions</span><span class="p">,</span>
-        <span class="n">merge_events</span><span class="p">,</span>
-        <span class="n">datetime_columns</span><span class="p">,</span>
-        <span class="n">localize_datetime_columns</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">sample_log_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">templates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">column_functions</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">merge_events</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+        <span class="n">datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">localize_datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_log_file</span> <span class="o">=</span> <span class="n">sample_log_file</span>
@@ -164,9 +179,19 @@
     <span class="n">sample_log_file</span><span class="o">=</span><span class="n">omv_debian_sample_log</span><span class="p">,</span>
     <span class="n">templates</span><span class="o">=</span><span class="n">omv_template_dict</span><span class="p">,</span>
     <span class="n">column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">merge_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">merge_events</span><span class="o">=</span><span class="n">omv_merge_events_dict</span><span class="p">,</span>
     <span class="n">datetime_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
     <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">pfsense</span> <span class="o">=</span> <span class="n">BuiltInLogFileType</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;pfsense&#39;</span><span class="p">,</span>
+    <span class="n">sample_log_file</span><span class="o">=</span><span class="n">pfsense_sample_log</span><span class="p">,</span>
+    <span class="n">templates</span><span class="o">=</span><span class="n">pfsense_template_dict</span><span class="p">,</span>
+    <span class="n">column_functions</span><span class="o">=</span><span class="n">pfsense_column_process_dict</span><span class="p">,</span>
+    <span class="n">merge_events</span><span class="o">=</span><span class="n">pfsense_merge_events_dict</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+    <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span>
 
 <span class="n">pihole</span> <span class="o">=</span> <span class="n">BuiltInLogFileType</span><span class="p">(</span>
@@ -189,7 +214,7 @@
     <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">built_in_log_file_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">debian</span><span class="p">,</span> <span class="n">omada</span><span class="p">,</span> <span class="n">omv</span><span class="p">,</span> <span class="n">pihole</span><span class="p">,</span> <span class="n">synology</span><span class="p">]</span>
+<span class="n">built_in_log_file_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">debian</span><span class="p">,</span> <span class="n">omada</span><span class="p">,</span> <span class="n">omv</span><span class="p">,</span> <span class="n">pfsense</span><span class="p">,</span> <span class="n">pihole</span><span class="p">,</span> <span class="n">synology</span><span class="p">]</span>
 </pre></div>
 
            </div>

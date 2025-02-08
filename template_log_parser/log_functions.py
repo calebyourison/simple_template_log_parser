@@ -1,5 +1,7 @@
 import pandas as pd
 from parse import parse
+from typing import Callable
+from io import BytesIO
 
 # set display options
 pd.options.display.max_columns = 40
@@ -15,7 +17,7 @@ other_type_column = "Other"
 unparsed_text_column = "Unparsed_text"
 
 
-def parse_function(event, template_dictionary):
+def parse_function(event: str, template_dictionary: dict[str, list[str | int]],) -> tuple[str, dict[str, str]]:
     """Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.
 
     :param event: String data, should ideally match a repeated format throughout a text file
@@ -73,7 +75,7 @@ def parse_function(event, template_dictionary):
     return valid_template, result
 
 
-def log_pre_process(file, template_dictionary):
+def log_pre_process(file: str | BytesIO, template_dictionary: dict[str, list[str | int]],) -> pd.DataFrame:
     """Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
@@ -110,11 +112,11 @@ def log_pre_process(file, template_dictionary):
 
 
 def run_functions_on_columns(
-    df,
-    additional_column_functions=None,
-    datetime_columns=None,
-    localize_timezone_columns=None,
-):
+    df: pd.DataFrame,
+    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
+    datetime_columns: None | list[str] = None,
+    localize_timezone_columns: None | list[str] = None,
+) -> tuple[pd.DataFrame, list[str]]:
     """Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
     along with a list of columns that were processed
 
@@ -151,67 +153,89 @@ def run_functions_on_columns(
         If only df parameter is supplied, function will return the original df and an empty list
     """
     processed_columns = []
-    # Dictionary should be in the format of: {existing_column: [function, new_column_name(s)]}
-    # New column names can be list as well: {existing_column: [function, [list_of_new_columns]]}
-    # if functions are supplied
+
     if additional_column_functions:
-        for column, new_features in additional_column_functions.items():
-            if column in df.columns:
-                # Single column function application
-                if type(new_features[1]) is str:
-                    # If no kwargs are present, new features will have a length of 2
-                    if len(new_features) == 2:
-                        df[new_features[1]] = df.apply(
-                            lambda row: new_features[0](row[column]), axis="columns"
-                        )
-                    # If kwargs are provided, new features will have a length of 3
-                    elif len(new_features) == 3:
-                        df[new_features[1]] = df.apply(
-                            lambda row: new_features[0](row[column], **new_features[2]),
-                            axis="columns",
-                        )
+        try:
+            for column, new_features in additional_column_functions.items():
+                if column in df.columns:
 
-                # Multi column function expansion
-                elif type(new_features[1]) is list:
-                    # If no kwargs are present, new features will have a length of 2
-                    if len(new_features) == 2:
-                        df[new_features[1]] = df.apply(
-                            lambda row: new_features[0](row[column]),
-                            axis="columns",
-                            result_type="expand",
-                        )
-                    # If kwargs are provided, new features will have a length of 3
-                    elif len(new_features) == 3:
-                        df[new_features[1]] = df.apply(
-                            lambda row: new_features[0](row[column], **new_features[2]),
-                            axis="columns",
-                            result_type="expand",
-                        )
+                    try:
+                        # Single column function application
+                        if type(new_features[1]) is str:
+                            # If no kwargs are present, new features will have a length of 2
+                            if len(new_features) == 2:
+                                df[new_features[1]] = df.apply(
+                                    lambda row: new_features[0](row[column]), axis="columns")
 
-                processed_columns.append(column)
+                            # If kwargs are provided, new features will have a length of 3
+                            elif len(new_features) == 3:
+                                df[new_features[1]] = df.apply(
+                                    lambda row: new_features[0](row[column], **new_features[2]),
+                                    axis="columns",
+                                )
+
+                        # Multi column expansion
+                        elif type(new_features[1]) is list:
+                            # If no kwargs are present, new features will have a length of 2
+                            if len(new_features) == 2:
+                                df[new_features[1]] = df.apply(
+                                    lambda row: new_features[0](row[column]),
+                                    axis="columns",
+                                    result_type="expand",
+                                )
+
+                            # If kwargs are provided, new features will have a length of 3
+                            elif len(new_features) == 3:
+                                df[new_features[1]] = df.apply(
+                                    lambda row: new_features[0](row[column], **new_features[2]),
+                                    axis="columns",
+                                    result_type="expand",
+                                )
+
+                        processed_columns.append(column)
+
+                    # Issue with column/function
+                    except Exception as e:
+                        print(f'Function: "{new_features[0]}" produced an error on column: "{column}"')
+                        print(f"Please investigate: {e}")
+                        print(f'Full entry: {column}: {new_features}')
+
+        # Issue with additional_column_functions dictionary itself
+        except Exception as e:
+            print(f'The additional_column_functions dictionary has produced an error: {e}')
+            print('Please investigate the cause of the error')
 
     # If datetime columns are present
     if datetime_columns:
         for datetime_column in datetime_columns:
-            if datetime_column in df.columns:
-                df[datetime_column] = pd.to_datetime(df[datetime_column])
+            try:
+                if datetime_column in df.columns:
+                    df[datetime_column] = pd.to_datetime(df[datetime_column])
+            except Exception as e:
+                print(f'Error converting column: "{datetime_column}" to datetime')
+                print(e)
 
-    # If timezones need to be dropped from certain columns
-    if localize_timezone_columns:
-        for column in localize_timezone_columns:
-            if column in df.columns:
-                df[column] = df[column].dt.tz_localize(None)
+        # If timezones need to be dropped from certain columns, must be included in datetime columns, and present in df
+        if localize_timezone_columns:
+            for column in localize_timezone_columns:
+                try:
+                    if column in datetime_columns:
+                        if column in df.columns:
+                            df[column] = df[column].dt.tz_localize(None)
+                except Exception as e:
+                    print(f'Error localizing datetime on column: "{column}"')
+                    print(e)
 
     return df, processed_columns
 
 
 def process_event_types(
-    df,
-    additional_column_functions=None,
-    datetime_columns=None,
-    localize_timezone_columns=None,
-    drop_columns=True,
-):
+    df: pd.DataFrame,
+    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
+    datetime_columns: None | list[str] = None,
+    localize_timezone_columns: None | list[str] = None,
+    drop_columns: bool = True,
+) -> dict[str, pd.DataFrame]:
     """Return a dictionary of Pandas DataFrames whose keys are event types
 
     :param df: DataFrame for processing
@@ -261,16 +285,16 @@ def process_event_types(
     return final_dict
 
 
-def merge_event_type_dfs(df_dictionary, merge_dictionary):
+def merge_event_type_dfs(df_dictionary: dict[str, pd.DataFrame], merge_dictionary: dict[str, list[str]]) -> dict[str, pd.DataFrame]:
     """Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and
     deleting the old DataFrames
 
     :param df_dictionary: Dictionary of DataFrames, formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
     :type df_dictionary: dict
-    :param merge_dictionary: Formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
+    :param merge_dictionary: Formatted as {'new_df_name', ['event_type_1', 'event_type_2', ...], ...}
     :type merge_dictionary: dict
 
-    :return: Dictionary of DataFrames formatted as {'new_df_name': new_df, 'existing_event_type_3': existing_df_3, ...}
+    :return: Dictionary of DataFrames formatted as {'new_df_name': new_df, 'event_type_3': df_3, ...}
     :rtype: dict
 
     Note:
@@ -302,15 +326,15 @@ def merge_event_type_dfs(df_dictionary, merge_dictionary):
 
 
 def process_log(
-    file,
-    template_dictionary,
-    additional_column_functions=None,
-    merge_dictionary=None,
-    datetime_columns=None,
-    localize_timezone_columns=None,
-    drop_columns=True,
-    dict_format=True,
-):
+    file: str | BytesIO,
+    template_dictionary: dict[str, list[str | int]],
+    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
+    merge_dictionary: None | dict[str, list[str]] = None,
+    datetime_columns: None | list[str] = None,
+    localize_timezone_columns: None | list[str] = None,
+    drop_columns: bool = True,
+    dict_format: bool = True,
+) -> dict[str, pd.DataFrame] | pd.DataFrame:
     """Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
     utilizing templates.
 

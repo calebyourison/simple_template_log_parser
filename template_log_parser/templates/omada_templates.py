@@ -208,12 +208,7 @@ log_storage_limit = (
 generic_message = "{time} {hardware_controller}  {omada_date} {omada_time} {controller} - - - {message}"
 
 resolved = "{time} {hardware_controller}  {omada_date} {omada_time} {controller} - - - Resolved: {message}"
-# Dictionary of templates 'search_string' : [template, number_of_expected_values, event name]
-# Some notes: use of the search string increases the speed of the parsing function
-# Search string must be present in the event data for the parsing function to even attempt using a template
-# Some search strings (ie: disconnected from SSID, connected to) will be present in multiple log event types
-# In order to confirm that the correct template was used, its results will be tested for correct number of values
-# The event name will be that value that populates the event_type column as the search string isn't terrific
+
 
 client_activity_dict = {
     "blocked by Access Control": [blocked, 13, "blocked"],

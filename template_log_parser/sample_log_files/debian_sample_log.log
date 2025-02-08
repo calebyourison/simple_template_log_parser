@@ -51,3 +51,8 @@
 2024-11-14T10:15:33+01:00 debian_pc useradd[131345]: new group: name=some_group, GID=1011
 2024-11-17T00:00:01+01:00 debian_pc logrotate[495105]: some fake message
 2024-12-01T07:06:18+01:00 debian_pc dbus-send[116463]: generic message
+2024-12-06T14:15:19+01:00 debian_pc (sd-pam): pam_unix(systemd-user:session): session closed for user root
+2024-12-22T07:31:12+01:00 debian_pc passwd[21353]: pam_unix(passwd:chauthtok): password changed for root
+2024-12-30T14:51:29+01:00 debian_pc userdel[3384926]: delete 'some_user' from group 'some_group'
+2025-01-04T10:25:20+01:00 debian_pc smartd[719519]: Configuration file /blank/some.conf parsed but has no entries
+2025-01-11T08:00:37-07:00 debian_pc polkitd[787]: Reloading rules
