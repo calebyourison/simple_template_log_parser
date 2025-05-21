@@ -35,3 +35,7 @@
 2024-12-25T18:24:22+01:00 server_x System admin:#011System successfully exported configurations.
 2025-01-07T16:44:38+01:00 server_x System admin:#011System successfully deleted User [some_user].
 2025-01-10T04:41:14+01:00 server_x System admin:#011User [user_1] was renamed to [user_2].
+2025-03-09T14:23:39+01:00 server_x System SYSTEM:#011System failed to convert video [/volume1/photo/PhotoLibrary/IMG_1734 (1).mov] to mpeg4.
+2025-03-11T14:40:05+01:00 server_x System admin:#011Create a report profile named [duplicates]
+2025-03-17T19:12:33+01:00 server_x System admin:#011Shared folder [music] was created when enabling [AudioStation].
+2025-04-13T07:06:50+01:00 server_x System SYSTEM:#011An unknown error occurred, so disk 3 was restarted. If you often see this message, please disable disk write cache.

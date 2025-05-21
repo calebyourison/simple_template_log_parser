@@ -38,3 +38,22 @@
 2025-01-14T23:42:06.244222+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,56,35722,0,DF,6,tcp,64,6.1.2.8,4.3.2.8,3389,1367,0,SA,588570493,277071317,28340,,wscale;mss;nop;nop;nop;nop;mss;wscale;[bad opt],>,
 2025-01-31T16:09:05.131161+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,52,4408,0,none,1,icmp,87,1.2.1.9,8.4.3.8,redirect,redirect 1.4.0.1 to host 1.4.0.7
 2025-02-05T06:42:50.910020+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x2,0,51,17468,0,none,50,esp,96,1.2.3.4,9.8.7.6,datalength=76
+2025-02-09T14:38:32.089124+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,44,6307,0,none,132,sctp,52,2.7.3.6,9.4.3.8,39900,14001,20
+2025-02-14T15:53:18.854175+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,244,6969,0,none,1,icmp,40,1.2.3.4,5.6.7.8,tstamp,13528,234620
+2025-02-14T15:53:31.058325+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,244,6969,0,none,1,icmp,32,5.4.3.2,6.7.8.9,address mask request12
+2025-02-14T15:53:35.100000+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,118,13528,0,DF,252,unknown,21,1.2.3.4,5.6.7.8,datalength=1
+2025-02-14T16:32:05.997016+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,242,30162,0,DF,45,idrp,24,6.7.8.9,1.1.1.1,datalength=4
+2025-02-14T16:32:07.061960+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,242,34514,0,DF,53,swipe,24,1.2.3.4,5.5.5.5,datalength=4
+2025-02-14T16:32:08.121348+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,244,38866,0,DF,55,mobile,24,1.2.3.4,1.2.3.4,datalength=4
+2025-02-14T16:32:09.135096+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,242,43218,0,DF,66,rvd,24,5.5.5.5,1.1.1.1,datalength=4
+2025-02-14T16:32:10.153068+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,242,47570,0,DF,77,sun-nd,24,9.9.9.9,3.3.3.3,datalength=4
+2025-02-14T16:32:12.192632+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,244,51922,0,DF,125,fire,25,2.2.2.2,1.1.1.1,datalength=5
+2025-02-15T03:46:06.117638+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,56,0,0,DF,1,icmp,40,1.2.3.4,2.2.2.2,maskreply, address mask is 0x0000000020
+2025-03-09T13:33:52.353574+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,54,0,0,DF,1,icmp,40,2.2.2.2,4.4.4.4,information request20
+2025-03-14T14:47:55.927361+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,243,61801,0,none,1,icmp,168,1.1.1.1,3.3.3.3,timexceed,time exceeded in-transit148
+2025-03-14T19:15:39.970271+01:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,54,0,0,DF,1,icmp,40,1.1.1.1,5.5.5.5,router solicitation20
+2025-03-21T20:08:28.123718-07:00 generic_firewall filterlog[61076] 4,,,1000000103,igc0,match,block,in,4,0x0,,54,0,0,DF,1,icmp,40,23.206.229.113,69.254.193.148,source quench20
+2025-03-23T17:01:56.792857+01:00 generic_firewall upsd[36603] listening on ::1 port 3493
+2025-03-23T17:01:57.821156+01:00 generic_firewall upsmon[37628] Startup successful
+2025-04-01T03:01:00.152881+01:00 generic_firewall root[28104] rc.update_bogons.sh is starting up.
+2025-04-16T01:34:25.927759+01:00 generic_firewall usbhid-ups[56072] Signal 15: exiting

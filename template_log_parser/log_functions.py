@@ -1,6 +1,8 @@
 import pandas as pd
-from parse import parse
-from typing import Callable
+import numpy as np
+from parse import Parser
+from parse import compile as parse_compile
+from typing import Callable, Literal, Dict, List, Union, Optional, Any, Tuple
 from io import BytesIO
 
 # set display options
@@ -8,7 +10,6 @@ pd.options.display.max_columns = 40
 pd.options.display.width = 120
 pd.set_option("max_colwidth", 400)
 
-# These variables exist here to avoid hardcoded values all over the project
 event_data_column = "event_data"
 event_type_column = "event_type"
 parsed_info_column = "parsed_info"
@@ -17,77 +18,163 @@ other_type_column = "Other"
 unparsed_text_column = "Unparsed_text"
 
 
-def parse_function(event: str, template_dictionary: dict[str, list[str | int]],) -> tuple[str, dict[str, str]]:
+def _pre_filter_log_file(
+    df: pd.DataFrame,
+    column: str,
+    match: str | List[str] | None = None,
+    eliminate: str | List[str] | None = None,
+    match_type: Literal["any", "all"] = "any",
+    eliminate_type: Literal["any", "all"] = "any",
+) -> pd.DataFrame:
+    """Filter a DataFrame based on inclusion (match) and exclusion (eliminate) string criteria.
+
+    Eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.
+
+    :param df: DataFrame for filtering, single column of raw text
+    :type df: Pandas.DataFrame
+
+    :param column: name of single column
+    :type column: str
+
+    :param match: (optional) A single word or list of words must be present within the line otherwise dropped.
+    :type match: str, List[str], None
+
+    :param eliminate: (optional) A single word or a list of words if present within line will result in it being dropped
+    :type eliminate: str, List[str], None
+
+    :param match_type: (optional) criteria to determine if any words must be present to match, or all words
+    :type match_type: Literal["any", "all"]
+
+    :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words
+    :type eliminate_type: Literal["any", "all"]
+
+    :return: Dataframe filtered by match and/or eliminate criteria
+    :rtype: Pandas.DataFrame
+
+    :raises ValueError: If the specified column does not exist in the DataFrame.
+    """
+    if column not in df.columns:
+        raise ValueError(f"Column '{column}' not found in DataFrame.")
+
+    series = df[column].astype(str)
+
+    if match:
+        if isinstance(match, str):
+            match = [match]
+        match = [str(m) for m in match]
+        if match_type.lower() == "all":
+            matching = np.logical_and.reduce(
+                [series.str.contains(m, regex=False, na=False) for m in match]
+            )
+        else:
+            matching = np.logical_or.reduce(
+                [series.str.contains(m, regex=False, na=False) for m in match]
+            )
+        df = df[matching]
+
+    if eliminate:
+        if isinstance(eliminate, str):
+            eliminate = [eliminate]
+        eliminate = [str(e) for e in eliminate]
+        if eliminate_type.lower() == "all":
+            to_eliminate = np.logical_and.reduce(
+                [series.str.contains(e, regex=False, na=False) for e in eliminate]
+            )
+        else:
+            to_eliminate = np.logical_or.reduce(
+                [series.str.contains(e, regex=False, na=False) for e in eliminate]
+            )
+        df = df[~to_eliminate]
+
+    return df
+
+
+def parse_function(
+    event: str, template_dictionary: Dict[str, List[Union[Parser, int, str]]]
+) -> tuple[str, dict[str, str]]:
     """Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.
 
     :param event: String data, should ideally match a repeated format throughout a text file
     :type event: str
-    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict
 
-    :return: Tuple formatted as (event_type, {'value_1': 'some_value', 'value2': 'some_other_value', ...})
-    :rtype: tup
+    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict[str, list[Parser, int, str]]
 
+    :return: Tuple containing:
+        - event_type
+        - dictionary of parsed values if succesful.  Otherwise, {"Uparsed_text": original text}
+    :rtype: tuple[str, dict[str, str]]
 
-    Examples:
-        event_string = '2024-09-12 main_server connected to 10.10.10.102'
+    :raises ValueError: If a template compiles incorrectly (implicit)
 
-        template_one = '{date} {client_name} connected to {host_ip_address}'
+    :example:
 
-        example_template_dictionary = {'connected to': [template_one, 3, 'host_connection_event'], ...}
-
-        parsed_event = parse_function(event_string, example_template_dictionary)
-
-        print(parsed_event)
-
+        >>> event_string = '2024-09-12 main_server connected to 10.10.10.102'
+        >>> template = '{date} {client_name} connected to {host_ip_address}'
+        >>> templates = {'connected to': [template, 3, 'host_connection_event']}
+        >>> parse_function(event_string, templates)
         ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
 
-    Note:
+    :note:
         If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
     """
-    # If nothing is found in the entire dictionary
-    # Return generic results, unparsed text, new template will be needed
+
     valid_template = other_type_column
     result = {unparsed_text_column: event}
 
-    # Using the dictionary of templates
-    for search_string, attributes in template_dictionary.items():
-        # Check if search string is present within event to ensure only appropriate templates are used
-        # Multiple template search strings may be present within event, but checking a few templates is still faster
-        # Than checking all templates
+    for search_string, (
+        compiled_template,
+        expected_fields,
+        event_type,
+    ) in template_dictionary.items():
+        # Verify search string present
         if search_string in event:
-            # template is located inside list of attributes, first position
-            parsed_result = parse(attributes[0], event)
-            # If a parsed_result is returned it means that the template matched so some degree
-            if parsed_result is not None:
-                # Check to make sure the number of values equals the expected number, list of attributes second position
-                if len(parsed_result.named) == attributes[1]:
-                    # If so, update the valid template (position 2), and return the dictionary of item_names: values
-                    valid_template = attributes[2]
-                    # result.named is the dictionary attribute of a Result object
-                    result = parsed_result.named
-                    break
-            # If no parsed result is returned, use default values for "Other"
-            elif parsed_result is None:
-                valid_template = other_type_column
-                result = {unparsed_text_column: event}
+            # Verify compiled template was supplied, compile if needed
+            if not isinstance(compiled_template, Parser):
+                compiled_template = parse_compile(compiled_template)
+            parsed_result = compiled_template.parse(event)
+            # Verify result and correct number of expected values
+            if parsed_result and len(parsed_result.named) == expected_fields:
+                valid_template = event_type
+                result = parsed_result.named
+                break
 
     return valid_template, result
 
 
-def log_pre_process(file: str | BytesIO, template_dictionary: dict[str, list[str | int]],) -> pd.DataFrame:
+def log_pre_process(
+    file: str | BytesIO,
+    template_dictionary: Dict[str, List[Union[Parser, int, str]]],
+    match: str | list[str] | None = None,
+    eliminate: str | list[str] | None = None,
+    match_type: Literal["any", "all"] = "any",
+    eliminate_type: Literal["any", "all"] = "any",
+) -> pd.DataFrame:
     """Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
-    :type file: str
-    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict
+    :type file: str, BytesIO
+
+    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict[str, list[Parser, int, str]]
+
+    :param match: (optional) A single word or list of words must be present within the line otherwise dropped.
+    :type match: str, list[str], None
+
+    :param eliminate: (optional) A single word or a list of words if present within line will result in it being dropped
+    :type eliminate: str, list[str], None
+
+    :param match_type: (optional) criteria to determine if any words must be present to match, or all words
+    :type match_type: Literal["any", "all"]
+
+    :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words
+    :type eliminate_type: Literal["any", "all"]
 
     :return: DataFrame with columns 'event_data', 'event_type', 'parsed_info'
     :rtype: Pandas.DataFrame
 
 
-    Note:
+    :note:
         event_data is the raw text from within the log file
 
         event_type is defined from the template dictionary that matched a line of text
@@ -95,11 +182,35 @@ def log_pre_process(file: str | BytesIO, template_dictionary: dict[str, list[str
         parsed_info is a dictionary within the column that contains key/value pairs based on the matching template
 
         See parse_function() for specific information on templates
+
+        match and eliminate parameters filter the log file prior to parsing
+
+        eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.
     """
     # Read log file
     pre_df = pd.read_table(
         file, header=None, names=[event_data_column], on_bad_lines="warn"
     )
+
+    # Match and/or eliminate rows
+    pre_df = _pre_filter_log_file(
+        pre_df,
+        column=event_data_column,
+        match=match,
+        eliminate=eliminate,
+        match_type=match_type,
+        eliminate_type=eliminate_type,
+    )
+
+    # Compile template_dictionary
+    template_dictionary = {
+        key: [parse_compile(template_str), expected_count, event_type]
+        for key, (
+            template_str,
+            expected_count,
+            event_type,
+        ) in template_dictionary.items()
+    }
 
     # Parse event data, create event_type column to streamline the next process
     pre_df[[event_type_column, parsed_info_column]] = pre_df.apply(
@@ -113,26 +224,34 @@ def log_pre_process(file: str | BytesIO, template_dictionary: dict[str, list[str
 
 def run_functions_on_columns(
     df: pd.DataFrame,
-    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
-    datetime_columns: None | list[str] = None,
-    localize_timezone_columns: None | list[str] = None,
-) -> tuple[pd.DataFrame, list[str]]:
-    """Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
-    along with a list of columns that were processed
+    additional_column_functions: Optional[Dict[str, List[Any]]] = None,
+    datetime_columns: Optional[List[str]] = None,
+    localize_timezone_columns: Optional[List[str]] = None,
+) -> Tuple[pd.DataFrame, List[str]]:
+    """
+    Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
+    along with a list of columns that were processed.
 
     :param df: DataFrame for processing
     :type df: Pandas.DataFrame
+
     :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
-    :type additional_column_functions: dict
+    :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]
+
     :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
-    :type datetime_columns: list
+    :type datetime_columns: List[str]
+
     :param localize_timezone_columns: (optional) Columns to drop timezone
-    :type localize_timezone_columns: list
+    :type localize_timezone_columns: List[str]
 
     :return: DataFrame with newly processed columns, list of columns that were processed
-    :rtype: tup
+    :rtype: tuple[Pandas.DataFrame, List[str]]
 
-    Examples:
+    :raises ValueError: If column or transformation config is invalid.
+    :raises TypeError: If target column names are not str or list[str].
+    :raises RuntimeError: If a function fails during application.
+
+    :example:
         my_kwargs = dict(keyword_1='some_string', keyword_2=1000, keyword_3=[1,2,3])
 
         my_column_functions = {
@@ -141,7 +260,7 @@ def run_functions_on_columns(
             'column_4_to_run_function_on': [function_with_kwargs, 'new_col_4', my_kwargs],
             }
 
-    Note:
+    :note:
         This function (excepting datetime columns) is designed to create new columns and provide a list
         of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.
         An example of this would be the calc_time() function which can convert strings such as '1h12m'
@@ -151,87 +270,89 @@ def run_functions_on_columns(
         In this instance, one can provide a list of new column names. Please see example.
 
         If only df parameter is supplied, function will return the original df and an empty list
+
     """
     processed_columns = []
 
     if additional_column_functions:
-        try:
-            for column, new_features in additional_column_functions.items():
-                if column in df.columns:
+        for column, config in additional_column_functions.items():
+            if column not in df.columns:
+                continue
 
-                    try:
-                        # Single column function application
-                        if type(new_features[1]) is str:
-                            # If no kwargs are present, new features will have a length of 2
-                            if len(new_features) == 2:
-                                df[new_features[1]] = df.apply(
-                                    lambda row: new_features[0](row[column]), axis="columns")
+            if not isinstance(config, list) or not (2 <= len(config) <= 3):
+                raise ValueError(
+                    f"Invalid configuration for column '{column}': {config}"
+                )
 
-                            # If kwargs are provided, new features will have a length of 3
-                            elif len(new_features) == 3:
-                                df[new_features[1]] = df.apply(
-                                    lambda row: new_features[0](row[column], **new_features[2]),
-                                    axis="columns",
-                                )
+            col_func = config[0]
+            new_cols = config[1]
+            optional_kwargs = config[2] if len(config) == 3 else {}
 
-                        # Multi column expansion
-                        elif type(new_features[1]) is list:
-                            # If no kwargs are present, new features will have a length of 2
-                            if len(new_features) == 2:
-                                df[new_features[1]] = df.apply(
-                                    lambda row: new_features[0](row[column]),
-                                    axis="columns",
-                                    result_type="expand",
-                                )
+            if not callable(col_func):
+                raise TypeError(
+                    f"The function provided for '{column}' is not callable: {col_func}"
+                )
 
-                            # If kwargs are provided, new features will have a length of 3
-                            elif len(new_features) == 3:
-                                df[new_features[1]] = df.apply(
-                                    lambda row: new_features[0](row[column], **new_features[2]),
-                                    axis="columns",
-                                    result_type="expand",
-                                )
-
-                        processed_columns.append(column)
-
-                    # Issue with column/function
-                    except Exception as e:
-                        print(f'Function: "{new_features[0]}" produced an error on column: "{column}"')
-                        print(f"Please investigate: {e}")
-                        print(f'Full entry: {column}: {new_features}')
-
-        # Issue with additional_column_functions dictionary itself
-        except Exception as e:
-            print(f'The additional_column_functions dictionary has produced an error: {e}')
-            print('Please investigate the cause of the error')
-
-    # If datetime columns are present
-    if datetime_columns:
-        for datetime_column in datetime_columns:
             try:
-                if datetime_column in df.columns:
-                    df[datetime_column] = pd.to_datetime(df[datetime_column])
-            except Exception as e:
-                print(f'Error converting column: "{datetime_column}" to datetime')
-                print(e)
+                if isinstance(new_cols, str):
+                    # Single column
+                    df[new_cols] = df.apply(
+                        lambda row: col_func(row[column], **optional_kwargs), axis=1
+                    )
 
-        # If timezones need to be dropped from certain columns, must be included in datetime columns, and present in df
-        if localize_timezone_columns:
-            for column in localize_timezone_columns:
+                elif isinstance(new_cols, list):
+                    # Multiple new columns (expansion)
+                    result = df.apply(
+                        lambda row: col_func(row[column], **optional_kwargs),
+                        axis=1,
+                        result_type="expand",
+                    )
+
+                    if result.shape[1] != len(new_cols):
+                        raise ValueError(
+                            f"Function for column '{column}' returned {result.shape[1]} columns, "
+                            f"but {len(new_cols)} new column names were provided: {new_cols}"
+                        )
+
+                    result.columns = new_cols
+                    df = pd.concat([df, result], axis=1)
+
+                else:
+                    raise TypeError(f"Invalid type for new column names: {new_cols}")
+
+                processed_columns.append(column)
+
+            except Exception as e:
+                raise RuntimeError(
+                    f"Error applying function to column '{column}': {e}\n"
+                    f"Config: {config}"
+                ) from e
+
+    # Convert datetime columns
+    if datetime_columns:
+        for col in datetime_columns:
+            if col in df.columns:
                 try:
-                    if column in datetime_columns:
-                        if column in df.columns:
-                            df[column] = df[column].dt.tz_localize(None)
+                    df[col] = pd.to_datetime(df[col])
                 except Exception as e:
-                    print(f'Error localizing datetime on column: "{column}"')
-                    print(e)
+                    print(f"Error converting column '{col}' to datetime: {e}")
+
+    # Localize (remove) timezone info
+    if localize_timezone_columns:
+        for col in localize_timezone_columns:
+            if col in df.columns:
+                try:
+                    df[col] = df[col].dt.tz_localize(None)
+                except Exception as e:
+                    print(f"Error localizing timezone in column '{col}': {e}")
 
     return df, processed_columns
 
 
 def process_event_types(
     df: pd.DataFrame,
-    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
+    additional_column_functions: None
+    | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
     datetime_columns: None | list[str] = None,
     localize_timezone_columns: None | list[str] = None,
     drop_columns: bool = True,
@@ -240,12 +361,16 @@ def process_event_types(
 
     :param df: DataFrame for processing
     :type df: Pandas.DataFrame
+
     :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
-    :type additional_column_functions: dict
+    :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]
+
     :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
-    :type datetime_columns: list
+    :type datetime_columns: List[str]
+
     :param localize_timezone_columns: (optional) Columns to drop timezone
-    :type localize_timezone_columns: list
+    :type localize_timezone_columns: List[str]
+
     :param drop_columns: (optional) If True, 'parsed_info', 'event_data' will be dropped along with columns processed by additional_column_functions, True by default
     :type drop_columns: bool
 
@@ -285,7 +410,9 @@ def process_event_types(
     return final_dict
 
 
-def merge_event_type_dfs(df_dictionary: dict[str, pd.DataFrame], merge_dictionary: dict[str, list[str]]) -> dict[str, pd.DataFrame]:
+def merge_event_type_dfs(
+    df_dictionary: Dict[str, pd.DataFrame], merge_dictionary: Dict[str, List[str]]
+) -> Dict[str, pd.DataFrame]:
     """Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and
     deleting the old DataFrames
 
@@ -297,7 +424,7 @@ def merge_event_type_dfs(df_dictionary: dict[str, pd.DataFrame], merge_dictionar
     :return: Dictionary of DataFrames formatted as {'new_df_name': new_df, 'event_type_3': df_3, ...}
     :rtype: dict
 
-    Note:
+    :note:
         Certain log events are categorically similar despite being parsed with different templates.
         For example, client wireless connections and client hardwired connections might be easier to analyze when
         grouped into the same DataFrame.
@@ -327,38 +454,61 @@ def merge_event_type_dfs(df_dictionary: dict[str, pd.DataFrame], merge_dictionar
 
 def process_log(
     file: str | BytesIO,
-    template_dictionary: dict[str, list[str | int]],
-    additional_column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]] = None,
+    template_dictionary: Dict[str, List[Union[Parser, int, str]]],
+    additional_column_functions: Optional[Dict[str, List[Any]]] = None,
     merge_dictionary: None | dict[str, list[str]] = None,
-    datetime_columns: None | list[str] = None,
-    localize_timezone_columns: None | list[str] = None,
+    datetime_columns: Optional[List[str]] = None,
+    localize_timezone_columns: Optional[List[str]] = None,
     drop_columns: bool = True,
     dict_format: bool = True,
+    match: str | List[str] | None = None,
+    eliminate: str | List[str] | None = None,
+    match_type: Literal["any", "all"] = "any",
+    eliminate_type: Literal["any", "all"] = "any",
 ) -> dict[str, pd.DataFrame] | pd.DataFrame:
     """Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
     utilizing templates.
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
-    :type file: str
-    :param template_dictionary: formatted as {search_string: [template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict
+    :type file: str, BytesIO
+
+    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
+    :type template_dictionary: dict[str, list[Parser, int, str]]
+
     :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
-    :type additional_column_functions: dict
+    :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]
+
     :param merge_dictionary: Formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
     :type merge_dictionary: dict
+
     :param datetime_columns: (optional) Columns to be converted using Pandas.to_datetime()
-    :type datetime_columns: list, None
+    :type datetime_columns: List[str]
+
     :param localize_timezone_columns: (optional) Columns to drop timezone
-    :type localize_timezone_columns: list, None
+    :type localize_timezone_columns: List[str]
+
     :param drop_columns: (optional) If True, 'parsed_info', 'event_data' will be dropped along with processed columns, True by default
     :type drop_columns: bool
+
     :param dict_format: Return a dictionary of DataFrames when True, one large DataFrame when False, True by default
     :type dict_format: (optional) bool
 
-    :return: Dict formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...} or DataFrame with all event types and all columns
-    :rtype: dict, Pandas.DataFrame
+    :param match: (optional) A single word or list of words must be present within the line otherwise dropped.
+    :type match: str, List[str], None
 
-    Note:
+    :param eliminate: (optional) A single word or a list of words if present within line will result in it being dropped
+    :type eliminate: str, List[str], None
+
+    :param match_type: (optional) criteria to determine if any words must be present to match, or all words
+    :type match_type: Literal["any", "all"]
+
+    :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words
+    :type eliminate_type: Literal["any", "all"]
+
+    :return: dict formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}, Pandas Dataframe will include all event types and all columns
+    :rtype: Dict[str, Pandas.DataFrame], Pandas Dataframe
+
+    :note:
         This function incorporates several smaller functions.
         For more specific information, please see help for individual functions:
 
@@ -369,7 +519,9 @@ def process_log(
         merge_event_types() \n
     """
     # Initial parsing
-    pre_df = log_pre_process(file, template_dictionary)
+    pre_df = log_pre_process(
+        file, template_dictionary, match, eliminate, match_type, eliminate_type
+    )
 
     # Process each event type
     dict_of_dfs = process_event_types(

@@ -2,7 +2,6 @@ from template_log_parser.column_functions import (
     calc_data_usage,
     isolate_ip_from_parentheses,
 )
-# Base templates for Synology log analysis
 
 # Tasks
 backup_task = "{time} {server_name} {package_name} {system_user}:#011[{type}][{task_name}] {message}"
@@ -18,6 +17,7 @@ back_online = "{time} {server_name} System {system_user}:#011Server back online.
 countdown = "{time} {server_name} System {system_user}:#011System started counting down to {state}."
 download_task = "{time} {server_name} System {system_user}:#011Download task for [{task}] {result}."
 link_state = "{time} {server_name} System {system_user}:#011[{interface}] link {state}."
+failed_video_conversion = "{time} {server_name} System {system_user}:#011System failed to convert video [{video}] to {format}."
 on_battery = "{time} {server_name} System {system_user}:#011Server is on battery."
 package_change = "{time} {server_name} System {system_user}:#011Package [{package}] has been successfully {state}."
 process_start_or_stop = "{time} {server_name} System: System successfully {result} [{process}]."
@@ -25,8 +25,10 @@ scrubbing = "{time} {server_name} System {system_user}:#011System {state} {type}
 service_started_or_stopped = "{time} {server_name} System {system_user}:#011[{service}] service was {state}."
 restarted_service = "{time} {server_name} System {system_user}:#011System successfully restarted {service} service."
 shared_folder = "{time} {server_name} System {system_user}:#011{kind} shared folder [{shared_folder}] {message}"
+shared_folder_application = "{time} {server_name} System {system_user}:#011Shared folder [{shared_folder}] {message} [{application}]."
 setting_enabled = "{time} {server_name} System {system_user}:#011[{setting}] was enabled."
 update = "{time} {server_name} System {system_user}:#011Update was {result}."
+unknown_error = "{time} {server_name} System {system_user}:#011An unknown error occurred, {message}"
 
 # User Activity
 blocked = "{time} {server_name} System {user}:#011Host [{client_ip}] was blocked via [{service}]."
@@ -40,12 +42,13 @@ failed_sign_in = "{time} {server_name} Connection: User [{user}] from [{client_i
 folder_access = "{time} {server_name} Connection: User [{user}] from [{client_ip}] via [{method}] accessed shared folder [{folder}]."
 cleared_notifications = "{time} {server_name} System {system_user}:#011Cleared [{user}] all notifications successfully."
 new_user = "{time} {server_name} System {system_user}:#011User [{modified_user}] was created."
-deleted_user = '{time} {server_name} System {system_user}:#011System successfully deleted User [{modified_user}].'
-renamed_user = '{time} {server_name} System {system_ser}:#011User [{user}] was renamed to [{modified}].'
+deleted_user = "{time} {server_name} System {system_user}:#011System successfully deleted User [{modified_user}]."
+renamed_user = "{time} {server_name} System {system_ser}:#011User [{user}] was renamed to [{modified}]."
 user_app_privilege = "{time} {server_name} System {system_user}:#011The app privilege on app [{app}] for user [{user}] {message}"
 user_group = "{time} {server_name} System {system_user}:#011User [{user}] was {action} the group [{group}]."
 win_file_service_event = "{time} {server_name} WinFileService Event: {event}, Path: {path}, File/Folder: {file_or_folder}, Size: {size}, User: {user}, IP: {client_ip}"
 configuration_export = "{time} {server_name} System {system_user}:#011System successfully exported configurations."
+report_profile = "{time} {server_name} System {system_user}:#011{action} report profile named [{profile_name}]"
 
 
 tasks_dict = {
@@ -62,6 +65,7 @@ general_system_dict = {
     "back online": [back_online, 3, "back_online"],
     "counting down": [countdown, 4, "countdown"],
     "Download task": [download_task, 5, "download_task"],
+    "failed to convert video": [failed_video_conversion, 5, "failed_video_conversion"],
     "link": [link_state, 5, "link_state"],
     "Package": [package_change, 5, "package_change"],
     "scrubbing": [scrubbing, 6, "scrubbing"],
@@ -71,7 +75,9 @@ general_system_dict = {
     "on battery": [on_battery, 3, "on_battery"],
     "Update": [update, 4, "update"],
     "shared folder": [shared_folder, 6, "shared_folder"],
+    "Shared folder": [shared_folder_application, 6, "shared_folder_application"],
     "was enabled": [setting_enabled, 4, "setting_enabled"],
+    "unknown error": [unknown_error, 4, "unknown_error"],
 }
 
 user_activity_dict = {
@@ -86,12 +92,13 @@ user_activity_dict = {
     "logged out the server": [logout, 7, "logout"],
     "signed in to": [sign_in, 6, "sign_in"],
     "was created": [new_user, 4, "new_user"],
-    'deleted': [deleted_user, 4, 'deleted_user'],
-    'renamed': [renamed_user, 5, 'renamed_user'],
+    "deleted": [deleted_user, 4, "deleted_user"],
+    "renamed": [renamed_user, 5, "renamed_user"],
     "app privilege": [user_app_privilege, 6, "user_app_privilege"],
     "group": [user_group, 6, "user_group"],
     "WinFileService Event": [win_file_service_event, 8, "win_file_service_event"],
-    'exported configurations': [configuration_export, 3, 'configuration_export'],
+    "exported configurations": [configuration_export, 3, "configuration_export"],
+    "report profile": [report_profile, 5, "report_profile"],
 }
 
 synology_template_dict = {**tasks_dict, **general_system_dict, **user_activity_dict}

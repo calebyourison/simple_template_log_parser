@@ -133,7 +133,7 @@ def isolate_ip_from_parentheses(ip_string: str) -> str:
     return ip_string
 
 
-def split_by_delimiter(string_data:str, delimiter: str = ',') -> list[str]:
+def split_by_delimiter(string_data: str, delimiter: str = ",") -> list[str]:
     """Split data by delimiter and return list of values
 
     :param string_data: String to split
@@ -142,7 +142,7 @@ def split_by_delimiter(string_data:str, delimiter: str = ',') -> list[str]:
     :type delimiter: str
 
     :return: List of strings
-    :rtype: list
+    :rtype: list[str]
     """
     list_of_split_values = string_data.split(delimiter)
 

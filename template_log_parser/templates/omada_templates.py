@@ -285,8 +285,6 @@ omada_column_process_dict = {
 omada_merge_events_dict = {
     "client_activity": [value[2] for value in client_activity_dict.values()],
     "logins": [value[2] for value in logins_dict.values()],
-    "network_device_activity": [
-        value[2] for value in network_devices_activity_dict.values()
-    ],
+    "network_device_activity": [value[2] for value in network_devices_activity_dict.values()],
     "system": [value[2] for value in system_dict.values()],
 }

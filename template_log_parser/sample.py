@@ -6,12 +6,15 @@ log_file_path = "template_log_parser.sample_log_files"
 
 debian_sample_log = files(log_file_path).joinpath("debian_sample_log.log")
 
+kodi_sample_log = files(log_file_path).joinpath("kodi_sample_log.log")
+kodi_unlinked_lines = files(log_file_path).joinpath("kodi_unlinked_lines.log")
+
 omada_sample_log = files(log_file_path).joinpath("omada_sample_log.log")
 
 omv_sample_log = files(log_file_path).joinpath("omv_sample_log.log")
 omv_debian_sample_log = files(log_file_path).joinpath("omv_debian_sample_log.log")
 
-pfsense_sample_log = files(log_file_path).joinpath('pfsense_sample_log.log')
+pfsense_sample_log = files(log_file_path).joinpath("pfsense_sample_log.log")
 
 pihole_sample_log = files(log_file_path).joinpath("pihole_sample_log.log")
 pihole_debian_sample_log = files(log_file_path).joinpath("pihole_debian_sample_log.log")

@@ -2,7 +2,7 @@
 ---
 `template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` perform the heavy lifting. Full credit to those well-designed projects.
 
-This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM) or build your own workflow. 
+This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM) or build your own workflow. 
 
 #### Getting Started
 ---
@@ -122,16 +122,21 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 - (OPTIONAL ARGUMENT) `localize_time_columns` takes a list of columns whose timezone should be eliminated (column must also be included in the `datetime_columns` argument).
 ---
 #### Built-Ins
-This project includes log process functions for Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
-As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.   Submissions for improvement are welcome.
+This project includes log process functions for Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
+As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.
+
+Submissions for improvement are welcome.
 
 Notes: 
 
 - PFSense templates match (RFC 5424, with RFC 3339 microsecond precision time stamps)
-- Synology templates match (BSD, RFCF 3164)
+- Synology templates match (BSD, RFC 3164)
+- PiHole templates assume tags 'pihole' and 'piFTL' for their respective input files in syslog
 
 ```bash
 from template_log_parser.built_ins import built_in_process_log
+
+my_kodi_log_dict = built_in_process_log(built_in='kodi', file='my_omada_file.log')
 
 my_omada_log_dict = built_in_process_log(built_in='omada', file='my_omada_file.log')
 
@@ -144,12 +149,15 @@ my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log
 my_synology_log_dict = built_in_process_log(built_in='synology', file='my_synology_log.log')
 ```
 
-As both PiHole and Open Media Vault can run on Debian, their templates are combined with a Debian template dictionary.  This can be used separately if desired.  However, at the moment it serves as only a cursory classification mechanism for some basic events since PiHole and Open Media Vault are the focus.  
+As both PiHole and Open Media Vault can run on Debian, their templates are combined with a Debian template dictionary.  
+This can be used separately if desired. 
+At present, the template dictionary for Debian events is very spartan; it serves as only a cursory classification mechanism. 
+
 ```bash
 my_debian_log_dict = built_in_process_log(built_in='debian', file='my_debian_log.log')
 ```
 
 ## DISCLAIMER
 
-**This project is in no way affiliated with the products mentioned (Omada, Open Media Vault, PFSense, PiHole, Synology, or Debian).
+**This project is in no way affiliated with the products mentioned (Debian, Kodi, Omada, Open Media Vault, PFSense, PiHole, or Synology).
 Any usage of their services is subject to their respective terms of use.**

@@ -36,6 +36,14 @@ template\_log\_parser.log\_type\_classes module
    :undoc-members:
    :show-inheritance:
 
+template\_log\_parser.pre\_df\_functions module
+-----------------------------------------------
+
+.. automodule:: template_log_parser.pre_df_functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

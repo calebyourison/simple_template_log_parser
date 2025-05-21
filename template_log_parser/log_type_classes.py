@@ -4,6 +4,7 @@ from typing import Callable
 
 from template_log_parser.sample import (
     debian_sample_log,
+    kodi_sample_log,
     omada_sample_log,
     omv_debian_sample_log,
     pfsense_sample_log,
@@ -13,6 +14,12 @@ from template_log_parser.sample import (
 
 from template_log_parser.templates.debian_templates import debian_template_dict
 
+from template_log_parser.templates.kodi_templates import (
+    kodi_template_dict,
+    kodi_column_process_dict,
+    kodi_merge_events_dict,
+)
+
 from template_log_parser.templates.omada_templates import (
     omada_template_dict,
     omada_column_process_dict,
@@ -21,7 +28,7 @@ from template_log_parser.templates.omada_templates import (
 
 from template_log_parser.templates.omv_templates import (
     omv_template_dict,
-    omv_merge_events_dict
+    omv_merge_events_dict,
 )
 
 from template_log_parser.templates.pfsense_templates import (
@@ -46,16 +53,22 @@ class BuiltInLogFileType:
 
     :param name: Simple name to reference the type
     :type name: str
+
     :param sample_log_file: File containing an example line to account for each template
     :type sample_log_file: str
+
     :param templates: Templates for the type should be equal in length to number of lines in the sample log file
     :type templates: dict
+
     :param column_functions: Formatted as {column: [function, [new_column(s)], kwargs], ...}
     :type column_functions: dict, None
+
     :param merge_events: Formatted as {'new_df_name', ['existing_df_1', 'existing_df_2', ...], ...}
     :type merge_events: dict, None
+
     :param datetime_columns: Columns to be converted using Pandas.to_datetime()
     :type datetime_columns: list, None
+
     :param localize_datetime_columns: Columns to drop timezone
     :type localize_datetime_columns: list, None
     """
@@ -64,8 +77,8 @@ class BuiltInLogFileType:
         self,
         name: str,
         sample_log_file: str,
-        templates: dict[str, list[str, int, str]],
-        column_functions: None | dict[str, list[Callable, str, list[str], dict[str, int]]],
+        templates: dict[str, list[str | int]],
+        column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]],
         merge_events: None | dict[str, list[str]],
         datetime_columns: None | list[str],
         localize_datetime_columns: None | list[str],
@@ -86,6 +99,16 @@ debian = BuiltInLogFileType(
     templates=debian_template_dict,
     column_functions=None,
     merge_events=None,
+    datetime_columns=["time"],
+    localize_datetime_columns=None,
+)
+
+kodi = BuiltInLogFileType(
+    name="kodi",
+    sample_log_file=kodi_sample_log,
+    templates=kodi_template_dict,
+    column_functions=kodi_column_process_dict,
+    merge_events=kodi_merge_events_dict,
     datetime_columns=["time"],
     localize_datetime_columns=None,
 )
@@ -111,13 +134,13 @@ omv = BuiltInLogFileType(
 )
 
 pfsense = BuiltInLogFileType(
-    name='pfsense',
+    name="pfsense",
     sample_log_file=pfsense_sample_log,
     templates=pfsense_template_dict,
     column_functions=pfsense_column_process_dict,
     merge_events=pfsense_merge_events_dict,
     datetime_columns=["time"],
-    localize_datetime_columns=None
+    localize_datetime_columns=None,
 )
 
 pihole = BuiltInLogFileType(
@@ -140,4 +163,6 @@ synology = BuiltInLogFileType(
     localize_datetime_columns=None,
 )
 
-built_in_log_file_types = [debian, omada, omv, pfsense, pihole, synology]
+built_in_log_file_types = [debian, kodi, omada, omv, pfsense, pihole, synology]
+
+dict_built_in_log_file_types = {built_in.name: built_in for built_in in built_in_log_file_types}
