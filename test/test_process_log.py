@@ -7,7 +7,6 @@ from template_log_parser.log_functions import (
     process_log,
     event_type_column,
     event_data_column,
-    parsed_info_column,
 )
 from template_log_parser.log_type_classes import built_in_log_file_types
 
@@ -89,7 +88,7 @@ class TestProcessLog(unittest.TestCase):
                 )
 
                 expected_keys = sorted(
-                    list(set([value[2] for value in built_in.templates.values()]))
+                    list(set([value[-1] for value in built_in.templates.values()]))
                 )
                 print(
                     f"Base keys in template dictionary ({len(expected_keys)}): {expected_keys}"
@@ -129,7 +128,7 @@ class TestProcessLog(unittest.TestCase):
                 # to return {'event_type': [column1, column2,...], ...}
                 # Every event_type now has a list of columns associated with it, adding 'event_type' at the end of list
                 expected_columns_by_template = {
-                    value[2]: list(parse(value[0], value[0]).named.keys())
+                    value[-1]: list(parse(value[0], value[0]).named.keys())
                     + [event_type_column]
                     for value in built_in.templates.values()
                 }
@@ -143,7 +142,7 @@ class TestProcessLog(unittest.TestCase):
                     expected_columns = []
                     columns_to_add = []
                     columns_to_drop = []
-                    standard_drop_columns = [event_data_column, parsed_info_column]
+                    standard_drop_columns = [event_data_column]
 
                     if merges is None:
                         print("No merge Events")
@@ -291,7 +290,7 @@ class TestProcessLog(unittest.TestCase):
                     )
                 )
 
-                standard_drop_columns = [event_data_column, parsed_info_column]
+                standard_drop_columns = [event_data_column]
                 columns_to_add = []
                 columns_to_delete = []
 

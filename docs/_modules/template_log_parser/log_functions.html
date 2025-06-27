@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>template_log_parser.log_functions &mdash; template-log-parser 0.6 documentation</title>
+  <title>template_log_parser.log_functions &mdash; template-log-parser 0.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=ec806d2c"></script>
+      <script src="../../_static/documentation_options.js?v=48f8e935"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -74,7 +74,8 @@
 <span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">Parser</span>
 <span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">parse_compile</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">TextIOBase</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="c1"># set display options</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
@@ -83,7 +84,6 @@
 
 <span class="n">event_data_column</span> <span class="o">=</span> <span class="s2">&quot;event_data&quot;</span>
 <span class="n">event_type_column</span> <span class="o">=</span> <span class="s2">&quot;event_type&quot;</span>
-<span class="n">parsed_info_column</span> <span class="o">=</span> <span class="s2">&quot;parsed_info&quot;</span>
 
 <span class="n">other_type_column</span> <span class="o">=</span> <span class="s2">&quot;Other&quot;</span>
 <span class="n">unparsed_text_column</span> <span class="o">=</span> <span class="s2">&quot;Unparsed_text&quot;</span>
@@ -163,15 +163,15 @@
 <div class="viewcode-block" id="parse_function">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.parse_function">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_function</span><span class="p">(</span>
-    <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span>
+    <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.</span>
 
 <span class="sd">    :param event: String data, should ideally match a repeated format throughout a text file</span>
 <span class="sd">    :type event: str</span>
 
-<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}</span>
-<span class="sd">    :type template_dictionary: dict[str, list[Parser, int, str]]</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: Dict[str, List[Union[Parser, str]]]</span>
 
 <span class="sd">    :return: Tuple containing:</span>
 <span class="sd">        - event_type</span>
@@ -184,55 +184,49 @@
 
 <span class="sd">        &gt;&gt;&gt; event_string = &#39;2024-09-12 main_server connected to 10.10.10.102&#39;</span>
 <span class="sd">        &gt;&gt;&gt; template = &#39;{date} {client_name} connected to {host_ip_address}&#39;</span>
-<span class="sd">        &gt;&gt;&gt; templates = {&#39;connected to&#39;: [template, 3, &#39;host_connection_event&#39;]}</span>
+<span class="sd">        &gt;&gt;&gt; templates = {&#39;connected to&#39;: [template, &#39;host_connection_event&#39;]}</span>
 <span class="sd">        &gt;&gt;&gt; parse_function(event_string, templates)</span>
 <span class="sd">        (&#39;host_connection_event&#39;, {&#39;date&#39;: &#39;2024-09-12&#39;, &#39;client_name&#39;: &#39;main_server&#39;, &#39;host_ip_address&#39;: &#39;10.10.10.102&#39;})</span>
 
 <span class="sd">    :note:</span>
 <span class="sd">        If event string does not match a provided template, it will return (&#39;Other&#39;, {&#39;Unparsed_text&#39;: event})</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">search_string</span><span class="p">,</span> <span class="p">(</span><span class="n">compiled_template</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="ow">in</span> <span class="n">template_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">search_string</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
+            <span class="k">continue</span>
 
-    <span class="n">valid_template</span> <span class="o">=</span> <span class="n">other_type_column</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">unparsed_text_column</span><span class="p">:</span> <span class="n">event</span><span class="p">}</span>
+        <span class="c1"># Compile the template if not already compiled</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compiled_template</span><span class="p">,</span> <span class="n">Parser</span><span class="p">):</span>
+            <span class="n">compiled_template</span> <span class="o">=</span> <span class="n">parse_compile</span><span class="p">(</span><span class="n">compiled_template</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">search_string</span><span class="p">,</span> <span class="p">(</span>
-        <span class="n">compiled_template</span><span class="p">,</span>
-        <span class="n">expected_fields</span><span class="p">,</span>
-        <span class="n">event_type</span><span class="p">,</span>
-    <span class="p">)</span> <span class="ow">in</span> <span class="n">template_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="c1"># Verify search string present</span>
-        <span class="k">if</span> <span class="n">search_string</span> <span class="ow">in</span> <span class="n">event</span><span class="p">:</span>
-            <span class="c1"># Verify compiled template was supplied, compile if needed</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compiled_template</span><span class="p">,</span> <span class="n">Parser</span><span class="p">):</span>
-                <span class="n">compiled_template</span> <span class="o">=</span> <span class="n">parse_compile</span><span class="p">(</span><span class="n">compiled_template</span><span class="p">)</span>
-            <span class="n">parsed_result</span> <span class="o">=</span> <span class="n">compiled_template</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-            <span class="c1"># Verify result and correct number of expected values</span>
-            <span class="k">if</span> <span class="n">parsed_result</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_fields</span><span class="p">:</span>
-                <span class="n">valid_template</span> <span class="o">=</span> <span class="n">event_type</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span>
-                <span class="k">break</span>
+        <span class="n">parsed_result</span> <span class="o">=</span> <span class="n">compiled_template</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">valid_template</span><span class="p">,</span> <span class="n">result</span></div>
+        <span class="k">if</span> <span class="n">parsed_result</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">compiled_template</span><span class="o">.</span><span class="n">named_fields</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">parsed_result</span><span class="o">.</span><span class="n">named</span>
+
+    <span class="k">return</span> <span class="n">other_type_column</span><span class="p">,</span> <span class="p">{</span><span class="n">unparsed_text_column</span><span class="p">:</span> <span class="n">event</span><span class="p">}</span></div>
+
 
 
 
 <div class="viewcode-block" id="log_pre_process">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.log_pre_process">[docs]</a>
 <span class="k">def</span> <span class="nf">log_pre_process</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span><span class="p">,</span>
-    <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
-    <span class="n">match</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">eliminate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">match_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
-    <span class="n">eliminate_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text</span>
+        <span class="n">file</span><span class="p">:</span><span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span> <span class="o">|</span> <span class="n">StringIO</span> <span class="o">|</span> <span class="n">TextIOBase</span><span class="p">,</span>
+        <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+        <span class="n">match</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">eliminate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">match_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">eliminate_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a Pandas DataFrame with named columns as specified by template_dictionary</span>
 
 <span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
-<span class="sd">    :type file: str, BytesIO</span>
+<span class="sd">    :type file: str, Path, BytesIO, StringIO, TextIOBase</span>
 
-<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}</span>
-<span class="sd">    :type template_dictionary: dict[str, list[Parser, int, str]]</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: Dict[str, List[Union[Parser, str]]]</span>
 
 <span class="sd">    :param match: (optional) A single word or list of words must be present within the line otherwise dropped.</span>
 <span class="sd">    :type match: str, list[str], None</span>
@@ -246,31 +240,49 @@
 <span class="sd">    :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words</span>
 <span class="sd">    :type eliminate_type: Literal[&quot;any&quot;, &quot;all&quot;]</span>
 
-<span class="sd">    :return: DataFrame with columns &#39;event_data&#39;, &#39;event_type&#39;, &#39;parsed_info&#39;</span>
+<span class="sd">    :return: DataFrame with columns found in matching templates</span>
 <span class="sd">    :rtype: Pandas.DataFrame</span>
 
+<span class="sd">    :raise ValueError: If wrong file type is provided</span>
 
 <span class="sd">    :note:</span>
-<span class="sd">        event_data is the raw text from within the log file</span>
-
-<span class="sd">        event_type is defined from the template dictionary that matched a line of text</span>
-
-<span class="sd">        parsed_info is a dictionary within the column that contains key/value pairs based on the matching template</span>
-
-<span class="sd">        See parse_function() for specific information on templates</span>
-
-<span class="sd">        match and eliminate parameters filter the log file prior to parsing</span>
-
 <span class="sd">        eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Read log file</span>
-    <span class="n">pre_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span>
-        <span class="n">file</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="n">event_data_column</span><span class="p">],</span> <span class="n">on_bad_lines</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span>
-    <span class="p">)</span>
 
-    <span class="c1"># Match and/or eliminate rows</span>
-    <span class="n">pre_df</span> <span class="o">=</span> <span class="n">_pre_filter_log_file</span><span class="p">(</span>
-        <span class="n">pre_df</span><span class="p">,</span>
+    <span class="c1"># Compile template_dictionary</span>
+    <span class="n">template_dictionary</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">parse_compile</span><span class="p">(</span><span class="n">template_str</span><span class="p">),</span> <span class="n">event_type</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="p">(</span>
+            <span class="n">template_str</span><span class="p">,</span>
+            <span class="n">event_type</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">in</span> <span class="n">template_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_lines_from_file</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">TextIOBase</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_obj</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">file_obj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">BytesIO</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">StringIO</span><span class="p">,</span> <span class="n">TextIOBase</span><span class="p">)):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported file type. Must be str, Path, BytesIO, StringIO, or TextIOBase.&quot;</span><span class="p">)</span>
+
+    <span class="n">parsed_results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_lines_from_file</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">event_type</span><span class="p">,</span> <span class="n">parsed_data</span> <span class="o">=</span> <span class="n">parse_function</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">)</span>
+        <span class="n">parsed_data</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_type</span>
+        <span class="n">parsed_data</span><span class="p">[</span><span class="n">event_data_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="n">parsed_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parsed_data</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span>  <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">parsed_results</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">_pre_filter_log_file</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span>
         <span class="n">column</span><span class="o">=</span><span class="n">event_data_column</span><span class="p">,</span>
         <span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span>
         <span class="n">eliminate</span><span class="o">=</span><span class="n">eliminate</span><span class="p">,</span>
@@ -278,24 +290,7 @@
         <span class="n">eliminate_type</span><span class="o">=</span><span class="n">eliminate_type</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># Compile template_dictionary</span>
-    <span class="n">template_dictionary</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">parse_compile</span><span class="p">(</span><span class="n">template_str</span><span class="p">),</span> <span class="n">expected_count</span><span class="p">,</span> <span class="n">event_type</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="p">(</span>
-            <span class="n">template_str</span><span class="p">,</span>
-            <span class="n">expected_count</span><span class="p">,</span>
-            <span class="n">event_type</span><span class="p">,</span>
-        <span class="p">)</span> <span class="ow">in</span> <span class="n">template_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-    <span class="p">}</span>
-
-    <span class="c1"># Parse event data, create event_type column to streamline the next process</span>
-    <span class="n">pre_df</span><span class="p">[[</span><span class="n">event_type_column</span><span class="p">,</span> <span class="n">parsed_info_column</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pre_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">parse_function</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">event_data_column</span><span class="p">],</span> <span class="n">template_dictionary</span><span class="p">),</span>
-        <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">,</span>
-        <span class="n">result_type</span><span class="o">=</span><span class="s2">&quot;expand&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">pre_df</span></div>
+    <span class="k">return</span> <span class="n">df</span></div>
 
 
 
@@ -453,27 +448,19 @@
 <span class="sd">    :param localize_timezone_columns: (optional) Columns to drop timezone</span>
 <span class="sd">    :type localize_timezone_columns: List[str]</span>
 
-<span class="sd">    :param drop_columns: (optional) If True, &#39;parsed_info&#39;, &#39;event_data&#39; will be dropped along with columns processed by additional_column_functions, True by default</span>
+<span class="sd">    :param drop_columns: (optional) If True, &#39;event_data&#39; will be dropped along with columns processed by additional_column_functions, True by default</span>
 <span class="sd">    :type drop_columns: bool</span>
 
 <span class="sd">    :return: DataFrame Dictionary formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...}</span>
 <span class="sd">    :rtype: dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">final_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="c1"># For every unique event_type, create a copy df</span>
+    <span class="c1"># For every unique event_type, create a copy df, remove empty columns for that event type</span>
     <span class="k">for</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">():</span>
-        <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="c1"># Parsed info column has dictionary of columns: data, json_normalize will create new column for each key</span>
-        <span class="n">df_explode_events</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span><span class="n">temp_df</span><span class="p">[</span><span class="n">parsed_info_column</span><span class="p">])</span>
-        <span class="c1"># Create new df by concatenating the expanded values onto the original df</span>
-        <span class="n">event_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">temp_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">df_explode_events</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">event_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">event_type_column</span><span class="p">]</span> <span class="o">==</span> <span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="c1"># Default Columns to be dropped</span>
-        <span class="n">columns_to_drop</span> <span class="o">=</span> <span class="p">[</span><span class="n">parsed_info_column</span><span class="p">,</span> <span class="n">event_data_column</span><span class="p">]</span>
+        <span class="n">columns_to_drop</span> <span class="o">=</span> <span class="p">[</span><span class="n">event_data_column</span><span class="p">]</span>
 
         <span class="c1"># Process columns</span>
         <span class="n">event_df</span><span class="p">,</span> <span class="n">additional_drop_columns</span> <span class="o">=</span> <span class="n">run_functions_on_columns</span><span class="p">(</span>
@@ -484,7 +471,7 @@
         <span class="p">)</span>
         <span class="n">columns_to_drop</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_drop_columns</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">drop_columns</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">drop_columns</span><span class="p">:</span>
             <span class="n">event_df</span> <span class="o">=</span> <span class="n">event_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns_to_drop</span><span class="p">)</span>
         <span class="c1"># Add the df to the final dict with a key of its event type</span>
         <span class="n">final_dict</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_df</span>
@@ -516,9 +503,7 @@
 
 <span class="sd">        This function performs that concatenation and deletes the old DataFrames.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Merge_dictionary format {&#39;new_df_name&#39;: [&#39;existing_df_1&#39;, &#39;existing_df2&#39;, ...]}</span>
 
-    <span class="c1"># Using new df_name, and a list of existing dfs</span>
     <span class="k">for</span> <span class="n">new_df_name</span><span class="p">,</span> <span class="n">list_of_existing_dfs</span> <span class="ow">in</span> <span class="n">merge_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># Empty list to be filled with dfs that will be merged under a new key name</span>
         <span class="n">list_of_dfs_to_concatenate</span> <span class="o">=</span> <span class="p">[]</span>
@@ -541,8 +526,8 @@
 <div class="viewcode-block" id="process_log">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_functions.process_log">[docs]</a>
 <span class="k">def</span> <span class="nf">process_log</span><span class="p">(</span>
-    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span><span class="p">,</span>
-    <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span> <span class="o">|</span> <span class="n">StringIO</span> <span class="o">|</span> <span class="n">TextIOBase</span><span class="p">,</span>
+    <span class="n">template_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
     <span class="n">additional_column_functions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">merge_dictionary</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">datetime_columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -558,10 +543,10 @@
 <span class="sd">    utilizing templates.</span>
 
 <span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
-<span class="sd">    :type file: str, BytesIO</span>
+<span class="sd">    :type file: str, Path, BytesIO, StringIO, TextIOBase</span>
 
-<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}</span>
-<span class="sd">    :type template_dictionary: dict[str, list[Parser, int, str]]</span>
+<span class="sd">    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}</span>
+<span class="sd">    :type template_dictionary: Dict[str, List[Union[Parser, str]]]</span>
 
 <span class="sd">    :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}</span>
 <span class="sd">    :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]</span>
@@ -608,7 +593,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Initial parsing</span>
     <span class="n">pre_df</span> <span class="o">=</span> <span class="n">log_pre_process</span><span class="p">(</span>
-        <span class="n">file</span><span class="p">,</span> <span class="n">template_dictionary</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">eliminate</span><span class="p">,</span> <span class="n">match_type</span><span class="p">,</span> <span class="n">eliminate_type</span>
+        <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+        <span class="n">template_dictionary</span><span class="o">=</span><span class="n">template_dictionary</span><span class="p">,</span>
+        <span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span>
+        <span class="n">eliminate</span><span class="o">=</span><span class="n">eliminate</span><span class="p">,</span>
+        <span class="n">match_type</span><span class="o">=</span><span class="n">match_type</span><span class="p">,</span>
+        <span class="n">eliminate_type</span><span class="o">=</span><span class="n">eliminate_type</span>
     <span class="p">)</span>
 
     <span class="c1"># Process each event type</span>
@@ -621,11 +611,14 @@
     <span class="p">)</span>
 
     <span class="c1"># Merge event DataFrames for consolidation, if specified</span>
-    <span class="k">if</span> <span class="n">merge_dictionary</span><span class="p">:</span>
-        <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">merge_event_type_dfs</span><span class="p">(</span><span class="n">dict_of_dfs</span><span class="p">,</span> <span class="n">merge_dictionary</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">merge_dictionary</span> <span class="ow">and</span> <span class="n">dict_format</span><span class="p">:</span>
+        <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">merge_event_type_dfs</span><span class="p">(</span>
+            <span class="n">df_dictionary</span><span class="o">=</span><span class="n">dict_of_dfs</span><span class="p">,</span>
+            <span class="n">merge_dictionary</span><span class="o">=</span><span class="n">merge_dictionary</span>
+        <span class="p">)</span>
 
     <span class="c1"># If dictionary format is False, all dataframes will be concatenated into one, with many NaN columns</span>
-    <span class="k">if</span> <span class="n">dict_format</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dict_format</span><span class="p">:</span>
         <span class="n">dict_of_dfs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">dict_of_dfs</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
 
     <span class="k">return</span> <span class="n">dict_of_dfs</span></div>

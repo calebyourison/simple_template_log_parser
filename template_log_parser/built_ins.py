@@ -1,5 +1,5 @@
 import pandas as pd
-from io import BytesIO
+from io import BytesIO, StringIO, TextIOBase
 from typing import Literal, List
 
 from template_log_parser.log_functions import process_log
@@ -11,8 +11,8 @@ from template_log_parser.templates.kodi_templates import kodi_line_linking_argum
 
 
 def built_in_process_log(
-    built_in: Literal["debian", "kodi", "omada", "omv", "pfsense", "pihole", "synology"],
-    file: str | BytesIO,
+    built_in: Literal["debian", "kodi", "omada", "omv", "pfsense", "pihole", "synology", "ubuntu"],
+    file: str | BytesIO | StringIO | TextIOBase,
     dict_format: bool = True,
     match: str | List[str] | None = None,
     eliminate: str | List[str] | None = None,
@@ -23,10 +23,10 @@ def built_in_process_log(
     utilizing predefined templates.  This function is tailored to Built-In log file types using Built-In templates.
 
     :param built_in: built in log file type
-    :type built_in: Literal["debian", "kodi", "omada", "omv", "pfsense", "pihole", "synology"]
+    :type built_in: Literal["debian", "kodi", "omada", "omv", "pfsense", "pihole", "synology", "ubuntu"]
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
-    :type file: str, BytesIO
+    :type file: str, Path, BytesIO, StringIO, TextIOBase
 
     :param dict_format: (optional) Return a dictionary of DataFrames when True, one large DataFrame when False, True by default
     :type dict_format: bool

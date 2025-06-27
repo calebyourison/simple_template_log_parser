@@ -6,6 +6,8 @@ from template_log_parser.column_functions import (
 # Tasks
 backup_task = "{time} {server_name} {package_name} {system_user}:#011[{type}][{task_name}] {message}"
 backup_version_rotation = "{time} {server_name} {package_name} {system_user}:#011[{task_name}] Trigger version rotation."
+backup_version_rotation_status = "{time} {server_name} {package_name}: {system_user}:#011[{task_name}] Version rotation {status} from ID [{id}]."
+backup_rotate_version = "{time} {server_name} {package_name}: {system_user}:#011[{task_name}] Rotate version [{version}] from ID [{id}]."
 scheduled_task_message = "{time} {server_name} System {system_user}:#011Scheduled Task [{task_name}] {message}"
 hyper_backup_task_message = "{time} {server_name} Hyper_Backup: {system_user}:#011Backup task [{task_name}] {message}"
 task_setting = "{time} {server_name} {package_name}: {system_user}:#011Setting of {message}"
@@ -15,9 +17,12 @@ credentials_changed = "{time} {server_name} {package_name} {system_user}:#011[{t
 auto_install = "{time} {server_name} System {system_user}:#011Start install [{package}] automatically."
 back_online = "{time} {server_name} System {system_user}:#011Server back online."
 countdown = "{time} {server_name} System {system_user}:#011System started counting down to {state}."
+dns_setting_changed = "{time} {server_name} System {system_user}:#011DNS server setting was changed."
 download_task = "{time} {server_name} System {system_user}:#011Download task for [{task}] {result}."
-link_state = "{time} {server_name} System {system_user}:#011[{interface}] link {state}."
 failed_video_conversion = "{time} {server_name} System {system_user}:#011System failed to convert video [{video}] to {format}."
+interface_set = "{time} {server_name} System {system_user}:#011[{interface}] was set to [{set_to}]."
+interface_changed = "{time} {server_name} System {system_user}:#011{attribute} of [{interface}] was changed from [{from}] to [{to}]."
+link_state = "{time} {server_name} System {system_user}:#011[{interface}] link {state}."
 on_battery = "{time} {server_name} System {system_user}:#011Server is on battery."
 package_change = "{time} {server_name} System {system_user}:#011Package [{package}] has been successfully {state}."
 process_start_or_stop = "{time} {server_name} System: System successfully {result} [{process}]."
@@ -52,53 +57,58 @@ report_profile = "{time} {server_name} System {system_user}:#011{action} report 
 
 
 tasks_dict = {
-    "Backup": [backup_task, 7, "backup_task"],
-    "version rotation": [backup_version_rotation, 5, "backup_version_rotation"],
-    "Backup task": [hyper_backup_task_message, 5, "task_message"],
-    "Scheduled Task": [scheduled_task_message, 5, "task_message"],
-    "Setting": [task_setting, 5, "task_setting"],
-    "Credentials changed": [credentials_changed, 5, "credentials_changed"],
+    "Backup": [backup_task, "backup_task"],
+    "Trigger version rotation": [backup_version_rotation, "backup_version_rotation_trigger"],
+    "Version rotation": [backup_version_rotation_status, 'backup_version_rotation_status'],
+    "Rotate version": [backup_rotate_version, 'backup_rotate_version'],
+    "Backup task": [hyper_backup_task_message, "task_message"],
+    "Scheduled Task": [scheduled_task_message, "task_message"],
+    "Setting": [task_setting, "task_setting"],
+    "Credentials changed": [credentials_changed, "credentials_changed"],
 }
 
 general_system_dict = {
-    "automatically": [auto_install, 4, "auto_install"],
-    "back online": [back_online, 3, "back_online"],
-    "counting down": [countdown, 4, "countdown"],
-    "Download task": [download_task, 5, "download_task"],
-    "failed to convert video": [failed_video_conversion, 5, "failed_video_conversion"],
-    "link": [link_state, 5, "link_state"],
-    "Package": [package_change, 5, "package_change"],
-    "scrubbing": [scrubbing, 6, "scrubbing"],
-    "System successfully": [process_start_or_stop, 4, "process_start_or_stop"],
-    "service was": [service_started_or_stopped, 5, "service_start_or_stop"],
-    "successfully restarted": [restarted_service, 4, "restarted_service"],
-    "on battery": [on_battery, 3, "on_battery"],
-    "Update": [update, 4, "update"],
-    "shared folder": [shared_folder, 6, "shared_folder"],
-    "Shared folder": [shared_folder_application, 6, "shared_folder_application"],
-    "was enabled": [setting_enabled, 4, "setting_enabled"],
-    "unknown error": [unknown_error, 4, "unknown_error"],
+    "automatically": [auto_install, "auto_install"],
+    "back online": [back_online, "back_online"],
+    "counting down": [countdown, "countdown"],
+    "Download task": [download_task, "download_task"],
+    "failed to convert video": [failed_video_conversion, "failed_video_conversion"],
+    "link": [link_state, "link_state"],
+    "Package": [package_change, "package_change"],
+    "scrubbing": [scrubbing, "scrubbing"],
+    "System successfully": [process_start_or_stop, "process_start_or_stop"],
+    "service was": [service_started_or_stopped, "service_start_or_stop"],
+    "successfully restarted": [restarted_service, "restarted_service"],
+    "on battery": [on_battery, "on_battery"],
+    "Update": [update, "update"],
+    "shared folder": [shared_folder, "shared_folder"],
+    "Shared folder": [shared_folder_application, "shared_folder_application"],
+    "was enabled": [setting_enabled, "setting_enabled"],
+    "unknown error": [unknown_error, "unknown_error"],
+    'DNS server setting was changed': [dns_setting_changed, 'dns_setting_changed'],
+    "was set to": [interface_set, 'interface_set'],
+    "was changed from": [interface_changed, 'interface_changed'],
 }
 
 user_activity_dict = {
-    "blocked": [blocked, 5, "host_blocked"],
-    "from Block List": [unblock, 4, "host_unblocked"],
-    "Cleared": [cleared_notifications, 4, "cleared_notifications"],
-    "failed to connect": [failed_host_connection, 5, "failed_host_connection"],
-    "failed to log in": [failed_login, 6, "failed_login"],
-    "failed to sign in": [failed_sign_in, 6, "failed_sign_in"],
-    "accessed shared folder": [folder_access, 6, "folder_access"],
-    "logged in successfully via": [login, 5, "login"],
-    "logged out the server": [logout, 7, "logout"],
-    "signed in to": [sign_in, 6, "sign_in"],
-    "was created": [new_user, 4, "new_user"],
-    "deleted": [deleted_user, 4, "deleted_user"],
-    "renamed": [renamed_user, 5, "renamed_user"],
-    "app privilege": [user_app_privilege, 6, "user_app_privilege"],
-    "group": [user_group, 6, "user_group"],
-    "WinFileService Event": [win_file_service_event, 8, "win_file_service_event"],
-    "exported configurations": [configuration_export, 3, "configuration_export"],
-    "report profile": [report_profile, 5, "report_profile"],
+    "blocked": [blocked, "host_blocked"],
+    "from Block List": [unblock, "host_unblocked"],
+    "Cleared": [cleared_notifications, "cleared_notifications"],
+    "failed to connect": [failed_host_connection, "failed_host_connection"],
+    "failed to log in": [failed_login, "failed_login"],
+    "failed to sign in": [failed_sign_in, "failed_sign_in"],
+    "accessed shared folder": [folder_access, "folder_access"],
+    "logged in successfully via": [login, "login"],
+    "logged out the server": [logout, "logout"],
+    "signed in to": [sign_in, "sign_in"],
+    "was created": [new_user, "new_user"],
+    "deleted": [deleted_user, "deleted_user"],
+    "renamed": [renamed_user, "renamed_user"],
+    "app privilege": [user_app_privilege, "user_app_privilege"],
+    "group": [user_group, "user_group"],
+    "WinFileService Event": [win_file_service_event, "win_file_service_event"],
+    "exported configurations": [configuration_export, "configuration_export"],
+    "report profile": [report_profile, "report_profile"],
 }
 
 synology_template_dict = {**tasks_dict, **general_system_dict, **user_activity_dict}
@@ -114,7 +124,7 @@ synology_column_process_dict = {
 
 # Merging events for consolidation
 synology_merge_events_dict = {
-    "tasks": [value[2] for value in tasks_dict.values()],
-    "general_system": [value[2] for value in general_system_dict.values()],
-    "user_activity": [value[2] for value in user_activity_dict.values()],
+    "tasks": [value[-1] for value in tasks_dict.values()],
+    "general_system": [value[-1] for value in general_system_dict.values()],
+    "user_activity": [value[-1] for value in user_activity_dict.values()],
 }

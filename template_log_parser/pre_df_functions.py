@@ -122,7 +122,7 @@ def link_log_file_lines(
 
     elif isinstance(logfile, BytesIO):
         logfile.seek(0)
-        decoded = logfile.read().decode("utf-8")
+        decoded = logfile.read().decode("utf-8-sig")
         lines = decoded.splitlines()
 
     elif isinstance(logfile, (StringIO, TextIOBase)):

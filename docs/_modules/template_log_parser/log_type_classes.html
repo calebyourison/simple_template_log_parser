@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>template_log_parser.log_type_classes &mdash; template-log-parser 0.6 documentation</title>
+  <title>template_log_parser.log_type_classes &mdash; template-log-parser 0.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=ec806d2c"></script>
+      <script src="../../_static/documentation_options.js?v=48f8e935"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -70,8 +70,9 @@
              
   <h1>Source code for template_log_parser.log_type_classes</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Defines classes for built-in log file types</span>
-<span class="c1"># This simplifies referencing built-ins for functions and testing</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">Parser</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">template_log_parser.sample</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">debian_sample_log</span><span class="p">,</span>
@@ -79,8 +80,9 @@
     <span class="n">omada_sample_log</span><span class="p">,</span>
     <span class="n">omv_debian_sample_log</span><span class="p">,</span>
     <span class="n">pfsense_sample_log</span><span class="p">,</span>
-    <span class="n">pihole_debian_sample_log</span><span class="p">,</span>
+    <span class="n">pihole_sample_log</span><span class="p">,</span>
     <span class="n">synology_sample_log</span><span class="p">,</span>
+    <span class="n">ubuntu_debian_sample_log</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">template_log_parser.templates.debian_templates</span> <span class="kn">import</span> <span class="n">debian_template_dict</span>
@@ -118,6 +120,12 @@
     <span class="n">synology_merge_events_dict</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">from</span> <span class="nn">template_log_parser.templates.ubuntu_templates</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ubuntu_template_dict</span><span class="p">,</span>
+    <span class="n">ubuntu_column_process_dict</span><span class="p">,</span>
+    <span class="n">ubuntu_merge_events_dict</span>
+<span class="p">)</span>
+
 
 <div class="viewcode-block" id="BuiltInLogFileType">
 <a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.log_type_classes.BuiltInLogFileType">[docs]</a>
@@ -150,7 +158,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">sample_log_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">templates</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">templates</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Parser</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
         <span class="n">column_functions</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Callable</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
         <span class="n">merge_events</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
         <span class="n">datetime_columns</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -219,11 +227,11 @@
 
 <span class="n">pihole</span> <span class="o">=</span> <span class="n">BuiltInLogFileType</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pihole&quot;</span><span class="p">,</span>
-    <span class="n">sample_log_file</span><span class="o">=</span><span class="n">pihole_debian_sample_log</span><span class="p">,</span>
+    <span class="n">sample_log_file</span><span class="o">=</span><span class="n">pihole_sample_log</span><span class="p">,</span>
     <span class="n">templates</span><span class="o">=</span><span class="n">pihole_template_dict</span><span class="p">,</span>
     <span class="n">column_functions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">merge_events</span><span class="o">=</span><span class="n">pihole_merge_events_dict</span><span class="p">,</span>
-    <span class="n">datetime_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -237,7 +245,26 @@
     <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">built_in_log_file_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">debian</span><span class="p">,</span> <span class="n">kodi</span><span class="p">,</span> <span class="n">omada</span><span class="p">,</span> <span class="n">omv</span><span class="p">,</span> <span class="n">pfsense</span><span class="p">,</span> <span class="n">pihole</span><span class="p">,</span> <span class="n">synology</span><span class="p">]</span>
+<span class="n">ubuntu</span> <span class="o">=</span> <span class="n">BuiltInLogFileType</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ubuntu&#39;</span><span class="p">,</span>
+    <span class="n">sample_log_file</span><span class="o">=</span><span class="n">ubuntu_debian_sample_log</span><span class="p">,</span>
+    <span class="n">templates</span><span class="o">=</span><span class="n">ubuntu_template_dict</span><span class="p">,</span>
+    <span class="n">column_functions</span><span class="o">=</span><span class="n">ubuntu_column_process_dict</span><span class="p">,</span>
+    <span class="n">merge_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">datetime_columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span>
+    <span class="n">localize_datetime_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">built_in_log_file_types</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">debian</span><span class="p">,</span>
+    <span class="n">kodi</span><span class="p">,</span>
+    <span class="n">omada</span><span class="p">,</span>
+    <span class="n">omv</span><span class="p">,</span>
+    <span class="n">pfsense</span><span class="p">,</span>
+    <span class="n">pihole</span><span class="p">,</span>
+    <span class="n">synology</span><span class="p">,</span>
+    <span class="n">ubuntu</span>
+<span class="p">]</span>
 
 <span class="n">dict_built_in_log_file_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">built_in</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">built_in</span> <span class="k">for</span> <span class="n">built_in</span> <span class="ow">in</span> <span class="n">built_in_log_file_types</span><span class="p">}</span>
 </pre></div>

@@ -39,3 +39,8 @@
 2025-03-11T14:40:05+01:00 server_x System admin:#011Create a report profile named [duplicates]
 2025-03-17T19:12:33+01:00 server_x System admin:#011Shared folder [music] was created when enabling [AudioStation].
 2025-04-13T07:06:50+01:00 server_x System SYSTEM:#011An unknown error occurred, so disk 3 was restarted. If you often see this message, please disable disk write cache.
+2025-06-08T16:06:53+01:00 server_x Hyper_Backup: SYSTEM:#011[task_beta] Version rotation started from ID [task_beta_folder.hbk].
+2025-06-08T16:08:20+01:00 server_x Hyper_Backup: SYSTEM:#011[task_beta] Rotate version [2024-11-21 13:39:22] from ID [task_beta_folder.hbk].
+2025-06-10T18:41:22+01:00 server_x System admin:#011DNS server setting was changed.
+2025-06-10T18:42:14+01:00 server_x System admin:#011[LAN 1] was set to [Manual IP].
+2025-06-10T18:42:21+01:00 server_x System admin:#011Subnet mask of [LAN 1] was changed from [255.255.255.0] to [ ].

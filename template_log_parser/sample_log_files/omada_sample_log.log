@@ -33,3 +33,6 @@
 2024-11-18T05:54:50.188270+01:00 controller_X  2024-11-18 05:54:49 Controller - - - {"details":{},"operation":"Selected logs deleted successfully in Global View."}
 2024-11-19T07:11:15.309320+01:00 controller_X  2024-11-19 07:11:13 Controller - - - [client:sbc_one:DC-D6-32-73-4e-a9]  went offline from SSID "fake_ssid" on [ap:first_AP:45-22-54-9F-EB-54] (16h36m connected, 122.81MB).
 2024-11-28T20:58:30.740504+01:00 controller_X  2024-11-28 20:57:52 Controller - - - [client:10-B7-C6-17-BD-0D:10-B7-C6-17-BD-0D] failed to connect to [ap:first_AP:45-22-54-9F-EB-54] with SSID "SSID 9" on channel 36 because the password was wrong.(1 time in the last minute)
+2025-06-09T16:09:15.649205+01:00 controller_X  2025-06-09 16:05:52 Controller - - - [ap:48-32-54-D0-E6-4D] got IP address 1.1.0.5/255.255.255.0.
+2025-06-12T20:52:19.896693+01:00 controller_X  2025-06-12 20:51:28 Controller - - - DHCP Server allocated IP address 1.1.1.2 for the [client:21-C1-D0-B7-3C-29].
+2025-06-13T14:13:28.956393+01:00 controller_X  2025-06-13 14:05:37 Controller - - - [gateway:54-AF-98-2D-07-90]: The physical connection status of [LAN4] was up.

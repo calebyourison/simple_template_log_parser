@@ -1,6 +1,7 @@
 # Defines classes for built-in log file types
-# This simplifies referencing built-ins for functions and testing
-from typing import Callable
+from parse import Parser
+
+from typing import Callable, Dict, List, Union
 
 from template_log_parser.sample import (
     debian_sample_log,
@@ -8,8 +9,9 @@ from template_log_parser.sample import (
     omada_sample_log,
     omv_debian_sample_log,
     pfsense_sample_log,
-    pihole_debian_sample_log,
+    pihole_sample_log,
     synology_sample_log,
+    ubuntu_debian_sample_log
 )
 
 from template_log_parser.templates.debian_templates import debian_template_dict
@@ -47,6 +49,12 @@ from template_log_parser.templates.synology_templates import (
     synology_merge_events_dict,
 )
 
+from template_log_parser.templates.ubuntu_templates import (
+    ubuntu_template_dict,
+    ubuntu_column_process_dict,
+    ubuntu_merge_events_dict
+)
+
 
 class BuiltInLogFileType:
     """Built In Log File Type as a class
@@ -77,7 +85,7 @@ class BuiltInLogFileType:
         self,
         name: str,
         sample_log_file: str,
-        templates: dict[str, list[str | int]],
+        templates: Dict[str, List[Union[Parser, str]]],
         column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]],
         merge_events: None | dict[str, list[str]],
         datetime_columns: None | list[str],
@@ -145,11 +153,11 @@ pfsense = BuiltInLogFileType(
 
 pihole = BuiltInLogFileType(
     name="pihole",
-    sample_log_file=pihole_debian_sample_log,
+    sample_log_file=pihole_sample_log,
     templates=pihole_template_dict,
     column_functions=None,
     merge_events=pihole_merge_events_dict,
-    datetime_columns=["time"],
+    datetime_columns=None,
     localize_datetime_columns=None,
 )
 
@@ -163,6 +171,25 @@ synology = BuiltInLogFileType(
     localize_datetime_columns=None,
 )
 
-built_in_log_file_types = [debian, kodi, omada, omv, pfsense, pihole, synology]
+ubuntu = BuiltInLogFileType(
+    name='ubuntu',
+    sample_log_file=ubuntu_debian_sample_log,
+    templates=ubuntu_template_dict,
+    column_functions=ubuntu_column_process_dict,
+    merge_events=None,
+    datetime_columns=["time"],
+    localize_datetime_columns=None,
+)
+
+built_in_log_file_types = [
+    debian,
+    kodi,
+    omada,
+    omv,
+    pfsense,
+    pihole,
+    synology,
+    ubuntu
+]
 
 dict_built_in_log_file_types = {built_in.name: built_in for built_in in built_in_log_file_types}

@@ -3,7 +3,8 @@ import numpy as np
 from parse import Parser
 from parse import compile as parse_compile
 from typing import Callable, Literal, Dict, List, Union, Optional, Any, Tuple
-from io import BytesIO
+from io import BytesIO, StringIO, TextIOBase
+from pathlib import Path
 
 # set display options
 pd.options.display.max_columns = 40
@@ -12,7 +13,6 @@ pd.set_option("max_colwidth", 400)
 
 event_data_column = "event_data"
 event_type_column = "event_type"
-parsed_info_column = "parsed_info"
 
 other_type_column = "Other"
 unparsed_text_column = "Unparsed_text"
@@ -90,15 +90,15 @@ def _pre_filter_log_file(
 
 
 def parse_function(
-    event: str, template_dictionary: Dict[str, List[Union[Parser, int, str]]]
+    event: str, template_dictionary: Dict[str, List[Union[Parser, str]]]
 ) -> tuple[str, dict[str, str]]:
     """Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.
 
     :param event: String data, should ideally match a repeated format throughout a text file
     :type event: str
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict[str, list[Parser, int, str]]
+    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
+    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
 
     :return: Tuple containing:
         - event_type
@@ -111,52 +111,46 @@ def parse_function(
 
         >>> event_string = '2024-09-12 main_server connected to 10.10.10.102'
         >>> template = '{date} {client_name} connected to {host_ip_address}'
-        >>> templates = {'connected to': [template, 3, 'host_connection_event']}
+        >>> templates = {'connected to': [template, 'host_connection_event']}
         >>> parse_function(event_string, templates)
         ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
 
     :note:
         If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
     """
+    for search_string, (compiled_template, event_type) in template_dictionary.items():
+        if search_string not in event:
+            continue
 
-    valid_template = other_type_column
-    result = {unparsed_text_column: event}
+        # Compile the template if not already compiled
+        if not isinstance(compiled_template, Parser):
+            compiled_template = parse_compile(compiled_template)
 
-    for search_string, (
-        compiled_template,
-        expected_fields,
-        event_type,
-    ) in template_dictionary.items():
-        # Verify search string present
-        if search_string in event:
-            # Verify compiled template was supplied, compile if needed
-            if not isinstance(compiled_template, Parser):
-                compiled_template = parse_compile(compiled_template)
-            parsed_result = compiled_template.parse(event)
-            # Verify result and correct number of expected values
-            if parsed_result and len(parsed_result.named) == expected_fields:
-                valid_template = event_type
-                result = parsed_result.named
-                break
+        parsed_result = compiled_template.parse(event)
 
-    return valid_template, result
+        if parsed_result and len(parsed_result.named) == len(compiled_template.named_fields):
+            return event_type, parsed_result.named
+
+    return other_type_column, {unparsed_text_column: event}
+
 
 
 def log_pre_process(
-    file: str | BytesIO,
-    template_dictionary: Dict[str, List[Union[Parser, int, str]]],
-    match: str | list[str] | None = None,
-    eliminate: str | list[str] | None = None,
-    match_type: Literal["any", "all"] = "any",
-    eliminate_type: Literal["any", "all"] = "any",
-) -> pd.DataFrame:
-    """Return a Pandas DataFrame from a log file with event_data, event_type, and parsed_info columns based on parsed event data text
+        file:str | BytesIO | StringIO | TextIOBase,
+        template_dictionary: Dict[str, List[Union[Parser, str]]],
+        match: str | list[str] | None = None,
+        eliminate: str | list[str] | None = None,
+        match_type: Literal["any", "all"] = "any",
+        eliminate_type: Literal["any", "all"] = "any",
+        ) -> pd.DataFrame:
+    """
+    Return a Pandas DataFrame with named columns as specified by template_dictionary
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
-    :type file: str, BytesIO
+    :type file: str, Path, BytesIO, StringIO, TextIOBase
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict[str, list[Parser, int, str]]
+    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
+    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
 
     :param match: (optional) A single word or list of words must be present within the line otherwise dropped.
     :type match: str, list[str], None
@@ -170,31 +164,49 @@ def log_pre_process(
     :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words
     :type eliminate_type: Literal["any", "all"]
 
-    :return: DataFrame with columns 'event_data', 'event_type', 'parsed_info'
+    :return: DataFrame with columns found in matching templates
     :rtype: Pandas.DataFrame
 
+    :raise ValueError: If wrong file type is provided
 
     :note:
-        event_data is the raw text from within the log file
-
-        event_type is defined from the template dictionary that matched a line of text
-
-        parsed_info is a dictionary within the column that contains key/value pairs based on the matching template
-
-        See parse_function() for specific information on templates
-
-        match and eliminate parameters filter the log file prior to parsing
-
         eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.
     """
-    # Read log file
-    pre_df = pd.read_table(
-        file, header=None, names=[event_data_column], on_bad_lines="warn"
-    )
 
-    # Match and/or eliminate rows
-    pre_df = _pre_filter_log_file(
-        pre_df,
+    # Compile template_dictionary
+    template_dictionary = {
+        key: [parse_compile(template_str), event_type]
+        for key, (
+            template_str,
+            event_type,
+        ) in template_dictionary.items()
+    }
+
+    def get_lines_from_file(f: Union[str, Path, BytesIO, StringIO, TextIOBase]) -> List[str]:
+        if isinstance(f, (str, Path)):
+            with open(f, 'r', encoding='utf-8') as file_obj:
+                return file_obj.read().splitlines()
+        elif isinstance(f, BytesIO):
+            f.seek(0)
+            return f.read().decode('utf-8').splitlines()
+        elif isinstance(f, (StringIO, TextIOBase)):
+            f.seek(0)
+            return f.read().splitlines()
+        else:
+            raise ValueError("Unsupported file type. Must be str, Path, BytesIO, StringIO, or TextIOBase.")
+
+    parsed_results = []
+    for line in get_lines_from_file(file):
+        line = line.strip()
+        event_type, parsed_data = parse_function(line, template_dictionary)
+        parsed_data[event_type_column] = event_type
+        parsed_data[event_data_column] = line
+        parsed_results.append(parsed_data)
+
+    df =  pd.DataFrame(parsed_results)
+
+    df = _pre_filter_log_file(
+        df,
         column=event_data_column,
         match=match,
         eliminate=eliminate,
@@ -202,24 +214,7 @@ def log_pre_process(
         eliminate_type=eliminate_type,
     )
 
-    # Compile template_dictionary
-    template_dictionary = {
-        key: [parse_compile(template_str), expected_count, event_type]
-        for key, (
-            template_str,
-            expected_count,
-            event_type,
-        ) in template_dictionary.items()
-    }
-
-    # Parse event data, create event_type column to streamline the next process
-    pre_df[[event_type_column, parsed_info_column]] = pre_df.apply(
-        lambda row: parse_function(row[event_data_column], template_dictionary),
-        axis="columns",
-        result_type="expand",
-    )
-
-    return pre_df
+    return df
 
 
 def run_functions_on_columns(
@@ -371,27 +366,19 @@ def process_event_types(
     :param localize_timezone_columns: (optional) Columns to drop timezone
     :type localize_timezone_columns: List[str]
 
-    :param drop_columns: (optional) If True, 'parsed_info', 'event_data' will be dropped along with columns processed by additional_column_functions, True by default
+    :param drop_columns: (optional) If True, 'event_data' will be dropped along with columns processed by additional_column_functions, True by default
     :type drop_columns: bool
 
     :return: DataFrame Dictionary formatted as {'event_type_1': df_1, 'event_type_2': df_2, ...}
     :rtype: dict
     """
     final_dict = {}
-    # For every unique event_type, create a copy df
+    # For every unique event_type, create a copy df, remove empty columns for that event type
     for event_type in df[event_type_column].unique().tolist():
-        temp_df = df[df[event_type_column] == event_type].copy()
-
-        # Parsed info column has dictionary of columns: data, json_normalize will create new column for each key
-        df_explode_events = pd.json_normalize(temp_df[parsed_info_column])
-        # Create new df by concatenating the expanded values onto the original df
-        event_df = pd.concat(
-            [temp_df.reset_index(drop=True), df_explode_events.reset_index(drop=True)],
-            axis=1,
-        )
+        event_df = df[df[event_type_column] == event_type].dropna(axis=1).copy()
 
         # Default Columns to be dropped
-        columns_to_drop = [parsed_info_column, event_data_column]
+        columns_to_drop = [event_data_column]
 
         # Process columns
         event_df, additional_drop_columns = run_functions_on_columns(
@@ -402,7 +389,7 @@ def process_event_types(
         )
         columns_to_drop.extend(additional_drop_columns)
 
-        if drop_columns is True:
+        if drop_columns:
             event_df = event_df.drop(columns=columns_to_drop)
         # Add the df to the final dict with a key of its event type
         final_dict[event_type] = event_df
@@ -431,9 +418,7 @@ def merge_event_type_dfs(
 
         This function performs that concatenation and deletes the old DataFrames.
     """
-    # Merge_dictionary format {'new_df_name': ['existing_df_1', 'existing_df2', ...]}
 
-    # Using new df_name, and a list of existing dfs
     for new_df_name, list_of_existing_dfs in merge_dictionary.items():
         # Empty list to be filled with dfs that will be merged under a new key name
         list_of_dfs_to_concatenate = []
@@ -453,8 +438,8 @@ def merge_event_type_dfs(
 
 
 def process_log(
-    file: str | BytesIO,
-    template_dictionary: Dict[str, List[Union[Parser, int, str]]],
+    file: str | BytesIO | StringIO | TextIOBase,
+    template_dictionary: Dict[str, List[Union[Parser, str]]],
     additional_column_functions: Optional[Dict[str, List[Any]]] = None,
     merge_dictionary: None | dict[str, list[str]] = None,
     datetime_columns: Optional[List[str]] = None,
@@ -470,10 +455,10 @@ def process_log(
     utilizing templates.
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
-    :type file: str, BytesIO
+    :type file: str, Path, BytesIO, StringIO, TextIOBase
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, number_of_expected_values, event_type], ...}
-    :type template_dictionary: dict[str, list[Parser, int, str]]
+    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
+    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
 
     :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
     :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]
@@ -520,7 +505,12 @@ def process_log(
     """
     # Initial parsing
     pre_df = log_pre_process(
-        file, template_dictionary, match, eliminate, match_type, eliminate_type
+        file=file,
+        template_dictionary=template_dictionary,
+        match=match,
+        eliminate=eliminate,
+        match_type=match_type,
+        eliminate_type=eliminate_type
     )
 
     # Process each event type
@@ -533,11 +523,14 @@ def process_log(
     )
 
     # Merge event DataFrames for consolidation, if specified
-    if merge_dictionary:
-        dict_of_dfs = merge_event_type_dfs(dict_of_dfs, merge_dictionary)
+    if merge_dictionary and dict_format:
+        dict_of_dfs = merge_event_type_dfs(
+            df_dictionary=dict_of_dfs,
+            merge_dictionary=merge_dictionary
+        )
 
     # If dictionary format is False, all dataframes will be concatenated into one, with many NaN columns
-    if dict_format is False:
+    if not dict_format:
         dict_of_dfs = pd.concat([df for df in dict_of_dfs.values()])
 
     return dict_of_dfs

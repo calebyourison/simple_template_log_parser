@@ -2,7 +2,7 @@
 ---
 `template-log-parser` is designed to streamline the log analysis process by pulling relevant information into DataFrame columns by way of user designed templates.  `parse` and `pandas` perform the heavy lifting. Full credit to those well-designed projects.
 
-This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM) or build your own workflow. 
+This project offers some flexibility in how you can process your log files.  You can utilize built-in template functions (Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, Synology DSM, and Ubuntu) or build your own workflow. 
 
 #### Getting Started
 ---
@@ -25,23 +25,22 @@ template = '{time} {server_name} {service_process}[{service_id}] {result} login 
 
 The words within the braces will eventually become column names in a DataFrame.  You can capture as much or as little data from the line as you see fit.  For instance, you could opt to omit {result} from the template and thus look to match only rejected logins for this example.
 
-Note that templates will be looking for an exact match.  Items like timestamps, time elapsed, and data usage should be captured as they are unique to that log line instance.
+Note that templates will be looking for an exact match.  Items such as timestamps, time elapsed, and data usage should be captured as they are unique to that log line instance.
 
 #### Template Dictionaries
 ---
 After creating templates, they should be added to a dictionary with the following format:
 ```bash
-ex_dict = {'search_string': [template_name, expected_values, 'event_type'], ...}
-```
-
-Using the example template:
-```bash
-my_template_dict = {'login from': [template, 6, 'login_attempt'], ...}
+ex_dict = {'search_string': [template_name, 'event_type'], ...}
 ```
 - 'search_string' is text expected to be found in the log file line.  The parsing function will only check the template against the line if the text is present.
 - template_name is the user defined template.
-- expected_values is the integer number of items enclosed within braces {}.
-- 'event_type' is an arbitrary name assigned to this type of occurrence.
+- 'event_type' is an arbitrary string name assigned to this type of occurrence.
+
+Using the example template:
+```bash
+my_template_dict = {'login from': [template, 'login_attempt'], ...}
+```
 
 #### Basic Usage Examples
 ---
@@ -71,21 +70,18 @@ from template_log_parser import log_pre_process
 df = log_pre_process('log_file.log', my_template_dict)
 
 print(df.columns)
-Index(['event_data', 'event_type', 'parsed_info'])
+Index(['time', 'server_name', 'service_process', 'service_id', 'result', 'username', 'event_type', 'event_data'])
 ```
 This is just a tabular data form of many single parsed events.
- - event_data column holds the raw string data for each log line
  - event_type column value is determined based on the matching template
- - parsed_info column holds a dictionary of the parsed details
+ - event_data column holds the raw string data for each log line
+ - Essentially, each key from the parsed_info dictionary will become its own column populated with the associated value.
  
 Note: 
-Events that do not match a template will be returned as event_type ('Other') with a parsed_info dictionary:
-{'unparsed_text': (original log file line)}
+Events that do not match a template will be returned as event_type ('Other') with column: ('Unparsed_text').
 
 #### Granular Log Processing
 ---
-Essentially, each key from the parsed_info dictionary will become its own column populated with the associated value.
-
 By default, this procedure returns a dictionary of Pandas DataFrames, formatted as {'event_type': df}.
 
 ```bash
@@ -107,9 +103,18 @@ print(my_df.columns)
 Index(['event_type', 'time', 'server_name', 'service_process', 'service_id', 'result', 'username'])
 ```
 
+Filter results using match to ensure that log lines contain the desired strings, or eliminate to ensure to remove lines with strings deemed superfluous. 
+```bash
+from template_log_parser import process_log
+
+my_matched_df = process_log('log_file.log', my_template_dict, match=['error', 'login'] , dict_format=False)
+my_eliminated_df = process_log('log_file.log', my_template_dict, eliminate=['user: admin', 'success'], match_type='all' , dict_format=False)
+
+```
+
 ###### Some Notes
 ---
-- By default `drop_columns=True` instructs `process_log()` to discard 'event_data' and 'parsed_info' along with any other columns modified by column functions (SEE NEXT).
+- By default `drop_columns=True` instructs `process_log()` to discard 'event_data' along with any other columns modified by column functions (SEE NEXT).
 - (OPTIONAL ARGUMENT) `additional_column_functions` allows user to apply functions to specific columns.  These functions will create a new column, or multiple columns if so specified.  The original column will be deleted if `drop_columns=True`.  This argument takes a dictionary formatted as:
 ```bash
 add_col_func = {column_to_run_function_on: [function, new_column_name_OR_list_of_new_colum_names]}
@@ -122,7 +127,7 @@ my_merge_dict = {'new_df_key': [df_1_key, df_2_key, ...], ...}
 - (OPTIONAL ARGUMENT) `localize_time_columns` takes a list of columns whose timezone should be eliminated (column must also be included in the `datetime_columns` argument).
 ---
 #### Built-Ins
-This project includes log process functions for Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, and Synology DSM. These are still being actively developed as not all event types have been accounted for.
+This project includes log process functions for Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, Synology DSM, and Ubuntu. These are still being actively developed as not all event types have been accounted for.
 As a general philosophy, this project aims to find middle ground between useful categorization of log events and sheer number of templates.
 
 Submissions for improvement are welcome.
@@ -131,8 +136,6 @@ Notes:
 
 - PFSense templates match (RFC 5424, with RFC 3339 microsecond precision time stamps)
 - Synology templates match (BSD, RFC 3164)
-- PiHole templates assume tags 'pihole' and 'piFTL' for their respective input files in syslog
-
 ```bash
 from template_log_parser.built_ins import built_in_process_log
 
@@ -144,12 +147,30 @@ my_omv_log_dict = built_in_process_log(built_in='omv', file='my_omv_file.log')
 
 my_pfsense_log_dict = built_in_process_log(built_in='pfsense', file='my_pfsense_file.log')
 
-my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log.log')
-
 my_synology_log_dict = built_in_process_log(built_in='synology', file='my_synology_log.log')
+
+my_ubuntu_log_dict = built_in_process_log(built_in='ubuntu', file='my_ubuntu_log.log')
 ```
 
-As both PiHole and Open Media Vault can run on Debian, their templates are combined with a Debian template dictionary.  
+PiHole templates will likely require modification to fit the use case.  PiHole does not natively output remote logs.  
+In many cases, additional prefixing information will be present from third parties.  This should be added as needed.
+
+```bash
+from template_log_parser.log_type_classes import pihole
+from template_log_parser.built_ins import built_in_process_log
+
+# Modify the built-in templates
+# Your logfile might have zero width no break space present which can prevent template matches
+pihole.templates = {
+        search_term: 
+        ["{utc_timestamp} {hostname} - " + template, event_type] for search_term, (template, expected_items, event_type) in pihole.templates.items()
+}
+
+my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log.log')
+
+```
+
+As Open Media Vault and Ubuntu are based on Debian, their templates are combined with a Debian template dictionary.  
 This can be used separately if desired. 
 At present, the template dictionary for Debian events is very spartan; it serves as only a cursory classification mechanism. 
 
@@ -159,5 +180,5 @@ my_debian_log_dict = built_in_process_log(built_in='debian', file='my_debian_log
 
 ## DISCLAIMER
 
-**This project is in no way affiliated with the products mentioned (Debian, Kodi, Omada, Open Media Vault, PFSense, PiHole, or Synology).
+**This project is in no way affiliated with the products mentioned (Debian, Kodi, Omada, Open Media Vault, PFSense, PiHole, Synology, or Ubuntu).
 Any usage of their services is subject to their respective terms of use.**

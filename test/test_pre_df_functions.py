@@ -1,5 +1,4 @@
 import unittest
-
 from io import StringIO, BytesIO
 
 from template_log_parser.pre_df_functions import (

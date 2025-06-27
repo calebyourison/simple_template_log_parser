@@ -1,5 +1,6 @@
 import unittest
 import pandas as pd
+from io import StringIO, BytesIO
 
 from template_log_parser.log_functions import (
     _pre_filter_log_file,
@@ -10,7 +11,6 @@ from template_log_parser.log_functions import (
 from template_log_parser.log_functions import (
     event_type_column,
     event_data_column,
-    parsed_info_column,
     other_type_column,
     unparsed_text_column,
 )
@@ -116,7 +116,7 @@ class TestPreProcessFunctions(unittest.TestCase):
             "{username} logged in to the controller from {ip}."
         )
 
-        simple_template_dict = {"logged in": [simple_template, 5, "login"]}
+        simple_template_dict = {"logged in": [simple_template, "login"]}
 
         self.assertIsInstance(parse_function(simple_event, simple_template_dict), tuple)
         event_type, results = parse_function(simple_event, simple_template_dict)
@@ -143,57 +143,66 @@ class TestPreProcessFunctions(unittest.TestCase):
 
         # Check against all built-in log file types
         for built_in in built_in_log_file_types:
+            file_types = list()
+            file_types.append(built_in.sample_log_file) # String path
+
+            with open(built_in.sample_log_file, 'rb') as f:
+                bytes_io_file = BytesIO(f.read())
+                file_types.append(bytes_io_file)
+
+            with open(built_in.sample_log_file, 'r') as f:
+                lines = f.read()
+                string_io_file = StringIO(lines)
+                file_types.append(string_io_file)
+
             print(built_in.name, " test log_pre_process")
             # Generate pre_process df using built_in sample_log_file and templates
-            df = log_pre_process(built_in.sample_log_file, built_in.templates)
-            # Assert df instance, and the existence of correct three columns
-            self.assertIsInstance(df, pd.DataFrame)
-            self.assertTrue(
-                (
-                    [event_data_column, event_type_column, parsed_info_column]
-                    == df.columns
-                ).all()
-            )
+            for file in file_types:
+                df = log_pre_process(file, built_in.templates)
+                # Assert df instance
+                self.assertIsInstance(df, pd.DataFrame)
 
-            # Assert all columns hold correct data structures
-            for index, row in df.iterrows():
-                self.assertIsInstance(row[event_data_column], str)
-                self.assertIsInstance(row[event_type_column], str)
-                # parsed_info should be a column of dictionaries
-                self.assertIsInstance(row[parsed_info_column], dict)
+                # Assert df has the same number of lines as the original log file
+                print("checking log file length against Dataframe shape")
+                with open(built_in.sample_log_file, "r") as raw_log:
+                    lines = len(raw_log.readlines())
+                    print("lines in logfile: ", lines)
+                    self.assertEqual(lines, df.shape[0])
+                    print("rows in dataframe: ", df.shape[0])
+                    # Assert template dictionary has the same number of items as the log file has lines
+                    self.assertEqual(len(built_in.templates), lines)
+                    print("length of template dictionary: ", len(built_in.templates))
 
-            # Assert df has the same number of lines as the original log file
-            print("checking log file length against Dataframe shape")
-            with open(built_in.sample_log_file, "r") as raw_log:
-                lines = len(raw_log.readlines())
-                print("lines in logfile: ", lines)
-                self.assertEqual(lines, df.shape[0])
-                print("rows in dataframe: ", df.shape[0])
-                # Assert template dictionary has the same number of items as the log file has lines
-                self.assertEqual(len(built_in.templates), lines)
-                print("length of template dictionary: ", len(built_in.templates))
+                # Print all lines that are not accounted for by templates
 
-            # Print all lines that are not accounted for by templates
+                print("Unparsed Lines: ", df[df[event_type_column] == other_type_column])
 
-            print("Unparsed Lines: ", df[df[event_type_column] == other_type_column])
+                # Assert no "Other" event types
+                self.assertTrue(other_type_column not in df[event_type_column].tolist())
 
-            # Assert no "Other" event types
-            self.assertTrue(other_type_column not in df[event_type_column].tolist())
+                expected_event_types = sorted(
+                    list([event[-1] for event in built_in.templates.values()])
+                )
+                actual_event_types = sorted(df[event_type_column].tolist())
+                print(
+                    f"Expected event types ({len(expected_event_types)}): {expected_event_types}"
+                )
+                print(
+                    f"Actual event types ({len(actual_event_types)}): {actual_event_types}"
+                )
 
-            expected_event_types = sorted(
-                list([event[2] for event in built_in.templates.values()])
-            )
-            actual_event_types = sorted(df[event_type_column].tolist())
-            print(
-                f"Expected event types ({len(expected_event_types)}): {expected_event_types}"
-            )
-            print(
-                f"Actual event types ({len(actual_event_types)}): {actual_event_types}"
-            )
+                # Assert all event types are present in the df, equal to the template dictionary values, third item
+                self.assertEqual(
+                    expected_event_types,
+                    actual_event_types,
+                )
 
-            # Assert all event types are present in the df, equal to the template dictionary values, third item
-            self.assertEqual(
-                expected_event_types,
-                actual_event_types,
-            )
-            print(built_in.name, " log_pre_process ok")
+                improper_file_type = {}
+                self.assertRaises(
+                    ValueError,
+                    log_pre_process,
+                    improper_file_type,
+                    built_in.templates
+                )
+
+                print(built_in.name, " log_pre_process ok")

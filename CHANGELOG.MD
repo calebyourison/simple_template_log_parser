@@ -30,3 +30,16 @@ Named function calls from version < 0.4 will need to be replaced with this funct
 -Added preliminary support for Kodi.
 
 -Modified `parse_function()` to use compiled templates for small performance gain (No Breaking Changes). 
+
+#### 0.7
+---
+-Re-write `log_pre_process()` for performance (breaking change).  Function returns all template columns instead of just preliminary three. 
+
+-Changed template dictionary format (breaking change), removed expected number of fields which will now be determined in function.
+
+-Added support for Ubuntu, incorporating Debian templates, (breaking changes as Debian templates have changed again)
+
+-Template tweaks and updates for built-ins (potential breaking changes; PFSense templates have been reduced for simplification)
+
+-Reduced PiHole templates to their simplest values (breaking changes).  The templates now match the messages as they originate from PiHole itself.
+Any prefixing information should be tailored to the use case as the final output will likely vary.  PiHole built-in no longer incorporates Debian templates.
