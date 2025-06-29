@@ -179,7 +179,7 @@ from template_log_parser.log_type_classes import synology
 synology.templates = {
         search_string: [
         template.replace("{server_name}", "MY_HOST_NAME"), event_type]
-        for search_string, (template, event_type) in pihole.templates.items()
+        for search_string, (template, event_type) in synology.templates.items()
 }
 
 ```
