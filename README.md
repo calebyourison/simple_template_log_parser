@@ -160,13 +160,27 @@ from template_log_parser.log_type_classes import pihole
 from template_log_parser.built_ins import built_in_process_log
 
 # Modify the built-in templates
-# Your logfile might have zero width no break space present which can prevent template matches
+# Your logfile might have zero width no break space present which can prevent template matches. Make sure to account for it
 pihole.templates = {
-        search_term: 
-        ["{utc_timestamp} {hostname} - " + template, event_type] for search_term, (template, expected_items, event_type) in pihole.templates.items()
+        search_string: [
+        "{utc_timestamp} {hostname} - " + template, event_type]
+         for search_string, (template, event_type) in pihole.templates.items()
 }
 
 my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log.log')
+```
+
+All built-ins can be modified if needed:
+
+```bash
+from template_log_parser.log_type_classes import synology
+
+# Hardcode your host name to eliminate an undesired column
+synology.templates = {
+        search_string: [
+        template.replace("{server_name}", "MY_HOST_NAME"), event_type]
+        for search_string, (template, event_type) in pihole.templates.items()
+}
 
 ```
 
