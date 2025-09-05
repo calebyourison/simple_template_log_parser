@@ -72,12 +72,22 @@ dhcp_assign_2 = ("{time} {controller}  {site_date} {site_time} {site} - - - "
 
 dhcp_decline = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-    "DHCP Server received DHCP Decline from client {client_ip}. IP address {client_mac} is not available.#015"
+    "DHCP Server received DHCP Decline from client {client_mac}. IP address {client_ip} is not available.#015"
+)
+
+dhcp_decline_2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "DHCP Server received DHCP Decline from [client:{client_mac}]. IP address {client_ip} is not available."
 )
 
 dhcp_reject = (
     "{time} {controller}  {site_date} {site_time} {site} - - - DHCP Server rejected the request"
     " of the client[MAC: {client_mac} IP: {client_ip}].#015"
+)
+
+dhcp_reject_2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - DHCP Server rejected the request "
+    "of the [client:{client_mac}](IP: {client_ip})."
 )
 
 # Failed connections
@@ -232,7 +242,9 @@ client_activity_dict = {
     "allocated IP address": [dhcp_assign, "dhcp_assign"],
     "allocated IP address ": [dhcp_assign_2, 'dhcp_assign'],
     "rejected the request": [dhcp_reject, "dhcp_reject"],
+    "rejected the request of": [dhcp_reject_2, 'dhcp_reject'],
     "DHCP Decline": [dhcp_decline, "dhcp_decline"],
+    "DHCP Decline from": [dhcp_decline_2, 'dhcp_decline'],
     "was disconnected from network": [disc_hw, "hardwired_disconnect"],
     "is disconnected from SSID": [disc_w, "wireless_disconnect"],
     "disconnected from network": [disc_hw_recon, "hardwired_reconnect"],

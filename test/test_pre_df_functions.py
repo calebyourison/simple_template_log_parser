@@ -6,9 +6,10 @@ from template_log_parser.pre_df_functions import (
     link_log_file_lines,
 )
 
-from template_log_parser.sample import kodi_unlinked_lines
+from test.resources import kodi_unlinked_lines
 from template_log_parser.templates.kodi_templates import kodi_line_linking_arguments
 
+from test.resources import logger
 
 class TestPreDFFunctions(unittest.TestCase):
     """Defines a class to test functions that run before the df stage"""
@@ -68,7 +69,6 @@ class TestPreDFFunctions(unittest.TestCase):
             tag_replace_text="This",
         )
         expected_combined_tagged_line = both[-1]
-        print(expected_combined_tagged_line)
         self.assertEqual(
             "Friend: This.Is.The.Start.of.Something.Wonderful",
             expected_combined_tagged_line,
@@ -92,7 +92,7 @@ class TestPreDFFunctions(unittest.TestCase):
         for item in types_to_test:
             output = link_log_file_lines(item, kodi_line_linking_arguments)
             self.assertIsInstance(output, StringIO)
-            print("Correct Type")
+            logger.info("Correct Type")
 
             actual_output = output.read().splitlines()
             expected_output = [
@@ -124,8 +124,8 @@ class TestPreDFFunctions(unittest.TestCase):
                 "2025-04-12 06:27:11.088 T:17       info <general>:     Device 7 This line meets start text criteria but file ends before end text criteria is found",
             ]
 
-            print(f"Expected Output ({len(expected_output)}): {expected_output}")
-            print(f"Actual Output ({len(actual_output)}): {actual_output}")
+            logger.debug(f"Expected Output ({len(expected_output)}): {expected_output}")
+            logger.debug(f"Actual Output ({len(actual_output)}): {actual_output}")
 
             self.assertEqual(expected_output, actual_output)
 

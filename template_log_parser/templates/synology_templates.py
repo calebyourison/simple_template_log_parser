@@ -19,7 +19,13 @@ back_online = "{time} {server_name} System {system_user}:#011Server back online.
 countdown = "{time} {server_name} System {system_user}:#011System started counting down to {state}."
 dns_setting_changed = "{time} {server_name} System {system_user}:#011DNS server setting was changed."
 download_task = "{time} {server_name} System {system_user}:#011Download task for [{task}] {result}."
+external_disk_ejected = "{time} {server_name} System {system_user}:#011External disk [{external_disk}] is ejected."
+external_disk_not_ejected_properly = "{time} {server_name} System {system_user}:#011The external device [{external_disk}] was not ejected properly. You should eject the device before unplugging it or turning it off."
+external_disk_failed_to_eject = "{time} {server_name} System {system_user}:#011The system failed to eject external disk [{external_disk}]."
+external_disk_initialized = "{time} {server_name} System {system_user}:#011The system successfully initialized the external disk [{disk_id}] to [{format}] format."
+external_disk_renamed = "{time} {server_name} System {system_user}:#011The share name [{name}] was found as [{name_one}] and [{name_two}], and the latter was renamed to [{name_two_renamed}]."
 failed_video_conversion = "{time} {server_name} System {system_user}:#011System failed to convert video [{video}] to {format}."
+fan_speed_set = "{time} {server_name} System {system_user}:#011Fan speed was set to [{speed}]."
 interface_set = "{time} {server_name} System {system_user}:#011[{interface}] was set to [{set_to}]."
 interface_changed = "{time} {server_name} System {system_user}:#011{attribute} of [{interface}] was changed from [{from}] to [{to}]."
 link_state = "{time} {server_name} System {system_user}:#011[{interface}] link {state}."
@@ -32,6 +38,9 @@ restarted_service = "{time} {server_name} System {system_user}:#011System succes
 shared_folder = "{time} {server_name} System {system_user}:#011{kind} shared folder [{shared_folder}] {message}"
 shared_folder_application = "{time} {server_name} System {system_user}:#011Shared folder [{shared_folder}] {message} [{application}]."
 setting_enabled = "{time} {server_name} System {system_user}:#011[{setting}] was enabled."
+storage_pool_degraded = "{time} {server_name} System {system_user}:#011Storage Pool [{storage_pool_number}] degraded [{message}]. Please repair it."
+storage_pool_repair_start = "{time} {server_name} System {system_user}:#011System started to perform {repair} on [{storage_pool}] with [{drive}]."
+storage_pool_repair_complete = "{time} {server_name} System {system_user}:#011System successfully repaired [{storage_pool}] with drive [{drive}]."
 update = "{time} {server_name} System {system_user}:#011Update was {result}."
 unknown_error = "{time} {server_name} System {system_user}:#011An unknown error occurred, {message}"
 
@@ -88,6 +97,15 @@ general_system_dict = {
     'DNS server setting was changed': [dns_setting_changed, 'dns_setting_changed'],
     "was set to": [interface_set, 'interface_set'],
     "was changed from": [interface_changed, 'interface_changed'],
+    "degraded": [storage_pool_degraded, "storage_pool_degraded"],
+    "started to perform": [storage_pool_repair_start, "storage_pool_repair_start"],
+    "successfully repaired": [storage_pool_repair_complete, "storage_pool_repair_complete"],
+    "is ejected": [external_disk_ejected, "external_disk_ejected"],
+    "not ejected properly": [external_disk_not_ejected_properly, "external_disk_not_ejected_properly"],
+    "failed to eject": [external_disk_failed_to_eject, "external_disk_failed_to_eject"],
+    "initialized the external disk": [external_disk_initialized, "external_disk_initialized"],
+    'Fan speed was set': [fan_speed_set, 'fan_speed_set'],
+    'latter was renamed to': [external_disk_renamed, 'external_disk_renamed'],
 }
 
 user_activity_dict = {

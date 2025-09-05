@@ -44,3 +44,12 @@
 2025-06-10T18:41:22+01:00 server_x System admin:#011DNS server setting was changed.
 2025-06-10T18:42:14+01:00 server_x System admin:#011[LAN 1] was set to [Manual IP].
 2025-06-10T18:42:21+01:00 server_x System admin:#011Subnet mask of [LAN 1] was changed from [255.255.255.0] to [ ].
+2025-07-13T05:48:04+01:00 server_x System SYSTEM:#011Storage Pool [1] degraded [3/4 of drives remaining]. Please repair it.
+2025-07-13T05:52:18+01:00 server_x System admin:#011System started to perform Fast Repair on [Storage Pool 1] with [Drive 1].
+2025-07-13T16:30:51+01:00 server_x System admin:#011System successfully repaired [Storage Pool 1] with drive [Drive 1].
+2025-07-20T07:48:41+01:00 server_x System admin:#011External disk [USB Disk 1 Partition 1] is ejected.
+2025-07-20T08:04:04+01:00 server_x System SYSTEM:#011The share name [usbshare1] was found as [/volumeUSB1/usbshare] and [/volumeUSB2/usbshare], and the latter was renamed to [usbshare1_1].
+2025-07-20T08:07:15+01:00 server_x System admin:#011The external device [USB Disk 2] was not ejected properly. You should eject the device before unplugging it or turning it off.
+2025-07-20T08:07:16+01:00 server_x System SYSTEM:#011The system failed to eject external disk [USB Disk 2 Partition 1].
+2025-07-22T15:13:19+01:00 server_x System admin:#011The system successfully initialized the external disk [sdq] to [EXT4] format.
+2025-08-24T04:23:21+01:00 server_x System admin:#011Fan speed was set to [full].

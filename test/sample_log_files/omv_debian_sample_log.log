@@ -12,3 +12,4 @@
 2025-05-09T15:03:39+01:00 debian_pc rsyslogd: [origin software="rsyslogd" swVersion="8.2302.0" x-pid="1790675" x-info="https://www.rsyslog.com"] start
 2025-05-22T16:15:22+01:00 debian_pc mtp-probe: bus: 5, device: 3 was not an MTP device
 2025-05-23T08:49:23+01:00 debian_pc pkexec: pam_unix(polkit-1:session): session opened for user root(uid=0) by test_admin(uid=1000)
+2025-07-03T04:05:11+01:00 debian_pc 05efi: debug: /dev/some_sda partition scheme is gpt

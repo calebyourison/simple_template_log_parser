@@ -25,7 +25,7 @@
 2024-11-09T16:27:27.572324+01:00 controller_X  2024-11-09 16:26:25 Controller - - - [client:10-B7-C6-17-BD-0D:10-B7-C6-17-BD-0D] failed to connect to [ap:first_AP:45-22-54-9F-EB-54] with SSID "SSID 9" on channel 11 because the user was blocked by MAC block/MAC Filter/Lock To AP.(1 time in the last minute)
 2024-11-14T15:06:25.959621+01:00 controller_X  2024-11-14 15:06:19 Controller - - - [client:10-B7-C6-17-BD-0D:10-B7-C6-17-BD-0D]  went online on [ap:first_AP:45-22-54-9F-EB-54] with SSID "SSID9" on channel -1.
 2024-11-14T15:07:13.898938+01:00 controller_X  2024-11-14 15:07:10 Controller - - - Resolved: The number of audit logs is about to reach the storage limit of the Controller. Please back up the data in time, otherwise oldest data will be deleted after the limit is reached.
-2024-11-14T15:10:29.961166+01:00 controller_X  2024-11-14 15:05:36 Controller - - - DHCP Server received DHCP Decline from client 10.54.1.199. IP address 45-22-54-9F-EB-54 is not available.#015
+2024-11-14T15:10:29.961166+01:00 controller_X  2024-11-14 15:05:36 Controller - - - DHCP Server received DHCP Decline from client 45-22-54-9F-EB-54. IP address 10.54.1.199 is not available.#015
 2024-11-17T06:16:19.361950+01:00 controller_X  2024-11-17 06:16:12 Controller - - - Backup Schedule executed with generating file autobackup_5.zip.
 2024-11-18T04:32:11.493731+01:00 controller_X  2024-11-18 04:32:10 Controller - - - [client:sbc_one:DC-D6-32-73-4e-a9] (IP: 172.16.0.2) went offline from SSID "SSID2" on [ap:first_AP:45-22-54-9F-EB-54] (1h46m connected, 388.16KB).
 2024-11-18T14:30:59.955686+01:00 controller_X  2024-11-18 14:30:52 Controller - - - [client:10-B7-C6-17-BD-0D:10-B7-C6-17-BD-0D] (IP: 10.10.0.177) went online on [ap:first_AP:45-22-54-9F-EB-54] with SSID "SSID 9" on channel 149.
@@ -36,3 +36,5 @@
 2025-06-09T16:09:15.649205+01:00 controller_X  2025-06-09 16:05:52 Controller - - - [ap:48-32-54-D0-E6-4D] got IP address 1.1.0.5/255.255.255.0.
 2025-06-12T20:52:19.896693+01:00 controller_X  2025-06-12 20:51:28 Controller - - - DHCP Server allocated IP address 1.1.1.2 for the [client:21-C1-D0-B7-3C-29].
 2025-06-13T14:13:28.956393+01:00 controller_X  2025-06-13 14:05:37 Controller - - - [gateway:54-AF-98-2D-07-90]: The physical connection status of [LAN4] was up.
+2025-07-12T05:10:13.419178+01:00 controller_X  2025-07-12 05:09:28 Controller - - - DHCP Server received DHCP Decline from [client:10-B7-C6-17-BD-0D]. IP address 1.1.1.1 is not available.
+2025-07-12T05:24:15.581309+01:00 controller_X  2025-07-12 05:23:41 Controller - - - DHCP Server rejected the request of the [client:10-B7-C6-17-BD-0D](IP: 2.8.0.2).

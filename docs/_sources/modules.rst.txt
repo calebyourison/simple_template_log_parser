@@ -1,7 +1,0 @@
-template_log_parser
-===================
-
-.. toctree::
-   :maxdepth: 4
-
-   template_log_parser

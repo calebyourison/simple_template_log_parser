@@ -16,16 +16,18 @@ dnsmasq_host_name_resolution = "{time} dnsmasq[{id}]: /etc/hosts {host_ip} is {h
 dnsmasq_host_name = "{time} dnsmasq[{id}]: Pi-hole hostname {host_name} is {host_ip}"
 dnsmasq_inotify = "{time} dnsmasq[{id}]: inotify: {message}"
 dnsmasq_locally_known = "{time} dnsmasq[{id}]: using only locally-known addresses for {result}"
-dnsmasq_query = "{time} dnsmasq[{id}]: query[{query_type}] {destination} from {client}"
+dnsmasq_query = "{time} dnsmasq[{id}]: query[{query_type}] {destination} from {host_ip}"
 dnsmasq_rate_limiting = "{time} dnsmasq[{id}]: Rate-limiting {query} is {message}"
 dnsmasq_read = "{time} dnsmasq[{id}]: read {path} - {names} names"
 dnsmasq_reply = "{time} dnsmasq[{id}]: reply {query} is {resolved_ip}"
 dnsmasq_reply_truncated = "{time} dnsmasq[{id}]: reply is truncated"
 dnsmasq_started = "{time} dnsmasq[{id}]: started, version {version} cachesize {cachesize}"
+dnsmasq_tcp_connection_failed = "{time} dnsmasq[{id}]: TCP connection failed: {message}"
 dnsmasq_using_nameserver = "{time} dnsmasq[{id}]: using nameserver {nameserver_ip}#53"
 dnsmasq_using_nameserver_domain = "{time} dnsmasq[{id}]: using nameserver {nameserver_ip}#53 for domain {domain}"
 
 # ftl
+ftl_error = "{time} [{ids}] ERROR: {message}"
 ftl_info = "{time} [{ids}] INFO: {message}"
 ftl_warning = "{time} [{ids}] WARNING: {message}"
 
@@ -60,9 +62,11 @@ pihole = {
     'using nameserver': [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver'],
     ' using nameserver': [dnsmasq_using_nameserver_domain, 'dnsmasq_using_nameserver_domain'],
     "custom.list": [dnsmasq_custom_list, 'dnsmasq_custom_list'],
+    "TCP connection failed": [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed']
 }
 
 ftl = {
+    'ERROR': [ftl_error, 'ftl_error'],
     'INFO': [ftl_info, 'ftl_info'],
     'WARNING': [ftl_warning, 'ftl_warning'],
 }

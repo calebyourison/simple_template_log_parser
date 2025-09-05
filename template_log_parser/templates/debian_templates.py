@@ -1,4 +1,5 @@
 
+debug = "{time} {server_name} {process}: debug: {message}"
 id_process = "{time} {server_name} {process}[{id}]: {message}"
 kernel = "{time} {server_name} kernel: {message}"
 pam_unix = "{time} {server_name} {process}: pam_unix({session}): {message}"
@@ -17,5 +18,6 @@ debian_template_dict = {
     "rsync": [rsync, "rsync"],
     'rsyslogd': [rsyslogd, 'rsyslogd'],
     'upssched-cmd': [upssched_cmd, 'upssched-cmd'],
-    'mtp-probe': [mtp_probe, 'mtp_probe']
+    'mtp-probe': [mtp_probe, 'mtp_probe'],
+    'debug': [debug, 'debug'],
 }

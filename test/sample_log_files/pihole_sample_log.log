@@ -18,12 +18,14 @@ Jun 12 17:31:34 dnsmasq[420]: Rate-limiting support.mozilla.org is REFUSED (EDE:
 Jun 12 17:33:26 dnsmasq[50]: read /etc/hosts - 2 names
 Jun 12 18:44:32 dnsmasq[421]: reply is truncated
 Jun 12 19:13:26 dnsmasq[50]: started, version pi-hole-v2 cachesize 10000
-[2025-06-20 04:16:38.501 MST 49] Authentication required, redirecting to /admin/login
+[2025-06-20 04:16:38.501 EST 49] Authentication required, redirecting to /admin/login
 Jun 20 04:52:51 dnsmasq[50]: inotify: /etc/pihole/hosts/custom.list new or modified
 Jun 21 06:36:25 dnsmasq[49]: using nameserver 1.1.1.1#53 for domain 1.1.1.in-addr.arpa
 Jun 21 06:39:19 dnsmasq[49]: using nameserver 8.8.8.8#53
-2025-06-21 06:39:19.789 MST [49M] WARNING: Insufficient permissions to set system time (CAP_SYS_TIME required), NTP client not available
+2025-06-21 06:39:19.789 EST [49M] WARNING: Insufficient permissions to set system time (CAP_SYS_TIME required), NTP client not available
 Jun 22 00:00:00 dnsmasq[50]: /etc/pihole/hosts/custom.list 10.0.0.199 is somehost.lan
 [2025-06-22 06:39:19.789 EST 49] Initializing HTTP server on ports "443s,8089"
   [i] Cleaning up stray matter...#015#033[K  [✓] Cleaning up stray matter
 #015#033[K  [✓] Pulling blocklist source list into range
+2025-06-28 22:38:00.864 EST [49/T66743] ERROR: Cannot receive UDP DNS reply: Timeout - no response from upstream DNS server
+Jul 11 00:11:52 dnsmasq[235561]: TCP connection failed: Resource temporarily unavailable

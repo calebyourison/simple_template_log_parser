@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 import io
-from contextlib import redirect_stdout
+from contextlib import redirect_stdout, redirect_stderr
 
 from template_log_parser.log_functions import (
     log_pre_process,
@@ -18,10 +18,11 @@ from template_log_parser.column_functions import (
     split_by_delimiter,
 )
 
-from template_log_parser.log_type_classes import built_in_log_file_types
-from template_log_parser.sample import sample_df
+
+from test.resources import sample_df, built_in_log_file_types
 from template_log_parser.log_functions import event_type_column
 
+from test.resources import logger
 
 class TestLogFunctions(unittest.TestCase):
     """Defines a class to test functions that process overall log files"""
@@ -29,7 +30,6 @@ class TestLogFunctions(unittest.TestCase):
     def test_run_functions_on_columns(self):
         """Defines a test function to ensure run functions on columns is operating correctly"""
 
-        df = sample_df.copy()
 
         # In order to pass arguments to column functions, kwargs dictionary is created
         data_usage_kwargs = dict(increment="GB")
@@ -52,7 +52,7 @@ class TestLogFunctions(unittest.TestCase):
         # Assert function returns a tuple
         self.assertIsInstance(
             run_functions_on_columns(
-                df.copy(),
+                sample_df(),
                 additional_column_functions=function_dict,
                 datetime_columns=["utc_time", "time"],
                 localize_timezone_columns=["time"],
@@ -61,7 +61,7 @@ class TestLogFunctions(unittest.TestCase):
         )
 
         df, list_of_columns = run_functions_on_columns(
-            df.copy(),
+            sample_df(),
             additional_column_functions=function_dict,
             datetime_columns=["utc_time", "time"],
             localize_timezone_columns=["time"],
@@ -74,7 +74,7 @@ class TestLogFunctions(unittest.TestCase):
         # Assert the expected columns are present
         self.assertTrue(
             (
-                [column for column in sample_df.columns]
+                [column for column in sample_df().columns]
                 + [
                     "data_MB",
                     "client_name",
@@ -126,7 +126,7 @@ class TestLogFunctions(unittest.TestCase):
         self.assertRaises(
             ValueError,
             run_functions_on_columns,
-            df.copy(),
+            sample_df(),
             {
                 "data": [
                     len,
@@ -138,7 +138,7 @@ class TestLogFunctions(unittest.TestCase):
         self.assertRaises(
             TypeError,
             run_functions_on_columns,
-            df.copy(),
+            sample_df(),
             {"data": ["not_a_function", "data_transformed"]},
         )
 
@@ -146,7 +146,7 @@ class TestLogFunctions(unittest.TestCase):
         self.assertRaises(
             RuntimeError,
             run_functions_on_columns,
-            df.copy(),
+            sample_df(),
             {"client_name_and_mac": [len, 1]},
         )
 
@@ -154,7 +154,7 @@ class TestLogFunctions(unittest.TestCase):
         self.assertRaises(
             RuntimeError,
             run_functions_on_columns,
-            df.copy(),
+            sample_df(),
             {
                 "client_name_and_mac": [
                     split_name_and_mac,
@@ -165,8 +165,10 @@ class TestLogFunctions(unittest.TestCase):
 
         # dt conversion error, dt localization error, nothing raised, just print statements
         f = io.StringIO()
-        with redirect_stdout(f):
-            run_functions_on_columns(df.copy(), {}, ["data"], ["data"])
+        f_err = io.StringIO()
+
+        with redirect_stdout(f), redirect_stderr(f_err):
+            run_functions_on_columns(sample_df(), {}, ["data"], ["data"])
 
         print_statement = f.getvalue()
 
@@ -178,12 +180,12 @@ class TestLogFunctions(unittest.TestCase):
 
         # Using all built ins
         for built_in in built_in_log_file_types:
-            print(built_in.name, " test process_event_types")
+            logger.info(f"{built_in.name}: test process_event_types")
             # Create sample df with correct three columns
             df = log_pre_process(built_in.sample_log_file, built_in.templates)
 
             # First run, using drop columns, and setting datetime columns
-            print("    Using drop columns")
+            logger.info("Using drop columns")
             dict_of_df = process_event_types(
                 df.copy(),
                 built_in.column_functions,
@@ -223,9 +225,9 @@ class TestLogFunctions(unittest.TestCase):
                                 pd.api.types.is_datetime64_any_dtype(df[column])
                             )
 
-            print("    ok")
+            logger.info("ok")
             # New df
-            print("    Not using drop columns")
+            logger.info("Not using drop columns")
             new_df = log_pre_process(built_in.sample_log_file, built_in.templates)
             # Do not drop columns on this run
             non_drop_dict_of_df = process_event_types(
@@ -236,8 +238,8 @@ class TestLogFunctions(unittest.TestCase):
             # Verify that every column is still present within the large df, meaning not dropped
             for column in drop_columns_list:
                 self.assertTrue(column in concat_df.columns)
-            print("    ok")
-            print("    process_event_types ok")
+            logger.info("ok")
+            logger.info(f"{built_in.name}: process_event_types ok")
 
     def test_merge_event_type_dfs(self):
         """Defines a test function to assert that dfs specified to be merged are done so correctly"""

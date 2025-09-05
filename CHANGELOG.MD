@@ -1,21 +1,25 @@
-#### 0.3
+#### 0.8
 ---
--Various bug fixes.
+-Additional built-in templates
 
--Added support for PiHole, Open Media Vault, and Debian.
+-Removed sample_log attribute from built-in types; attribute added only during testing.
 
-#### 0.4
+-Bug fix, attempting to return a df (dict_format=False) with a match string of no matches resulted in error
+
+
+#### 0.7
 ---
--Consolidated all built-in log file types to use `built_in_process_log()` for simplification (Breaking change).
-Named function calls from version < 0.4 will need to be replaced with this function from the built_ins module.
+-Re-write `log_pre_process()` for performance (breaking change).  Function returns all template columns instead of just preliminary three. 
 
-#### 0.5
----
--Improved exception handling for additional column functions.
+-Changed template dictionary format (breaking change), removed expected number of fields which will now be determined in function.
 
--Added support for PFSense (syslog format).
+-Added support for Ubuntu, incorporating Debian templates, (breaking changes as Debian templates have changed again)
 
--Addition of type hints matching docstrings.
+-Template tweaks and updates for built-ins (potential breaking changes; PFSense templates have been reduced for simplification)
+
+-Reduced PiHole templates to their simplest values (breaking changes).  The templates now match the messages as they originate from PiHole itself.
+Any prefixing information should be tailored to the use case as the final output will likely vary.  PiHole built-in no longer incorporates Debian templates.
+
 
 #### 0.6
 ---
@@ -31,15 +35,24 @@ Named function calls from version < 0.4 will need to be replaced with this funct
 
 -Modified `parse_function()` to use compiled templates for small performance gain (No Breaking Changes). 
 
-#### 0.7
+
+#### 0.5
 ---
--Re-write `log_pre_process()` for performance (breaking change).  Function returns all template columns instead of just preliminary three. 
+-Improved exception handling for additional column functions.
 
--Changed template dictionary format (breaking change), removed expected number of fields which will now be determined in function.
+-Added support for PFSense (syslog format).
 
--Added support for Ubuntu, incorporating Debian templates, (breaking changes as Debian templates have changed again)
+-Addition of type hints matching docstrings.
 
--Template tweaks and updates for built-ins (potential breaking changes; PFSense templates have been reduced for simplification)
 
--Reduced PiHole templates to their simplest values (breaking changes).  The templates now match the messages as they originate from PiHole itself.
-Any prefixing information should be tailored to the use case as the final output will likely vary.  PiHole built-in no longer incorporates Debian templates.
+#### 0.4
+---
+-Consolidated all built-in log file types to use `built_in_process_log()` for simplification (Breaking change).
+Named function calls from version < 0.4 will need to be replaced with this function from the built_ins module.
+
+
+#### 0.3
+---
+-Various bug fixes.
+
+-Added support for PiHole, Open Media Vault, and Debian.

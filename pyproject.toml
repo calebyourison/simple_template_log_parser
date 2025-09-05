@@ -10,7 +10,7 @@ mypkg = ["*.log"]
 
 [project]
 name = "template-log-parser"
-version = "0.7"
+version = "0.8"
 dependencies = [
   "pandas>=2.0.0",
   "parse==1.20.2",

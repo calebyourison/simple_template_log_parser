@@ -9,6 +9,7 @@ from template_log_parser.column_functions import (
 )
 
 
+
 class TestColumnFunctions(unittest.TestCase):
     """Defines a class to test functions that are run on columns"""
 

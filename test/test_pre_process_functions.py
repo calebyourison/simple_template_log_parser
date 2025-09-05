@@ -15,8 +15,7 @@ from template_log_parser.log_functions import (
     unparsed_text_column,
 )
 
-from template_log_parser.log_type_classes import built_in_log_file_types
-
+from test.resources import built_in_log_file_types, logger
 
 class TestPreProcessFunctions(unittest.TestCase):
     """Defines a class to test functions that pre-process overall log files"""
@@ -155,7 +154,7 @@ class TestPreProcessFunctions(unittest.TestCase):
                 string_io_file = StringIO(lines)
                 file_types.append(string_io_file)
 
-            print(built_in.name, " test log_pre_process")
+            logger.info(f"{built_in.name}: test log_pre_process")
             # Generate pre_process df using built_in sample_log_file and templates
             for file in file_types:
                 df = log_pre_process(file, built_in.templates)
@@ -163,19 +162,19 @@ class TestPreProcessFunctions(unittest.TestCase):
                 self.assertIsInstance(df, pd.DataFrame)
 
                 # Assert df has the same number of lines as the original log file
-                print("checking log file length against Dataframe shape")
+                logger.info("checking log file length against Dataframe shape")
                 with open(built_in.sample_log_file, "r") as raw_log:
                     lines = len(raw_log.readlines())
-                    print("lines in logfile: ", lines)
+                    logger.debug("lines in logfile: ", lines)
                     self.assertEqual(lines, df.shape[0])
-                    print("rows in dataframe: ", df.shape[0])
+                    logger.debug("rows in dataframe: ", df.shape[0])
                     # Assert template dictionary has the same number of items as the log file has lines
                     self.assertEqual(len(built_in.templates), lines)
-                    print("length of template dictionary: ", len(built_in.templates))
+                    logger.debug(f"length of template dictionary: {len(built_in.templates)}")
 
                 # Print all lines that are not accounted for by templates
 
-                print("Unparsed Lines: ", df[df[event_type_column] == other_type_column])
+                logger.debug(f"Unparsed Lines: {df[df[event_type_column] == other_type_column]}")
 
                 # Assert no "Other" event types
                 self.assertTrue(other_type_column not in df[event_type_column].tolist())
@@ -184,10 +183,10 @@ class TestPreProcessFunctions(unittest.TestCase):
                     list([event[-1] for event in built_in.templates.values()])
                 )
                 actual_event_types = sorted(df[event_type_column].tolist())
-                print(
+                logger.debug(
                     f"Expected event types ({len(expected_event_types)}): {expected_event_types}"
                 )
-                print(
+                logger.debug(
                     f"Actual event types ({len(actual_event_types)}): {actual_event_types}"
                 )
 
@@ -205,4 +204,4 @@ class TestPreProcessFunctions(unittest.TestCase):
                     built_in.templates
                 )
 
-                print(built_in.name, " log_pre_process ok")
+                logger.info(f"{built_in.name}: log_pre_process ok")

@@ -5,6 +5,7 @@ dbus_daemon = '{time} {server_name} dbus-daemon: {message}'
 desktop = "{time} {server_name} {process}.des {message}"
 desktop_2 = "{time} {server_name} {process}.desktop{message}"
 desktop_3 = "{time} {server_name} {process}.deskto{message}"
+desktop_4 = "{time} {server_name} {process}.deskt {message}"
 gdm = "{time} {server_name} gdm{process}: {action}: {message}"
 package_kit = "{time} {server_name} PackageKit: {message}"
 pycharm = "{time} {server_name} pycharm-{process} {message}"
@@ -17,6 +18,7 @@ ubuntu_templates = {
     ".des": [desktop, "desktop"],
     ".desktop": [desktop_2, "desktop"],
     ".deskto": [desktop_3, 'desktop'],
+    ".deskt": [desktop_4, 'desktop'],
     "PackageKit": [package_kit, 'package_kit'],
     "pycharm": [pycharm, "pycharm"],
     'gdm': [gdm, 'gdm'],
