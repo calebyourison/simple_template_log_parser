@@ -531,6 +531,9 @@ def process_log(
 
     # If dictionary format is False, all dataframes will be concatenated into one, with many NaN columns
     if not dict_format:
-        dict_of_dfs = pd.concat([df for df in dict_of_dfs.values()])
+        if len(dict_of_dfs) == 0:
+            dict_of_dfs = pd.DataFrame(dict_of_dfs)
+        else:
+            dict_of_dfs = pd.concat([df for df in dict_of_dfs.values()])
 
     return dict_of_dfs
