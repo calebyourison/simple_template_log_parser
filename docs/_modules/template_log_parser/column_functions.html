@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>template_log_parser.column_functions &mdash; template-log-parser 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a0e24af7"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            template-log-parser
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">template_log_parser</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">template-log-parser</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">template_log_parser.column_functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for template_log_parser.column_functions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Pre-built functions to run on columns that need additional processing</span>
+
+
+<div class="viewcode-block" id="split_name_and_mac">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.column_functions.split_name_and_mac">[docs]</a>
+<span class="k">def</span> <span class="nf">split_name_and_mac</span><span class="p">(</span><span class="n">name_and_mac</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tuple of two strings including client name and client mac address after splitting string at colon.</span>
+
+<span class="sd">    :param name_and_mac: must either be in the format of &#39;my_pc:00-00-00-00-00-00&#39;, or simply &#39;00-00-00-00-00-00&#39;</span>
+<span class="sd">    :type name_and_mac: str</span>
+
+<span class="sd">    :return: (client_name, client_mac_address) or (&#39;unnamed&#39;, client_mac_address) if string includes only mac address</span>
+<span class="sd">    :rtype: tup</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Split</span>
+    <span class="n">client_name_and_mac</span> <span class="o">=</span> <span class="n">name_and_mac</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="c1"># Unnamed by default</span>
+    <span class="n">client_name</span> <span class="o">=</span> <span class="s2">&quot;unnamed&quot;</span>
+    <span class="c1"># client name will be extracted if present(len == 2), otherwise it will remain unnamed</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">client_name_and_mac</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">client_name</span> <span class="o">=</span> <span class="n">client_name_and_mac</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">client_mac</span> <span class="o">=</span> <span class="n">client_name_and_mac</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># This leaves the possibility open that splits lists of three items or greater will be processed incorrectly</span>
+    <span class="c1"># This issue should be addressed at the template stage and not by this function</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">client_mac</span> <span class="o">=</span> <span class="n">client_name_and_mac</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">client_name</span><span class="p">,</span> <span class="n">client_mac</span></div>
+
+
+
+<div class="viewcode-block" id="calc_time">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.column_functions.calc_time">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_time</span><span class="p">(</span><span class="n">time_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">increment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;minutes&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return float value of time in specified increment deciphered and converted from string data</span>
+<span class="sd">    including h,m,s, converted to seconds, minutes, or hours</span>
+
+<span class="sd">    :param time_string: Formatted as &#39;23h4m&#39;, &#39;47m&#39;, or &#39;45s&#39;</span>
+<span class="sd">    :type time_string: str</span>
+<span class="sd">    :param increment: (optional) Type of desired time conversion, default minutes</span>
+<span class="sd">    :type increment: str {&#39;seconds&#39;, &#39;minutes&#39;, &#39;hours&#39;}</span>
+
+<span class="sd">    :return: Value of time converted to requested increment</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default conversion to minutes, values that will be used to divide once data is converted to a numeric type</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;seconds&quot;</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">3600</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;minutes&quot;</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;hours&quot;</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="c1"># Time presented in seconds ex: &#39;45s&#39;</span>
+    <span class="k">if</span> <span class="s2">&quot;s&quot;</span> <span class="ow">in</span> <span class="n">time_string</span><span class="p">:</span>
+        <span class="c1"># Divide by the appropriate conversion number</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">s</span>
+
+    <span class="c1"># Time in only minutes will be in the format 46m, 8m etc</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_string</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">and</span> <span class="s2">&quot;m&quot;</span> <span class="ow">in</span> <span class="n">time_string</span><span class="p">:</span>
+        <span class="c1"># Divide by the appropriate conversion number</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">m</span>
+
+    <span class="c1"># Time in hours will be in the format 24h8m</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_string</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">time_split</span> <span class="o">=</span> <span class="n">time_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>
+        <span class="c1"># Divide by the appropriate conversion numbers</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_split</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">h</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">m</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="n">hours</span> <span class="o">+</span> <span class="n">minutes</span>
+
+    <span class="k">return</span> <span class="n">time</span></div>
+
+
+
+<div class="viewcode-block" id="calc_data_usage">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.column_functions.calc_data_usage">[docs]</a>
+<span class="k">def</span> <span class="nf">calc_data_usage</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">increment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MB&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return data usage in specified increment deciphered and converted from string data including bytes, KB, MB, or GB</span>
+
+<span class="sd">    :param data_string: Formatted as &#39;0 bytes&#39;, &#39;313.5KB&#39;, &#39;535MB&#39;, or &#39;12GB&#39;, spaces will be removed</span>
+<span class="sd">    :type data_string: str</span>
+<span class="sd">    :param increment: (optional) Type of desired data conversion, default &quot;MB&quot;</span>
+<span class="sd">    :type increment: str {&#39;KB&#39;, &#39;MB&#39;, &#39;GB&#39;}</span>
+
+<span class="sd">    :return: Value of data converted to requested increment</span>
+<span class="sd">    :rtype: float</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Conversions are performed using factors of 10 for simplicity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default conversion to MB, function will select appropriate conversion rates if a different selection is made</span>
+    <span class="n">b</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;KB&quot;</span><span class="p">:</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">1000000</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;MB&quot;</span><span class="p">:</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">increment</span> <span class="o">==</span> <span class="s2">&quot;GB&quot;</span><span class="p">:</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="mi">1000000000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="c1"># Remove all spaces</span>
+    <span class="n">data_string</span> <span class="o">=</span> <span class="n">data_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="c1"># Remove alphanumeric characters and adjust to appropriate magnitude</span>
+    <span class="n">data_usage</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="s2">&quot;bytes&quot;</span> <span class="ow">in</span> <span class="n">data_string</span><span class="p">:</span>
+        <span class="n">data_usage</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">b</span>
+    <span class="k">if</span> <span class="s2">&quot;KB&quot;</span> <span class="ow">in</span> <span class="n">data_string</span><span class="p">:</span>
+        <span class="n">data_usage</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;KB&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">k</span>
+
+    <span class="k">if</span> <span class="s2">&quot;MB&quot;</span> <span class="ow">in</span> <span class="n">data_string</span><span class="p">:</span>
+        <span class="n">data_usage</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;MB&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">m</span>
+
+    <span class="k">if</span> <span class="s2">&quot;GB&quot;</span> <span class="ow">in</span> <span class="n">data_string</span><span class="p">:</span>
+        <span class="n">data_usage</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;GB&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">/</span> <span class="n">g</span>
+
+    <span class="k">return</span> <span class="n">data_usage</span></div>
+
+
+
+<div class="viewcode-block" id="isolate_ip_from_parentheses">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.column_functions.isolate_ip_from_parentheses">[docs]</a>
+<span class="k">def</span> <span class="nf">isolate_ip_from_parentheses</span><span class="p">(</span><span class="n">ip_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an ip address from surrounding parentheses</span>
+
+<span class="sd">    :param ip_string: Formatted as: &#39;10.0.10.10&#39;, &#39;(10.20.30.6)&#39;, &#39;WORKGROUP(10.90.10.3)&#39;, etc.</span>
+<span class="sd">    :type ip_string: str</span>
+
+<span class="sd">    :return: IP address</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Conversion to IPv4/IPv6 Address object is not performed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Check if parentheses are present before splitting/selecting the appropriate index</span>
+    <span class="k">if</span> <span class="s2">&quot;(&quot;</span> <span class="ow">in</span> <span class="n">ip_string</span><span class="p">:</span>
+        <span class="n">ip_string</span> <span class="o">=</span> <span class="n">ip_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;)&quot;</span> <span class="ow">in</span> <span class="n">ip_string</span><span class="p">:</span>
+        <span class="n">ip_string</span> <span class="o">=</span> <span class="n">ip_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ip_string</span></div>
+
+
+
+<div class="viewcode-block" id="split_by_delimiter">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.column_functions.split_by_delimiter">[docs]</a>
+<span class="k">def</span> <span class="nf">split_by_delimiter</span><span class="p">(</span><span class="n">string_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split data by delimiter and return list of values</span>
+
+<span class="sd">    :param string_data: String to split</span>
+<span class="sd">    :type string_data: str</span>
+<span class="sd">    :param delimiter: Character to split on</span>
+<span class="sd">    :type delimiter: str</span>
+
+<span class="sd">    :return: List of strings</span>
+<span class="sd">    :rtype: list[str]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_of_split_values</span> <span class="o">=</span> <span class="n">string_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">list_of_split_values</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Caleb Yourison.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

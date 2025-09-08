@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>template_log_parser.built_ins &mdash; template-log-parser 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a0e24af7"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            template-log-parser
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">template_log_parser</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">template-log-parser</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">template_log_parser.built_ins</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for template_log_parser.built_ins</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">TextIOBase</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.log_functions</span> <span class="kn">import</span> <span class="n">process_log</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.pre_df_functions</span> <span class="kn">import</span> <span class="n">link_log_file_lines</span>
+
+<span class="kn">from</span> <span class="nn">template_log_parser.log_type_classes</span> <span class="kn">import</span> <span class="n">dict_built_in_log_file_types</span>
+<span class="kn">from</span> <span class="nn">template_log_parser.templates.kodi_templates</span> <span class="kn">import</span> <span class="n">kodi_line_linking_arguments</span>
+
+
+<div class="viewcode-block" id="built_in_process_log">
+<a class="viewcode-back" href="../../template_log_parser.html#template_log_parser.built_ins.built_in_process_log">[docs]</a>
+<span class="k">def</span> <span class="nf">built_in_process_log</span><span class="p">(</span>
+    <span class="n">built_in</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;debian&quot;</span><span class="p">,</span> <span class="s2">&quot;kodi&quot;</span><span class="p">,</span> <span class="s2">&quot;omada&quot;</span><span class="p">,</span> <span class="s2">&quot;omv&quot;</span><span class="p">,</span> <span class="s2">&quot;pfsense&quot;</span><span class="p">,</span> <span class="s2">&quot;pihole&quot;</span><span class="p">,</span> <span class="s2">&quot;synology&quot;</span><span class="p">,</span> <span class="s2">&quot;ubuntu&quot;</span><span class="p">],</span>
+    <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">BytesIO</span> <span class="o">|</span> <span class="n">StringIO</span> <span class="o">|</span> <span class="n">TextIOBase</span><span class="p">,</span>
+    <span class="n">dict_format</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">match</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">eliminate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">match_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+    <span class="n">eliminate_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,</span>
+<span class="sd">    utilizing predefined templates.  This function is tailored to Built-In log file types using Built-In templates.</span>
+
+<span class="sd">    :param built_in: built in log file type</span>
+<span class="sd">    :type built_in: Literal[&quot;debian&quot;, &quot;kodi&quot;, &quot;omada&quot;, &quot;omv&quot;, &quot;pfsense&quot;, &quot;pihole&quot;, &quot;synology&quot;, &quot;ubuntu&quot;]</span>
+
+<span class="sd">    :param file: Path to file or filelike object, most commonly in the format of some_log_process.log</span>
+<span class="sd">    :type file: str, Path, BytesIO, StringIO, TextIOBase</span>
+
+<span class="sd">    :param dict_format: (optional) Return a dictionary of DataFrames when True, one large DataFrame when False, True by default</span>
+<span class="sd">    :type dict_format: bool</span>
+
+<span class="sd">    :param match: (optional) A single word or list of words must be present within the line otherwise dropped.</span>
+<span class="sd">    :type match: str, List[str], None</span>
+
+<span class="sd">    :param eliminate: (optional) A single word or a list of words if present within line will result in it being dropped</span>
+<span class="sd">    :type eliminate: str, List[str], None</span>
+
+<span class="sd">    :param match_type: (optional) criteria to determine if any words must be present to match, or all words</span>
+<span class="sd">    :type match_type: Literal[&quot;any&quot;, &quot;all&quot;]</span>
+
+<span class="sd">    :param eliminate_type: (optional) criteria to determine if any words must be present to eliminate, or all words</span>
+<span class="sd">    :type eliminate_type: Literal[&quot;any&quot;, &quot;all&quot;]</span>
+
+<span class="sd">    :return: dict formatted as {&#39;event_type_1&#39;: df_1, &#39;event_type_2&#39;: df_2, ...}, Pandas Dataframe will include all event types and all columns</span>
+<span class="sd">    :rtype: Dict[str, Pandas.DataFrame], Pandas Dataframe</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This function utilizes process_log()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Determine built_in based on name attribute</span>
+    <span class="n">built_in_type</span> <span class="o">=</span> <span class="n">dict_built_in_log_file_types</span><span class="p">[</span><span class="n">built_in</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">built_in</span> <span class="o">==</span> <span class="s2">&quot;kodi&quot;</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">link_log_file_lines</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">kodi_line_linking_arguments</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">process_log</span><span class="p">(</span>
+        <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+        <span class="n">templates</span><span class="o">=</span><span class="n">built_in_type</span><span class="o">.</span><span class="n">templates</span><span class="p">,</span>
+        <span class="n">additional_column_functions</span><span class="o">=</span><span class="n">built_in_type</span><span class="o">.</span><span class="n">column_functions</span><span class="p">,</span>
+        <span class="n">merge_dictionary</span><span class="o">=</span><span class="n">built_in_type</span><span class="o">.</span><span class="n">merge_events</span><span class="p">,</span>
+        <span class="n">datetime_columns</span><span class="o">=</span><span class="n">built_in_type</span><span class="o">.</span><span class="n">datetime_columns</span><span class="p">,</span>
+        <span class="n">localize_timezone_columns</span><span class="o">=</span><span class="n">built_in_type</span><span class="o">.</span><span class="n">localize_datetime_columns</span><span class="p">,</span>
+        <span class="n">drop_columns</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dict_format</span><span class="o">=</span><span class="n">dict_format</span><span class="p">,</span>
+        <span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span>
+        <span class="n">eliminate</span><span class="o">=</span><span class="n">eliminate</span><span class="p">,</span>
+        <span class="n">match_type</span><span class="o">=</span><span class="n">match_type</span><span class="p">,</span>
+        <span class="n">eliminate_type</span><span class="o">=</span><span class="n">eliminate_type</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Caleb Yourison.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

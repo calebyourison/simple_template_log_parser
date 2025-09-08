@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>template_log_parser package &mdash; template-log-parser 0.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a0e24af7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="template_log_parser" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            template-log-parser
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">template_log_parser</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">template_log_parser package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.built_ins">template_log_parser.built_ins module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.built_ins.built_in_process_log"><code class="docutils literal notranslate"><span class="pre">built_in_process_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.column_functions">template_log_parser.column_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.column_functions.calc_data_usage"><code class="docutils literal notranslate"><span class="pre">calc_data_usage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.column_functions.calc_time"><code class="docutils literal notranslate"><span class="pre">calc_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.column_functions.isolate_ip_from_parentheses"><code class="docutils literal notranslate"><span class="pre">isolate_ip_from_parentheses()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.column_functions.split_by_delimiter"><code class="docutils literal notranslate"><span class="pre">split_by_delimiter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.column_functions.split_name_and_mac"><code class="docutils literal notranslate"><span class="pre">split_name_and_mac()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.log_functions">template_log_parser.log_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.log_pre_process"><code class="docutils literal notranslate"><span class="pre">log_pre_process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.merge_event_type_dfs"><code class="docutils literal notranslate"><span class="pre">merge_event_type_dfs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.parse_function"><code class="docutils literal notranslate"><span class="pre">parse_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.process_event_types"><code class="docutils literal notranslate"><span class="pre">process_event_types()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.process_log"><code class="docutils literal notranslate"><span class="pre">process_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_functions.run_functions_on_columns"><code class="docutils literal notranslate"><span class="pre">run_functions_on_columns()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.log_type_classes">template_log_parser.log_type_classes module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.log_type_classes.BuiltInLogFileType"><code class="docutils literal notranslate"><span class="pre">BuiltInLogFileType</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.pre_df_functions">template_log_parser.pre_df_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.pre_df_functions.link_log_file_lines"><code class="docutils literal notranslate"><span class="pre">link_log_file_lines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.pre_df_functions.tag_and_or_combine_lines"><code class="docutils literal notranslate"><span class="pre">tag_and_or_combine_lines()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.templates.definitions">template_log_parser.templates.definitions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate"><code class="docutils literal notranslate"><span class="pre">SimpleTemplate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser.templates.template_functions">template_log_parser.templates.template_functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#template_log_parser.templates.template_functions.compile_templates"><code class="docutils literal notranslate"><span class="pre">compile_templates()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-template_log_parser">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">template-log-parser</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">template_log_parser</a></li>
+      <li class="breadcrumb-item active">template_log_parser package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/template_log_parser.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="template-log-parser-package">
+<h1>template_log_parser package<a class="headerlink" href="#template-log-parser-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-template_log_parser.built_ins">
+<span id="template-log-parser-built-ins-module"></span><h2>template_log_parser.built_ins module<a class="headerlink" href="#module-template_log_parser.built_ins" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.built_ins.built_in_process_log">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.built_ins.</span></span><span class="sig-name descname"><span class="pre">built_in_process_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">built_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'debian'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'kodi'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'omada'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'omv'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'pfsense'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'pihole'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'synology'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'ubuntu'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BytesIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StringIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TextIOBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/template_log_parser/built_ins.html#built_in_process_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.built_ins.built_in_process_log" title="Link to this definition"></a></dt>
+<dd><p>Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
+utilizing predefined templates.  This function is tailored to Built-In log file types using Built-In templates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>built_in</strong> (<em>Literal</em><em>[</em><em>&quot;debian&quot;</em><em>, </em><em>&quot;kodi&quot;</em><em>, </em><em>&quot;omada&quot;</em><em>, </em><em>&quot;omv&quot;</em><em>, </em><em>&quot;pfsense&quot;</em><em>, </em><em>&quot;pihole&quot;</em><em>, </em><em>&quot;synology&quot;</em><em>, </em><em>&quot;ubuntu&quot;</em><em>]</em>) – built in log file type</p></li>
+<li><p><strong>file</strong> (<em>str</em><em>, </em><em>Path</em><em>, </em><em>BytesIO</em><em>, </em><em>StringIO</em><em>, </em><em>TextIOBase</em>) – Path to file or filelike object, most commonly in the format of some_log_process.log</p></li>
+<li><p><strong>dict_format</strong> (<em>bool</em>) – (optional) Return a dictionary of DataFrames when True, one large DataFrame when False, True by default</p></li>
+<li><p><strong>match</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or list of words must be present within the line otherwise dropped.</p></li>
+<li><p><strong>eliminate</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or a list of words if present within line will result in it being dropped</p></li>
+<li><p><strong>match_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to match, or all words</p></li>
+<li><p><strong>eliminate_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to eliminate, or all words</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict formatted as {‘event_type_1’: df_1, ‘event_type_2’: df_2, …}, Pandas Dataframe will include all event types and all columns</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Pandas.DataFrame], Pandas Dataframe</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Note:</dt><dd><p>This function utilizes process_log()</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.column_functions">
+<span id="template-log-parser-column-functions-module"></span><h2>template_log_parser.column_functions module<a class="headerlink" href="#module-template_log_parser.column_functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.column_functions.calc_data_usage">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.column_functions.</span></span><span class="sig-name descname"><span class="pre">calc_data_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'MB'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/template_log_parser/column_functions.html#calc_data_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.column_functions.calc_data_usage" title="Link to this definition"></a></dt>
+<dd><p>Return data usage in specified increment deciphered and converted from string data including bytes, KB, MB, or GB</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_string</strong> (<em>str</em>) – Formatted as ‘0 bytes’, ‘313.5KB’, ‘535MB’, or ‘12GB’, spaces will be removed</p></li>
+<li><p><strong>increment</strong> (<em>str {'KB'</em><em>, </em><em>'MB'</em><em>, </em><em>'GB'}</em>) – (optional) Type of desired data conversion, default “MB”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of data converted to requested increment</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Note:</dt><dd><p>Conversions are performed using factors of 10 for simplicity.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.column_functions.calc_time">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.column_functions.</span></span><span class="sig-name descname"><span class="pre">calc_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">increment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'minutes'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/template_log_parser/column_functions.html#calc_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.column_functions.calc_time" title="Link to this definition"></a></dt>
+<dd><p>Return float value of time in specified increment deciphered and converted from string data
+including h,m,s, converted to seconds, minutes, or hours</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_string</strong> (<em>str</em>) – Formatted as ‘23h4m’, ‘47m’, or ’45s’</p></li>
+<li><p><strong>increment</strong> (<em>str {'seconds'</em><em>, </em><em>'minutes'</em><em>, </em><em>'hours'}</em>) – (optional) Type of desired time conversion, default minutes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Value of time converted to requested increment</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.column_functions.isolate_ip_from_parentheses">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.column_functions.</span></span><span class="sig-name descname"><span class="pre">isolate_ip_from_parentheses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/template_log_parser/column_functions.html#isolate_ip_from_parentheses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.column_functions.isolate_ip_from_parentheses" title="Link to this definition"></a></dt>
+<dd><p>Return an ip address from surrounding parentheses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ip_string</strong> (<em>str</em>) – Formatted as: ‘10.0.10.10’, ‘(10.20.30.6)’, ‘WORKGROUP(10.90.10.3)’, etc.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>IP address</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Note:</dt><dd><p>Conversion to IPv4/IPv6 Address object is not performed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.column_functions.split_by_delimiter">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.column_functions.</span></span><span class="sig-name descname"><span class="pre">split_by_delimiter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">','</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/column_functions.html#split_by_delimiter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.column_functions.split_by_delimiter" title="Link to this definition"></a></dt>
+<dd><p>Split data by delimiter and return list of values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string_data</strong> (<em>str</em>) – String to split</p></li>
+<li><p><strong>delimiter</strong> (<em>str</em>) – Character to split on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of strings</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.column_functions.split_name_and_mac">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.column_functions.</span></span><span class="sig-name descname"><span class="pre">split_name_and_mac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_and_mac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/column_functions.html#split_name_and_mac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.column_functions.split_name_and_mac" title="Link to this definition"></a></dt>
+<dd><p>Return a tuple of two strings including client name and client mac address after splitting string at colon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name_and_mac</strong> (<em>str</em>) – must either be in the format of ‘my_pc:00-00-00-00-00-00’, or simply ‘00-00-00-00-00-00’</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(client_name, client_mac_address) or (‘unnamed’, client_mac_address) if string includes only mac address</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tup</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.log_functions">
+<span id="template-log-parser-log-functions-module"></span><h2>template_log_parser.log_functions module<a class="headerlink" href="#module-template_log_parser.log_functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.log_pre_process">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">log_pre_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BytesIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StringIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TextIOBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><span class="pre">SimpleTemplate</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#log_pre_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.log_pre_process" title="Link to this definition"></a></dt>
+<dd><p>Return a Pandas DataFrame with named columns as specified by templates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em><em>, </em><em>Path</em><em>, </em><em>BytesIO</em><em>, </em><em>StringIO</em><em>, </em><em>TextIOBase</em>) – Path to file or filelike object, most commonly in the format of some_log_process.log</p></li>
+<li><p><strong>templates</strong> (<em>list</em><em>[</em><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><em>SimpleTemplate</em></a><em>]</em>) – formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), …]</p></li>
+<li><p><strong>match</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or list of words must be present within the line otherwise dropped.</p></li>
+<li><p><strong>eliminate</strong> (<em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or a list of words if present within line will result in it being dropped</p></li>
+<li><p><strong>match_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to match, or all words</p></li>
+<li><p><strong>eliminate_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to eliminate, or all words</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with columns found in matching templates</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If wrong file type is provided</p>
+</dd>
+<dt class="field-odd">Note<span class="colon">:</span></dt>
+<dd class="field-odd"><p>eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.merge_event_type_dfs">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">merge_event_type_dfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#merge_event_type_dfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.merge_event_type_dfs" title="Link to this definition"></a></dt>
+<dd><p>Return a dictionary of Pandas DataFrames whose keys are the event types, after merging specified event_types and
+deleting the old DataFrames</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_dictionary</strong> (<em>dict</em>) – Dictionary of DataFrames, formatted as {‘event_type_1’: df_1, ‘event_type_2’: df_2, …}</p></li>
+<li><p><strong>merge_dictionary</strong> (<em>dict</em>) – Formatted as {‘new_df_name’, [‘event_type_1’, ‘event_type_2’, …], …}</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of DataFrames formatted as {‘new_df_name’: new_df, ‘event_type_3’: df_3, …}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Note<span class="colon">:</span></dt>
+<dd class="field-even"><p>Certain log events are categorically similar despite being parsed with different templates.
+For example, client wireless connections and client hardwired connections might be easier to analyze when
+grouped into the same DataFrame.</p>
+<p>This function performs that concatenation and deletes the old DataFrames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.parse_function">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">parse_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><span class="pre">SimpleTemplate</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#parse_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.parse_function" title="Link to this definition"></a></dt>
+<dd><p>Return a dictionary of information parsed from a log file string based on matching template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event</strong> (<em>str</em>) – String data, should ideally match a repeated format throughout a text file</p></li>
+<li><p><strong>templates</strong> (<em>list</em><em>[</em><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><em>SimpleTemplate</em></a><em>]</em>) – formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), …]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary containing:
+- event_type along parsed values if successful.  Otherwise, {“Unparsed_text”: original_text, “event_type”: “Other”}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.process_event_types">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">process_event_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_column_functions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localize_timezone_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#process_event_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.process_event_types" title="Link to this definition"></a></dt>
+<dd><p>Return a dictionary of Pandas DataFrames whose keys are event types</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>Pandas.DataFrame</em>) – DataFrame for processing</p></li>
+<li><p><strong>additional_column_functions</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>] or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – (optional) {column: [function, [new_column(s)], kwargs], …}</p></li>
+<li><p><strong>datetime_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to be converted using Pandas.to_datetime()</p></li>
+<li><p><strong>localize_timezone_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to drop timezone</p></li>
+<li><p><strong>drop_columns</strong> (<em>bool</em>) – (optional) If True, ‘event_data’ will be dropped along with columns processed by additional_column_functions, True by default</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame Dictionary formatted as {‘event_type_1’: df_1, ‘event_type_2’: df_2, …}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.process_log">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">process_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BytesIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StringIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TextIOBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><span class="pre">SimpleTemplate</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_column_functions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localize_timezone_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eliminate_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'any'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'all'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#process_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.process_log" title="Link to this definition"></a></dt>
+<dd><p>Return a single Pandas Dataframe or dictionary of DataFrames whose keys are the log file event types,
+utilizing templates.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>str</em><em>, </em><em>Path</em><em>, </em><em>BytesIO</em><em>, </em><em>StringIO</em><em>, </em><em>TextIOBase</em>) – Path to file or filelike object, most commonly in the format of some_log_process.log</p></li>
+<li><p><strong>templates</strong> (<em>list</em><em>[</em><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><em>SimpleTemplate</em></a><em>]</em>) – formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), …]</p></li>
+<li><p><strong>additional_column_functions</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>] or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – (optional) {column: [function, [new_column(s)], kwargs], …}</p></li>
+<li><p><strong>merge_dictionary</strong> (<em>dict</em>) – Formatted as {‘new_df_name’, [‘existing_df_1’, ‘existing_df_2’, …], …}</p></li>
+<li><p><strong>datetime_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to be converted using Pandas.to_datetime()</p></li>
+<li><p><strong>localize_timezone_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to drop timezone</p></li>
+<li><p><strong>drop_columns</strong> (<em>bool</em>) – (optional) If True, ‘parsed_info’, ‘event_data’ will be dropped along with processed columns, True by default</p></li>
+<li><p><strong>dict_format</strong> (<em>(</em><em>optional</em><em>) </em><em>bool</em>) – Return a dictionary of DataFrames when True, one large DataFrame when False, True by default</p></li>
+<li><p><strong>match</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or list of words must be present within the line otherwise dropped.</p></li>
+<li><p><strong>eliminate</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>None</em>) – (optional) A single word or a list of words if present within line will result in it being dropped</p></li>
+<li><p><strong>match_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to match, or all words</p></li>
+<li><p><strong>eliminate_type</strong> (<em>Literal</em><em>[</em><em>&quot;any&quot;</em><em>, </em><em>&quot;all&quot;</em><em>]</em>) – (optional) criteria to determine if any words must be present to eliminate, or all words</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict formatted as {‘event_type_1’: df_1, ‘event_type_2’: df_2, …}, Pandas Dataframe will include all event types and all columns</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Pandas.DataFrame], Pandas Dataframe</p>
+</dd>
+<dt class="field-even">Note<span class="colon">:</span></dt>
+<dd class="field-even"><p>This function incorporates several smaller functions.
+For more specific information, please see help for individual functions:</p>
+<p>parse_function()</p>
+<p>log_pre_process()</p>
+<p>run_functions_on_columns()</p>
+<p>process_event_types()</p>
+<p>merge_event_types()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.log_functions.run_functions_on_columns">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.log_functions.</span></span><span class="sig-name descname"><span class="pre">run_functions_on_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_column_functions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localize_timezone_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/log_functions.html#run_functions_on_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_functions.run_functions_on_columns" title="Link to this definition"></a></dt>
+<dd><p>Return a tuple with a Pandas Dataframe (having newly created columns based on run functions)
+along with a list of columns that were processed.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>Pandas.DataFrame</em>) – DataFrame for processing</p></li>
+<li><p><strong>additional_column_functions</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>] or </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – (optional) {column: [function, [new_column(s)], kwargs], …}</p></li>
+<li><p><strong>datetime_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to be converted using Pandas.to_datetime()</p></li>
+<li><p><strong>localize_timezone_columns</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – (optional) Columns to drop timezone</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame with newly processed columns, list of columns that were processed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Pandas.DataFrame, List[str]]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If column or transformation config is invalid.</p></li>
+<li><p><strong>TypeError</strong> – If target column names are not str or list[str].</p></li>
+<li><p><strong>RuntimeError</strong> – If a function fails during application.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p>my_kwargs = dict(keyword_1=’some_string’, keyword_2=1000, keyword_3=[1,2,3])</p>
+<dl class="simple">
+<dt>my_column_functions = {</dt><dd><p>‘column_to_run_function_on’: [function, ‘new_column_name’],
+‘column_2_to_run_function_on’: [create_two_columns, [‘new_col_2, ‘new_col_3’]],
+‘column_4_to_run_function_on’: [function_with_kwargs, ‘new_col_4’, my_kwargs],
+}</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Note<span class="colon">:</span></dt>
+<dd class="field-even"><p>This function (excepting datetime columns) is designed to create new columns and provide a list
+of columns to be dropped at a later stage.  One can create custom functions, or use the included functions.
+An example of this would be the calc_time() function which can convert strings such as ‘1h12m’
+to integer 72.</p>
+<p>Sometimes a function is designed to expand one column into two or more new columns.
+In this instance, one can provide a list of new column names. Please see example.</p>
+<p>If only df parameter is supplied, function will return the original df and an empty list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.log_type_classes">
+<span id="template-log-parser-log-type-classes-module"></span><h2>template_log_parser.log_type_classes module<a class="headerlink" href="#module-template_log_parser.log_type_classes" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="template_log_parser.log_type_classes.BuiltInLogFileType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">template_log_parser.log_type_classes.</span></span><span class="sig-name descname"><span class="pre">BuiltInLogFileType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_functions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localize_datetime_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/template_log_parser/log_type_classes.html#BuiltInLogFileType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_type_classes.BuiltInLogFileType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Built In Log File Type as a class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Simple name to reference the type</p></li>
+<li><p><strong>base_templates</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – uncompiled list of base templates, expected format:  [[template, event_type, search_string], [template, event_type], …]</p></li>
+<li><p><strong>column_functions</strong> (<em>dict</em><em>, </em><em>None</em>) – Formatted as {column: [function, [new_column(s)], kwargs], …}</p></li>
+<li><p><strong>merge_events</strong> (<em>dict</em><em>, </em><em>None</em>) – Formatted as {‘new_df_name’, [‘existing_df_1’, ‘existing_df_2’, …], …}</p></li>
+<li><p><strong>datetime_columns</strong> (<em>list</em><em>, </em><em>None</em>) – Columns to be converted using Pandas.to_datetime()</p></li>
+<li><p><strong>localize_datetime_columns</strong> (<em>list</em><em>, </em><em>None</em>) – Columns to drop timezone</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="template_log_parser.log_type_classes.BuiltInLogFileType.modify_templates">
+<span class="sig-name descname"><span class="pre">modify_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/template_log_parser/log_type_classes.html#BuiltInLogFileType.modify_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.log_type_classes.BuiltInLogFileType.modify_templates" title="Link to this definition"></a></dt>
+<dd><p>Compile new list of templates after prefixing and/or suffixing the base templates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – text to place at beginning of template</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – text to place at end of template</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.pre_df_functions">
+<span id="template-log-parser-pre-df-functions-module"></span><h2>template_log_parser.pre_df_functions module<a class="headerlink" href="#module-template_log_parser.pre_df_functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.pre_df_functions.link_log_file_lines">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.pre_df_functions.</span></span><span class="sig-name descname"><span class="pre">link_log_file_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">BytesIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">StringIO</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TextIOBase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StringIO</span></span></span><a class="reference internal" href="_modules/template_log_parser/pre_df_functions.html#link_log_file_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.pre_df_functions.link_log_file_lines" title="Link to this definition"></a></dt>
+<dd><p>Run list of line-linking functions against a log file and return a StringIO object to continued analysis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logfile</strong> (<em>str</em><em>, </em><em>Path</em><em>, </em><em>BytesIO</em><em>, </em><em>StringIO</em><em>, </em><em>TextIOBase</em>) – Path to file or filelike object, most commonly in the format of some_log_process.log</p>
+</dd>
+<dt class="field-even">Criteria<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of lists containing list-linking function and dict of arguments</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>original logfile with the modifications to linked lines</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>StringIO</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>link_funcs = [</dt><dd><p>[tag_or_combine_lines, dict(start_text=”Unable to open file”, end_text=”error :”, combine=True)],
+[func2, dict(arg=1)],
+…]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.pre_df_functions.tag_and_or_combine_lines">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.pre_df_functions.</span></span><span class="sig-name descname"><span class="pre">tag_and_or_combine_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_all_strings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_replace_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_search_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/pre_df_functions.html#tag_and_or_combine_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.pre_df_functions.tag_and_or_combine_lines" title="Link to this definition"></a></dt>
+<dd><p>Either add tag to or combine associated lines (or both) based on starting/ending text and return list</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list_all_strings</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – list of all text</p></li>
+<li><p><strong>start_text</strong> (<em>str</em>) – text that must be present within the first item</p></li>
+<li><p><strong>end_text</strong> (<em>str</em>) – text that must be present on the final item to associate group</p></li>
+<li><p><strong>combine</strong> (<em>bool</em>) – False by default, True to combine all items into a single line</p></li>
+<li><p><strong>tag</strong> (<em>str</em>) – text to be added to associated items, empty by default resulting in no change</p></li>
+<li><p><strong>tag_replace_text</strong> (<em>str</em>) – text to replace with tag, empty by default resulting in no change</p></li>
+<li><p><strong>max_search_lines</strong> (<em>int</em>) – maximum number of lines to look for end_text after start_text</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of strings or list of single string with combined lines and/or the addition of tags</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Note<span class="colon">:</span></dt>
+<dd class="field-even"><p>tag_replace_text is intended to select the correct position within the string to tag.</p>
+<p>line = ‘(info): this is a log file line regarding ip address 10.0.0.186’
+tag_replace_text = ‘info’
+tag = ‘info security_incident_100’</p>
+<p>tagged_line = ‘(info security_incident_100): this is a log file line regarding ip address 10.0.0.186’</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.templates.definitions">
+<span id="template-log-parser-templates-definitions-module"></span><h2>template_log_parser.templates.definitions module<a class="headerlink" href="#module-template_log_parser.templates.definitions" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="template_log_parser.templates.definitions.SimpleTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">template_log_parser.templates.definitions.</span></span><span class="sig-name descname"><span class="pre">SimpleTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/template_log_parser/templates/definitions.html#SimpleTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.templates.definitions.SimpleTemplate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Compiled template, event_type string, and search_string</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="template_log_parser.templates.definitions.SimpleTemplate.event_type">
+<span class="sig-name descname"><span class="pre">event_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#template_log_parser.templates.definitions.SimpleTemplate.event_type" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="template_log_parser.templates.definitions.SimpleTemplate.search_string">
+<span class="sig-name descname"><span class="pre">search_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#template_log_parser.templates.definitions.SimpleTemplate.search_string" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="template_log_parser.templates.definitions.SimpleTemplate.template">
+<span class="sig-name descname"><span class="pre">template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Parser</span></em><a class="headerlink" href="#template_log_parser.templates.definitions.SimpleTemplate.template" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser.templates.template_functions">
+<span id="template-log-parser-templates-template-functions-module"></span><h2>template_log_parser.templates.template_functions module<a class="headerlink" href="#module-template_log_parser.templates.template_functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="template_log_parser.templates.template_functions.compile_templates">
+<span class="sig-prename descclassname"><span class="pre">template_log_parser.templates.template_functions.</span></span><span class="sig-name descname"><span class="pre">compile_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_string_criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'find'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'copy'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'find'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate"><span class="pre">SimpleTemplate</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/template_log_parser/templates/template_functions.html#compile_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#template_log_parser.templates.template_functions.compile_templates" title="Link to this definition"></a></dt>
+<dd><p>Return a list of namedtuple (simple_template) after compiling templates and identifying search_string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>templates</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – list containing list of strings whose length is 2 or 3 [[template, event_type, search_string (optional)], …]</p></li>
+<li><p><strong>search_string_criteria</strong> (<em>Literal</em><em>[</em><em>&quot;find&quot;</em><em>, </em><em>&quot;copy&quot;</em><em>]</em>) – decision to either find a search_string using regex or copy the event_type as the search_string if none provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of SimpleTemplate namedtuple</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#template_log_parser.templates.definitions.SimpleTemplate" title="template_log_parser.templates.definitions.SimpleTemplate">SimpleTemplate</a>]</p>
+</dd>
+<dt class="field-even">Note<span class="colon">:</span></dt>
+<dd class="field-even"><p>expected format:  [[template, event_type, search_string], [template, event_type], …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-template_log_parser">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-template_log_parser" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="template_log_parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Caleb Yourison.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
