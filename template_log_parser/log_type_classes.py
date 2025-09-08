@@ -1,47 +1,49 @@
 # Defines classes for built-in log file types
-from parse import Parser
 
-from typing import Callable, Dict, List, Union
+from typing import Callable
 
-from template_log_parser.templates.debian_templates import debian_template_dict
+from template_log_parser.templates.template_functions import compile_templates
+
+from template_log_parser.templates.debian_templates import (
+    base_debian_templates
+)
 
 from template_log_parser.templates.kodi_templates import (
-    kodi_template_dict,
+    base_kodi_templates,
     kodi_column_process_dict,
     kodi_merge_events_dict,
 )
 
 from template_log_parser.templates.omada_templates import (
-    omada_template_dict,
+    base_omada_templates,
     omada_column_process_dict,
     omada_merge_events_dict,
 )
 
 from template_log_parser.templates.omv_templates import (
-    omv_template_dict,
+    base_omv_templates,
     omv_merge_events_dict,
 )
 
 from template_log_parser.templates.pfsense_templates import (
-    pfsense_template_dict,
+    base_pfsense_templates,
     pfsense_column_process_dict,
     pfsense_merge_events_dict,
 )
 
 from template_log_parser.templates.pihole_templates import (
-    pihole_template_dict,
+    base_pihole_templates,
     pihole_merge_events_dict,
 )
 from template_log_parser.templates.synology_templates import (
-    synology_template_dict,
+    base_synology_templates,
     synology_column_process_dict,
     synology_merge_events_dict,
 )
 
 from template_log_parser.templates.ubuntu_templates import (
-    ubuntu_template_dict,
+    base_ubuntu_templates,
     ubuntu_column_process_dict,
-    ubuntu_merge_events_dict
 )
 
 
@@ -51,8 +53,8 @@ class BuiltInLogFileType:
     :param name: Simple name to reference the type
     :type name: str
 
-    :param templates: Templates for the type should be equal in length to number of lines in the sample log file
-    :type templates: dict
+    :param base_templates: uncompiled list of base templates, expected format:  [[template, event_type, search_string], [template, event_type], ...]
+    :type base_templates: list[list[str]]
 
     :param column_functions: Formatted as {column: [function, [new_column(s)], kwargs], ...}
     :type column_functions: dict, None
@@ -70,24 +72,39 @@ class BuiltInLogFileType:
     def __init__(
         self,
         name: str,
-        templates: Dict[str, List[Union[Parser, str]]],
+        base_templates: list[list[str]],
         column_functions: None | dict[str, list[Callable | str | list[str] | dict[str, int]]],
         merge_events: None | dict[str, list[str]],
         datetime_columns: None | list[str],
         localize_datetime_columns: None | list[str],
     ):
         self.name = name
-        self.templates = templates
+        self.base_templates = base_templates
+        self.templates = compile_templates(self.base_templates, search_string_criteria='copy')
         self.column_functions = column_functions
         self.merge_events = merge_events
         self.datetime_columns = datetime_columns
         self.localize_datetime_columns = localize_datetime_columns
 
+    def modify_templates(self, prefix:str='', suffix:str='') -> None:
+        """Compile new list of templates after prefixing and/or suffixing the base templates
+
+        :param prefix: text to place at beginning of template
+        :type prefix: str
+
+        :param suffix: text to place at end of template
+        :type suffix: str
+        """
+        modified_base_templates = [[prefix + item[0] + suffix] + item[:1] for item in self.base_templates]
+
+        self.templates = compile_templates(modified_base_templates, search_string_criteria='copy')
+
+
 
 # BuiltInLogFileType Instances
 debian = BuiltInLogFileType(
     name="debian",
-    templates=debian_template_dict,
+    base_templates=base_debian_templates,
     column_functions=None,
     merge_events=None,
     datetime_columns=["time"],
@@ -96,7 +113,7 @@ debian = BuiltInLogFileType(
 
 kodi = BuiltInLogFileType(
     name="kodi",
-    templates=kodi_template_dict,
+    base_templates=base_kodi_templates,
     column_functions=kodi_column_process_dict,
     merge_events=kodi_merge_events_dict,
     datetime_columns=["time"],
@@ -105,7 +122,7 @@ kodi = BuiltInLogFileType(
 
 omada = BuiltInLogFileType(
     name="omada",
-    templates=omada_template_dict,
+    base_templates=base_omada_templates,
     column_functions=omada_column_process_dict,
     merge_events=omada_merge_events_dict,
     datetime_columns=["time"],
@@ -114,7 +131,7 @@ omada = BuiltInLogFileType(
 
 omv = BuiltInLogFileType(
     name="omv",
-    templates=omv_template_dict,
+    base_templates=base_omv_templates,
     column_functions=None,
     merge_events=omv_merge_events_dict,
     datetime_columns=["time"],
@@ -123,7 +140,7 @@ omv = BuiltInLogFileType(
 
 pfsense = BuiltInLogFileType(
     name="pfsense",
-    templates=pfsense_template_dict,
+    base_templates=base_pfsense_templates,
     column_functions=pfsense_column_process_dict,
     merge_events=pfsense_merge_events_dict,
     datetime_columns=["time"],
@@ -132,7 +149,7 @@ pfsense = BuiltInLogFileType(
 
 pihole = BuiltInLogFileType(
     name="pihole",
-    templates=pihole_template_dict,
+    base_templates=base_pihole_templates,
     column_functions=None,
     merge_events=pihole_merge_events_dict,
     datetime_columns=None,
@@ -141,7 +158,7 @@ pihole = BuiltInLogFileType(
 
 synology = BuiltInLogFileType(
     name="synology",
-    templates=synology_template_dict,
+    base_templates=base_synology_templates,
     column_functions=synology_column_process_dict,
     merge_events=synology_merge_events_dict,
     datetime_columns=["time"],
@@ -150,7 +167,7 @@ synology = BuiltInLogFileType(
 
 ubuntu = BuiltInLogFileType(
     name='ubuntu',
-    templates=ubuntu_template_dict,
+    base_templates=base_ubuntu_templates,
     column_functions=ubuntu_column_process_dict,
     merge_events=None,
     datetime_columns=["time"],

@@ -1,21 +1,21 @@
 import pandas as pd
 import numpy as np
-from parse import Parser
-from parse import compile as parse_compile
 from typing import Callable, Literal, Dict, List, Union, Optional, Any, Tuple
 from io import BytesIO, StringIO, TextIOBase
 from pathlib import Path
+
+from template_log_parser.templates.definitions import (
+    event_data_column,
+    event_type_column,
+    other_type_column,
+    unparsed_text_column,
+    SimpleTemplate
+)
 
 # set display options
 pd.options.display.max_columns = 40
 pd.options.display.width = 120
 pd.set_option("max_colwidth", 400)
-
-event_data_column = "event_data"
-event_type_column = "event_type"
-
-other_type_column = "Other"
-unparsed_text_column = "Unparsed_text"
 
 
 def _pre_filter_log_file(
@@ -90,67 +90,50 @@ def _pre_filter_log_file(
 
 
 def parse_function(
-    event: str, template_dictionary: Dict[str, List[Union[Parser, str]]]
-) -> tuple[str, dict[str, str]]:
-    """Return a tuple of an event type and a dictionary of information parsed from a log file string based on matching template.
+    event: str, templates: list[SimpleTemplate]
+) -> dict[str, str]:
+    """Return a dictionary of information parsed from a log file string based on matching template.
 
     :param event: String data, should ideally match a repeated format throughout a text file
     :type event: str
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
-    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
+    :param templates: formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), ...]
+    :type templates: list[SimpleTemplate]
 
-    :return: Tuple containing:
-        - event_type
-        - dictionary of parsed values if succesful.  Otherwise, {"Uparsed_text": original text}
-    :rtype: tuple[str, dict[str, str]]
-
-    :raises ValueError: If a template compiles incorrectly (implicit)
-
-    :example:
-
-        >>> event_string = '2024-09-12 main_server connected to 10.10.10.102'
-        >>> template = '{date} {client_name} connected to {host_ip_address}'
-        >>> templates = {'connected to': [template, 'host_connection_event']}
-        >>> parse_function(event_string, templates)
-        ('host_connection_event', {'date': '2024-09-12', 'client_name': 'main_server', 'host_ip_address': '10.10.10.102'})
-
-    :note:
-        If event string does not match a provided template, it will return ('Other', {'Unparsed_text': event})
+    :return: dictionary containing:
+        - event_type along parsed values if successful.  Otherwise, {"Unparsed_text": original_text, "event_type": "Other"}
+    :rtype: dict[str, str]
     """
-    for search_string, (compiled_template, event_type) in template_dictionary.items():
-        if search_string not in event:
+    for template_tuple in templates:
+        if template_tuple.search_string not in event:
             continue
 
-        # Compile the template if not already compiled
-        if not isinstance(compiled_template, Parser):
-            compiled_template = parse_compile(compiled_template)
+        parsed_result = template_tuple.template.parse(event)
 
-        parsed_result = compiled_template.parse(event)
+        if parsed_result and len(parsed_result.named) == len(template_tuple.template.named_fields):
+            output = parsed_result.named
+            output[event_type_column] = template_tuple.event_type
+            return output
 
-        if parsed_result and len(parsed_result.named) == len(compiled_template.named_fields):
-            return event_type, parsed_result.named
-
-    return other_type_column, {unparsed_text_column: event}
-
+    return {unparsed_text_column: event, event_type_column: other_type_column}
 
 
 def log_pre_process(
         file:str | BytesIO | StringIO | TextIOBase,
-        template_dictionary: Dict[str, List[Union[Parser, str]]],
+        templates: list[SimpleTemplate],
         match: str | list[str] | None = None,
         eliminate: str | list[str] | None = None,
         match_type: Literal["any", "all"] = "any",
         eliminate_type: Literal["any", "all"] = "any",
         ) -> pd.DataFrame:
     """
-    Return a Pandas DataFrame with named columns as specified by template_dictionary
+    Return a Pandas DataFrame with named columns as specified by templates
 
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
     :type file: str, Path, BytesIO, StringIO, TextIOBase
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
-    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
+    :param templates: formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), ...]
+    :type templates: list[SimpleTemplate]
 
     :param match: (optional) A single word or list of words must be present within the line otherwise dropped.
     :type match: str, list[str], None
@@ -173,15 +156,6 @@ def log_pre_process(
         eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.
     """
 
-    # Compile template_dictionary
-    template_dictionary = {
-        key: [parse_compile(template_str), event_type]
-        for key, (
-            template_str,
-            event_type,
-        ) in template_dictionary.items()
-    }
-
     def get_lines_from_file(f: Union[str, Path, BytesIO, StringIO, TextIOBase]) -> List[str]:
         if isinstance(f, (str, Path)):
             with open(f, 'r', encoding='utf-8') as file_obj:
@@ -198,8 +172,7 @@ def log_pre_process(
     parsed_results = []
     for line in get_lines_from_file(file):
         line = line.strip()
-        event_type, parsed_data = parse_function(line, template_dictionary)
-        parsed_data[event_type_column] = event_type
+        parsed_data = parse_function(line, templates)
         parsed_data[event_data_column] = line
         parsed_results.append(parsed_data)
 
@@ -439,7 +412,7 @@ def merge_event_type_dfs(
 
 def process_log(
     file: str | BytesIO | StringIO | TextIOBase,
-    template_dictionary: Dict[str, List[Union[Parser, str]]],
+    templates: list[SimpleTemplate],
     additional_column_functions: Optional[Dict[str, List[Any]]] = None,
     merge_dictionary: None | dict[str, list[str]] = None,
     datetime_columns: Optional[List[str]] = None,
@@ -457,8 +430,8 @@ def process_log(
     :param file: Path to file or filelike object, most commonly in the format of some_log_process.log
     :type file: str, Path, BytesIO, StringIO, TextIOBase
 
-    :param template_dictionary: formatted as {search_string: [compiled_template, event_type], ...}
-    :type template_dictionary: Dict[str, List[Union[Parser, str]]]
+    :param templates: formatted as a list of namedtuple (SimpleTemplate) [(compiled_template, event_type, search_string), ...]
+    :type templates: list[SimpleTemplate]
 
     :param additional_column_functions: (optional) {column: [function, [new_column(s)], kwargs], ...}
     :type additional_column_functions: dict[str, list[Callable, str, list[str] or dict[str, Any]]]
@@ -506,7 +479,7 @@ def process_log(
     # Initial parsing
     pre_df = log_pre_process(
         file=file,
-        template_dictionary=template_dictionary,
+        templates=templates,
         match=match,
         eliminate=eliminate,
         match_type=match_type,

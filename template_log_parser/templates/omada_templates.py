@@ -233,65 +233,60 @@ operation_details = '{time} {controller}  {site_date} {site_time} {site} - - - {
 resolved = "{time} {controller}  {site_date} {site_time} {site} - - - Resolved: {message}"
 
 
-client_activity_dict = {
-    "blocked by Access Control": [blocked, "blocked"],
-    "blocked by MAC": [blocked_mac, "blocked"],
-    "failed to connect": [failed_w, "failed_wireless_connection"],
-    "is connected to": [conn_hw, "hardwired_connection"],
-    "connected to": [conn_w, "wireless_connection"],
-    "allocated IP address": [dhcp_assign, "dhcp_assign"],
-    "allocated IP address ": [dhcp_assign_2, 'dhcp_assign'],
-    "rejected the request": [dhcp_reject, "dhcp_reject"],
-    "rejected the request of": [dhcp_reject_2, 'dhcp_reject'],
-    "DHCP Decline": [dhcp_decline, "dhcp_decline"],
-    "DHCP Decline from": [dhcp_decline_2, 'dhcp_decline'],
-    "was disconnected from network": [disc_hw, "hardwired_disconnect"],
-    "is disconnected from SSID": [disc_w, "wireless_disconnect"],
-    "disconnected from network": [disc_hw_recon, "hardwired_reconnect"],
-    "disconnected from SSID": [disc_w_recon, "wireless_reconnect"],
-    "went online": [online_hw, "hardwired_online"],
-    "went offline from network": [offline_hw, "hardwired_offline"],
-    "went online on": [online_w_username, "wireless_online_username"],
-    " went online on ": [online_w, "wireless_online"],
-    " went online ": [online_w_no_username, "wireless_online_no_username"],
-    "went offline from SSID": [offline_w_username, "wireless_offline_username"],
-    "went offline from SSID ": [offline_w, "wireless_offline"],
-    " went offline from SSID": [offline_w_no_username, "wireless_offline_no_username"],
-    "roaming": [roaming, "roaming"],
-}
+client_activity_templates = [
+    [blocked, "blocked", "blocked by Access Control"],
+    [blocked_mac, "blocked", "blocked by MAC"],
+    [failed_w, "failed_wireless_connection", "failed to connect"],
+    [conn_hw, "hardwired_connection", "is connected to"],
+    [conn_w, "wireless_connection", "connected to"],
+    [dhcp_assign, "dhcp_assign", "allocated IP address"],
+    [dhcp_assign_2, 'dhcp_assign', "allocated IP address"],
+    [dhcp_reject, "dhcp_reject", "rejected the request"],
+    [dhcp_reject_2, 'dhcp_reject', "rejected the request of"],
+    [dhcp_decline, "dhcp_decline", "DHCP Decline"],
+    [dhcp_decline_2, "dhcp_decline", "DHCP Decline from"],
+    [disc_hw, "hardwired_disconnect", "was disconnected from network"],
+    [disc_w, "wireless_disconnect", "is disconnected from SSID"],
+    [disc_hw_recon, "hardwired_reconnect", "disconnected from network"],
+    [disc_w_recon, "wireless_reconnect", "disconnected from SSID"],
+    [online_hw, "hardwired_online", "went online"],
+    [offline_hw, "hardwired_offline", "went offline from network"],
+    [online_w_username, "wireless_online_username", "went online on"],
+    [online_w, "wireless_online", " went online on "],
+    [online_w_no_username, "wireless_online_no_username", " went online "],
+    [offline_w_username, "wireless_offline_username", "went offline from SSID"],
+    [offline_w, "wireless_offline", "went offline from SSID "],
+    [offline_w_no_username, "wireless_offline_no_username", " went offline from SSID"],
+    [roaming, "roaming"],
+    ]
 
-logins_dict = {
-    "logged in to": [login, "login"],
-    "failed to log in": [failed_login, "failed_login"],
-}
+login_templates = [
+    [login, "login", "logged in to"],
+    [failed_login, "failed_login", "failed to log in"],
+]
 
-network_devices_activity_dict = {
-    "was connected.": [device_connected, "device_connected"],
-    "was disconnected.": [device_disconnected, "device_disconnected"],
-    "DHCPS initialization": [dhcps, "dhcps_initialization"],
-    "] of [": [up_or_down, "interface_up_or_down"],
-    "got IP address": [got_ip_address, "device_dhcp_assign"],
-    "got IP address ": [got_ip_address_2, "unnamed_device_dhcp_assign"],
-    "online detection": [online_detection, "online_detection"],
-    "upgrade": [upgrade, "upgrade"],
-    'physical connection status': [physical_connection_status, 'physical_connection_status']
-}
+network_devices_activity_templates = [
+    [device_connected, "device_connected", "was connected."],
+    [device_disconnected, "device_disconnected", "was disconnected."],
+    [dhcps, "dhcps_initialization", "DHCPS initialization"],
+    [up_or_down, "interface_up_or_down", "] of ["],
+    [got_ip_address, "device_dhcp_assign", "got IP address"],
+    [got_ip_address_2, "unnamed_device_dhcp_assign", "got IP address "],
+    [online_detection, "online_detection", "online detection"],
+    [upgrade, "upgrade"],
+    [physical_connection_status, "physical_connection_status", "physical connection status"],
+]
 
-system_dict = {
-    "Auto Backup executed": [auto_backup, "auto_backup"],
-    "Backup Schedule": [auto_backup_2, "auto_backup"],
-    "about to reach the storage limit": [log_storage_limit, "log_storage_limit"],
-    "Resolved": [resolved, "resolved"],
-    "- {": [operation_details, 'operation_details']
+system_templates = [
+    [auto_backup, "auto_backup", "Auto Backup executed"],
+    [auto_backup_2, "auto_backup", "Backup Schedule"],
+    [log_storage_limit, "log_storage_limit", "about to reach the storage limit"],
+    [resolved, "resolved", "Resolved"],
+    [operation_details, 'operation_details', "- {"]
+]
 
-}
 
-omada_template_dict = {
-    **client_activity_dict,
-    **logins_dict,
-    **network_devices_activity_dict,
-    **system_dict,
-}
+base_omada_templates = client_activity_templates + login_templates + network_devices_activity_templates + system_templates
 
 
 # Additional Dictionaries
@@ -304,8 +299,8 @@ omada_column_process_dict = {
 
 # Merging events for consolidation
 omada_merge_events_dict = {
-    "client_activity": [value[-1] for value in client_activity_dict.values()],
-    "logins": [value[-1] for value in logins_dict.values()],
-    "network_device_activity": [value[-1] for value in network_devices_activity_dict.values()],
-    "system": [value[-1] for value in system_dict.values()],
+    "client_activity": [value[1] for value in client_activity_templates],
+    "logins": [value[1] for value in login_templates],
+    "network_device_activity": [value[1] for value in network_devices_activity_templates],
+    "system": [value[1] for value in system_templates],
 }

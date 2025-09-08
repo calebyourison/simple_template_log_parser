@@ -57,7 +57,7 @@ def built_in_process_log(
 
     output = process_log(
         file=file,
-        template_dictionary=built_in_type.templates,
+        templates=built_in_type.templates,
         additional_column_functions=built_in_type.column_functions,
         merge_dictionary=built_in_type.merge_events,
         datetime_columns=built_in_type.datetime_columns,

@@ -1,6 +1,10 @@
 #### 0.8
 ---
--Additional built-in templates
+-Modified `parse_function()` to return a dictionary instead of a tuple (breaking change), event_type included within dictionary
+
+-Changed template data structure (breaking change) functions now take list of namedtuple (SimpleTemplate). Existing template dictionaries will need to be converted into list of lists and compiled using new function `compile_templates()`.
+
+-Added `modify_templates()` to built_ins.  Allows adding prefix/suffix to templates to match logging system
 
 -Removed sample_log attribute from built-in types; attribute added only during testing.
 
@@ -47,7 +51,7 @@ Any prefixing information should be tailored to the use case as the final output
 
 #### 0.4
 ---
--Consolidated all built-in log file types to use `built_in_process_log()` for simplification (Breaking change).
+-Consolidated all built-in log file types to use `built_in_process_log()` for simplification (breaking change).
 Named function calls from version < 0.4 will need to be replaced with this function from the built_ins module.
 
 

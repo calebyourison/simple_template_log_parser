@@ -1,7 +1,6 @@
 import unittest
 
 import pandas as pd
-from parse import parse
 
 from template_log_parser.log_functions import (
     process_log,
@@ -81,7 +80,7 @@ class TestProcessLog(unittest.TestCase):
 
                 output = process_log(
                     file=built_in.sample_log_file,
-                    template_dictionary=built_in.templates,
+                    templates=built_in.templates,
                     additional_column_functions=col_funcs,
                     merge_dictionary=merges,
                     drop_columns=drop_cols,
@@ -89,7 +88,7 @@ class TestProcessLog(unittest.TestCase):
                 )
 
                 expected_keys = sorted(
-                    list(set([value[-1] for value in built_in.templates.values()]))
+                    list(set([value[1] for value in built_in.templates]))
                 )
 
                 logger.debug(f"Base keys in template dictionary ({len(expected_keys)}): {expected_keys}")
@@ -131,9 +130,9 @@ class TestProcessLog(unittest.TestCase):
                 # to return {'event_type': [column1, column2,...], ...}
                 # Every event_type now has a list of columns associated with it, adding 'event_type' at the end of list
                 expected_columns_by_template = {
-                    value[-1]: list(parse(value[0], value[0]).named.keys())
+                    value[1]: list(value[0].parse(value[0].format).named)
                     + [event_type_column]
-                    for value in built_in.templates.values()
+                    for value in built_in.templates
                 }
 
                 expected_columns_by_event_type = {}
@@ -265,7 +264,7 @@ class TestProcessLog(unittest.TestCase):
                 logger.info(f"##### Configuration: {configuration} #####\n")
                 output = process_log(
                     file=built_in.sample_log_file,
-                    template_dictionary=built_in.templates,
+                    templates=built_in.templates,
                     additional_column_functions=col_funcs,
                     merge_dictionary=merges,
                     drop_columns=drop_cols,
@@ -273,8 +272,8 @@ class TestProcessLog(unittest.TestCase):
                 )
 
                 columns_accounted_for_by_templates = [
-                    list(parse(value[0], value[0]).named.keys())
-                    for value in built_in.templates.values()
+                    list(value[0].parse(value[0].format).named)
+                    for value in built_in.templates
                 ]
 
                 # Remove duplicates, unpack lists, this is a list of all possible columns
@@ -340,3 +339,13 @@ class TestProcessLog(unittest.TestCase):
                 self.assertEqual(lines_in_log_file, total_log_lines_accounted_for, f"{built_in.name}: Expected {lines_in_log_file} lines, found {total_log_lines_accounted_for}")
 
                 logger.info("---ALL LINES IN LOG FILE ARE ACCOUNTED FOR---")
+
+    def test_dict_format_false_no_matches(self):
+        """Check to ensure an empty df is return in the event that match/eliminate criteria produces no entries"""
+        logger.info(f"---Checking dict format no matches---")
+        for built_in in built_in_log_file_types:
+            logger.info(f"Checking {built_in.name}")
+            df_output = process_log(built_in.sample_log_file, templates=built_in.templates, match=["THIS STRING SHOULD NOT BE PRESENT"], dict_format=False)
+            self.assertIsInstance(df_output, pd.DataFrame)
+            self.assertEqual(0, df_output.shape[0])
+            logger.info("Correctly produces empty df")

@@ -1,4 +1,3 @@
-# Base templates for PFSense Log Analysis
 # Note: These templates adhere to syslog format
 
 from template_log_parser.column_functions import split_by_delimiter
@@ -57,56 +56,56 @@ nginx_error = "{time} {firewall} nginx {message_time} [error] {message}"
 syslogd = "{time} {firewall} syslogd {message}"
 
 
-filter_log_dict = {
+filter_log_templates = [
     # TCP
     # Search these templates before the standard tcp ipv4 template
-    "tcp,": [filter_log_tcp_ipv4_error, "filter_tcp_ipv4_error"],
-    ",tcp": [filter_log_tcp_ipv4_bad_options, "filter_tcp_ipv4_bad_options"],
-    "tcp": [filter_log_tcp_ipv4, "filter_tcp_ipv4"],  # Standard tcp ipv4 template
+    [filter_log_tcp_ipv4_error, "filter_tcp_ipv4_error", "tcp"],
+    [filter_log_tcp_ipv4_bad_options, "filter_tcp_ipv4_bad_options", "tcp"],
+    [filter_log_tcp_ipv4, "filter_tcp_ipv4", "tcp"],  # Standard tcp ipv4 template
     # ICMP
-    "address mask": [filter_log_icmp_ipv4_address_mask, "filter_icmp_ipv4_address_mask"],
-    "information": [filter_log_icmp_ipv4_information, "filter_icmp_ipv4_information"],
-    "maskreply": [filter_log_icmp_ipv4_maskreply, "filter_icmp_ipv4_maskreply"],
-    "type": [filter_log_icmp_ipv4_type, "filter_icmp_ipv4_type"],
-    "reply": [filter_log_icmp_ipv4_reply, "filter_icmp_ipv4_reply"],
-    "request": [filter_log_icmp_ipv4_request, "filter_icmp_ipv4_request"],
-    "router": [filter_log_icmp_ipv4_router, "filter_icmp_ipv4_router"],
-    "source": [filter_log_icmp_ipv4_source, "filter_icmp_ipv4_source"],
-    "timexceed": [filter_log_icmp_ipv_time_exceed, "filter_icmp_ipv4_time_exceed"],
-    "tstamp": [filter_log_icmp_ipv4_tstamp, "filter_icmp_ipv4_tstamp"],
-    "tstampreply": [filter_log_icmp_ipv4_tstampreply, "filter_icmp_ipv4_tstampreply"],
-    "unreachport": [filter_log_icmp_ipv4_unreachport, "filter_icmp_ipv4_unreachport"],
-    "unreachproto": [filter_log_icmp_ipv4_unreachproto, "filter_icmp_ipv4_unreachproto"],
-    "unreach,": [filter_log_icmp_ipv4_unreach, "filter_icmp_ipv4_unreach"],
-    "redirect": [filter_log_icmp_ipv4_redirect, "filter_icmp_ipv4_redirect"],
-    "ICMPv6": [filter_log_icmp_ipv6, "filter_icmp_ipv6"],
+    [filter_log_icmp_ipv4_address_mask, "filter_icmp_ipv4_address_mask", "address mask"],
+    [filter_log_icmp_ipv4_information, "filter_icmp_ipv4_information", "information"],
+    [filter_log_icmp_ipv4_maskreply, "filter_icmp_ipv4_maskreply", "maskreply"],
+    [filter_log_icmp_ipv4_type, "filter_icmp_ipv4_type", "type"],
+    [filter_log_icmp_ipv4_reply, "filter_icmp_ipv4_reply", "reply"],
+    [filter_log_icmp_ipv4_request, "filter_icmp_ipv4_request", "request"],
+    [filter_log_icmp_ipv4_router, "filter_icmp_ipv4_router", "router"],
+    [filter_log_icmp_ipv4_source, "filter_icmp_ipv4_source", "source"],
+    [filter_log_icmp_ipv_time_exceed, "filter_icmp_ipv4_time_exceed", "timexceed"],
+    [filter_log_icmp_ipv4_tstamp, "filter_icmp_ipv4_tstamp", "tstamp"],
+    [filter_log_icmp_ipv4_tstampreply, "filter_icmp_ipv4_tstampreply", "tstampreply"],
+    [filter_log_icmp_ipv4_unreachport, "filter_icmp_ipv4_unreachport", "unreachport"],
+    [filter_log_icmp_ipv4_unreachproto, "filter_icmp_ipv4_unreachproto", "unreachproto"],
+    [filter_log_icmp_ipv4_unreach, "filter_icmp_ipv4_unreach", "unreach,"],
+    [filter_log_icmp_ipv4_redirect, "filter_icmp_ipv4_redirect", "redirect"],
+    [filter_log_icmp_ipv6, "filter_icmp_ipv6", "ICMPv6"],
     # Misc
-    "esp": [filter_log_esp_ipv4, "filter_esp_ipv4"],
-    "fire": [filter_log_fire_ipv4, "filter_fire_ipv4"],
-    "gre": [filter_log_gre_ipv4, "filter_gre_ipv4"],
-    "idrp": [filter_log_idrp_ipv4, "filter_idrp_ipv4"],
-    "igmp": [filter_log_igmp_ipv4, "filter_igmp_ipv4"],
-    "mobile": [filter_log_mobile_ipv4, "filter_mobile_ipv4"],
-    "rvd": [filter_log_rvd_ipv4, "filter_rvd_ipv4"],
-    "sctp": [filter_log_sctp_ipv4, "filter_sctp_ipv4"],
-    "sun-nd": [filter_log_sun_nd, "filter_sun_nd_ipv4"],
-    "swipe": [filter_log_swipe_ipv4, "filter_swipe_ipv4"],
-    "unknown": [filter_log_unknown_ipv4, "filter_ipv4_unknown"],
-    "IPV6-IN-IPV4": [filter_log_ipv6_in_ipv4, "filter_ipv6_in_ip4v"],
-    "IPV4-IN-IPV4": [filter_log_ipv4_in_ipv4, "filter_ipv4_in_ipv4"],
+    [filter_log_esp_ipv4, "filter_esp_ipv4", "esp"],
+    [filter_log_fire_ipv4, "filter_fire_ipv4", "fire"],
+    [filter_log_gre_ipv4, "filter_gre_ipv4", "gre"],
+    [filter_log_idrp_ipv4, "filter_idrp_ipv4", "idrp"],
+    [filter_log_igmp_ipv4, "filter_igmp_ipv4", "igmp"],
+    [filter_log_mobile_ipv4, "filter_mobile_ipv4", "mobile"],
+    [filter_log_rvd_ipv4, "filter_rvd_ipv4", "rvd"],
+    [filter_log_sctp_ipv4, "filter_sctp_ipv4", "sctp"],
+    [filter_log_sun_nd, "filter_sun_nd_ipv4", "sun-nd"],
+    [filter_log_swipe_ipv4, "filter_swipe_ipv4", "swipe"],
+    [filter_log_unknown_ipv4, "filter_ipv4_unknown", "unknown"],
+    [filter_log_ipv6_in_ipv4, "filter_ipv6_in_ip4v", "IPV6-IN-IPV4"],
+    [filter_log_ipv4_in_ipv4, "filter_ipv4_in_ipv4", "IPV4-IN-IPV4"],
     # UDP
-    "udp": [filter_log_udp_ipv4, "filter_udp_ipv4"],
-}
+    [filter_log_udp_ipv4, "filter_udp_ipv4", "udp"],
+]
 
-general_dict = {
-    "kernel": [kernel, "kernel"],
-    "nginx": [nginx, "nginx"],
-    "error": [nginx_error, "nginx_error"],
-    '] ': [id_process, 'ip_process'],
-    "syslogd": [syslogd, "syslogd"],
-}
+general_templates = [
+    [kernel, "kernel"],
+    [nginx, "nginx"],
+    [nginx_error, "nginx_error", "error"],
+    [id_process, 'id_process', '] '],
+    [syslogd, "syslogd"],
+]
 
-pfsense_template_dict = {**filter_log_dict, **general_dict}
+base_pfsense_templates = filter_log_templates + general_templates
 
 # Rule Columns
 generic_rule_info_columns = [
@@ -230,6 +229,6 @@ pfsense_split_by_delimiter_process_dict = {
 pfsense_column_process_dict = {**pfsense_split_by_delimiter_process_dict}
 
 pfsense_merge_events_dict = {
-    "filter_log": [value[-1] for value in filter_log_dict.values()],
-    "general": [value[-1] for value in general_dict.values()],
+    "filter_log": [value[1] for value in filter_log_templates],
+    "general": [value[1] for value in general_templates]
 }

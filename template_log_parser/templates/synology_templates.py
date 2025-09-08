@@ -64,73 +64,71 @@ win_file_service_event = "{time} {server_name} WinFileService Event: {event}, Pa
 configuration_export = "{time} {server_name} System {system_user}:#011System successfully exported configurations."
 report_profile = "{time} {server_name} System {system_user}:#011{action} report profile named [{profile_name}]"
 
+tasks_templates = [
+    [backup_task, "backup_task", "Backup"],
+    [backup_version_rotation, "backup_version_rotation_trigger", "Trigger version rotation"],
+    [backup_version_rotation_status, "backup_version_rotation_status", "Version rotation"],
+    [backup_rotate_version, 'backup_rotate_version', "Rotate version"],
+    [hyper_backup_task_message, "task_message", "Backup task"],
+    [scheduled_task_message, "task_message", "Scheduled Task"],
+    [task_setting, "task_setting", "Setting"],
+    [credentials_changed, "credentials_changed", "Credentials changed"],
+]
 
-tasks_dict = {
-    "Backup": [backup_task, "backup_task"],
-    "Trigger version rotation": [backup_version_rotation, "backup_version_rotation_trigger"],
-    "Version rotation": [backup_version_rotation_status, 'backup_version_rotation_status'],
-    "Rotate version": [backup_rotate_version, 'backup_rotate_version'],
-    "Backup task": [hyper_backup_task_message, "task_message"],
-    "Scheduled Task": [scheduled_task_message, "task_message"],
-    "Setting": [task_setting, "task_setting"],
-    "Credentials changed": [credentials_changed, "credentials_changed"],
-}
+general_system_templates = [
+    [auto_install, "auto_install", "automatically"],
+    [back_online, "back_online", "back online"],
+    [countdown, "countdown", "counting down"],
+    [download_task, "download_task", "Download task"],
+    [failed_video_conversion, "failed_video_conversion", "failed to convert video"],
+    [link_state, "link_state", "link"],
+    [package_change, "package_change", "Package"],
+    [scrubbing, "scrubbing"],
+    [process_start_or_stop, "process_start_or_stop", "System successfully"],
+    [service_started_or_stopped, "service_start_or_stop", "service was"],
+    [restarted_service, "restarted_service", "successfully restarted"],
+    [on_battery, "on_battery", "on battery"],
+    [update, "update", "Update"],
+    [shared_folder, "shared_folder", "shared folder"],
+    [shared_folder_application, "shared_folder_application", "Shared folder"],
+    [setting_enabled, "setting_enabled", "was enabled"],
+    [unknown_error, "unknown_error", "unknown error"],
+    [dns_setting_changed, "dns_setting_changed", "DNS server setting was changed"],
+    [interface_set, 'interface_set', "was set to"],
+    [interface_changed, 'interface_changed', "was changed from"],
+    [storage_pool_degraded, "storage_pool_degraded", "degraded"],
+    [storage_pool_repair_start, "storage_pool_repair_start", "started to perform"],
+    [storage_pool_repair_complete, "storage_pool_repair_complete", "successfully repaired"],
+    [external_disk_ejected, "external_disk_ejected", "is ejected"],
+    [external_disk_not_ejected_properly, "external_disk_not_ejected_properly", "not ejected properly"],
+    [external_disk_failed_to_eject, "external_disk_failed_to_eject", "failed to eject"],
+    [external_disk_initialized, "external_disk_initialized", "initialized the external disk"],
+    [fan_speed_set, "fan_speed_set", "Fan speed was set"],
+    [external_disk_renamed, "external_disk_renamed", "latter was renamed to"],
+]
 
-general_system_dict = {
-    "automatically": [auto_install, "auto_install"],
-    "back online": [back_online, "back_online"],
-    "counting down": [countdown, "countdown"],
-    "Download task": [download_task, "download_task"],
-    "failed to convert video": [failed_video_conversion, "failed_video_conversion"],
-    "link": [link_state, "link_state"],
-    "Package": [package_change, "package_change"],
-    "scrubbing": [scrubbing, "scrubbing"],
-    "System successfully": [process_start_or_stop, "process_start_or_stop"],
-    "service was": [service_started_or_stopped, "service_start_or_stop"],
-    "successfully restarted": [restarted_service, "restarted_service"],
-    "on battery": [on_battery, "on_battery"],
-    "Update": [update, "update"],
-    "shared folder": [shared_folder, "shared_folder"],
-    "Shared folder": [shared_folder_application, "shared_folder_application"],
-    "was enabled": [setting_enabled, "setting_enabled"],
-    "unknown error": [unknown_error, "unknown_error"],
-    'DNS server setting was changed': [dns_setting_changed, 'dns_setting_changed'],
-    "was set to": [interface_set, 'interface_set'],
-    "was changed from": [interface_changed, 'interface_changed'],
-    "degraded": [storage_pool_degraded, "storage_pool_degraded"],
-    "started to perform": [storage_pool_repair_start, "storage_pool_repair_start"],
-    "successfully repaired": [storage_pool_repair_complete, "storage_pool_repair_complete"],
-    "is ejected": [external_disk_ejected, "external_disk_ejected"],
-    "not ejected properly": [external_disk_not_ejected_properly, "external_disk_not_ejected_properly"],
-    "failed to eject": [external_disk_failed_to_eject, "external_disk_failed_to_eject"],
-    "initialized the external disk": [external_disk_initialized, "external_disk_initialized"],
-    'Fan speed was set': [fan_speed_set, 'fan_speed_set'],
-    'latter was renamed to': [external_disk_renamed, 'external_disk_renamed'],
-}
+user_activity_templates = [
+    [blocked, "host_blocked", "blocked"],
+    [unblock, "host_unblocked", "from Block List"],
+    [cleared_notifications, "cleared_notifications", "Cleared"],
+    [failed_host_connection, "failed_host_connection", "failed to connect"],
+    [failed_login, "failed_login", "failed to log in"],
+    [failed_sign_in, "failed_sign_in", "failed to sign in"],
+    [folder_access, "folder_access", "accessed shared folder"],
+    [login, "login", "logged in successfully via"],
+    [logout, "logout", "logged out the server"],
+    [sign_in, "sign_in", "signed in to"],
+    [new_user, "new_user", "was created"],
+    [deleted_user, "deleted_user", "deleted"],
+    [renamed_user, "renamed_user", "renamed"],
+    [user_app_privilege, "user_app_privilege", "app privilege"],
+    [user_group, "user_group", "group"],
+    [win_file_service_event, "win_file_service_event", "WinFileService Event"],
+    [configuration_export, "configuration_export", "exported configurations"],
+    [report_profile, "report_profile", "report profile"],
+]
 
-user_activity_dict = {
-    "blocked": [blocked, "host_blocked"],
-    "from Block List": [unblock, "host_unblocked"],
-    "Cleared": [cleared_notifications, "cleared_notifications"],
-    "failed to connect": [failed_host_connection, "failed_host_connection"],
-    "failed to log in": [failed_login, "failed_login"],
-    "failed to sign in": [failed_sign_in, "failed_sign_in"],
-    "accessed shared folder": [folder_access, "folder_access"],
-    "logged in successfully via": [login, "login"],
-    "logged out the server": [logout, "logout"],
-    "signed in to": [sign_in, "sign_in"],
-    "was created": [new_user, "new_user"],
-    "deleted": [deleted_user, "deleted_user"],
-    "renamed": [renamed_user, "renamed_user"],
-    "app privilege": [user_app_privilege, "user_app_privilege"],
-    "group": [user_group, "user_group"],
-    "WinFileService Event": [win_file_service_event, "win_file_service_event"],
-    "exported configurations": [configuration_export, "configuration_export"],
-    "report profile": [report_profile, "report_profile"],
-}
-
-synology_template_dict = {**tasks_dict, **general_system_dict, **user_activity_dict}
-
+base_synology_templates = tasks_templates + general_system_templates + user_activity_templates
 
 # Additional Dictionaries
 
@@ -142,7 +140,7 @@ synology_column_process_dict = {
 
 # Merging events for consolidation
 synology_merge_events_dict = {
-    "tasks": [value[-1] for value in tasks_dict.values()],
-    "general_system": [value[-1] for value in general_system_dict.values()],
-    "user_activity": [value[-1] for value in user_activity_dict.values()],
+    "tasks": [value[1] for value in tasks_templates],
+    "general_system": [value[1] for value in general_system_templates],
+    "user_activity": [value[1] for value in user_activity_templates]
 }

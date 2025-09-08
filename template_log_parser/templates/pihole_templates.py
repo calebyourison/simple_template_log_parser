@@ -1,6 +1,5 @@
-# Base templates for Pihole log analysis
 
-# pihole
+# dnsmasq
 dnsmasq_cached = "{time} dnsmasq[{id}]: cached {query} is {cached_resolved_ip}"
 dnsmasq_cached_stale = "{time} dnsmasq[{id}]: cached-stale {query} is {cached_resolved_ip}"
 dnsmasq_compile = "{time} dnsmasq[{id}]: compile time options: {message}"
@@ -38,56 +37,56 @@ webserver_authentication_required = '[{time}] Authentication required, redirecti
 # Gravity
 gravity = '{trim}[{result}]{message}'
 
-pihole = {
-    "query": [dnsmasq_query, "dnsmasq_query"],
-    "reply": [dnsmasq_reply, "dnsmasq_reply"],
-    "cached": [dnsmasq_cached, "dnsmasq_cached"],
-    "cached-stale": [dnsmasq_cached_stale, "dnsmasq_cached_stale"],
-    "forwarded": [dnsmasq_forward, "dnsmasq_forward"],
-    "gravity blocked": [dnsmasq_gravity_blocked, "dnsmasq_gravity_blocked"],
-    "exactly denied": [dnsmasq_exactly_denied, "dnsmasq_exact_denied"],
-    "domain": [dnsmasq_domain, "dnsmasq_domain"],
-    "hostname": [dnsmasq_host_name, "dnsmasq_hostname_resolution"],
-    "config": [dnsmasq_config, "dnsmasq_config"],
-    "compile time options": [dnsmasq_compile, "dnsmasq_compile_time_options"],
-    "exactly blacklisted": [dnsmasq_exactly_blacklisted, "dnsmasq_exact_blacklist"],
-    "exiting on receipt of SIGTERM": [dnsmasq_exiting, "dnsmasq_exiting_sigterm"],
-    "hosts": [dnsmasq_host_name_resolution, "dnsmasq_hostname_resolution"],
-    "locally-known": [dnsmasq_locally_known, "dnsmasq_locally_known"],
-    "Rate-limiting": [dnsmasq_rate_limiting, "dnsmasq_rate_limiting"],
-    "read ": [dnsmasq_read, "dnsmasq_read"],
-    "reply is truncated": [dnsmasq_reply_truncated, "dnsmasq_reply_truncated"],
-    "started": [dnsmasq_started, "dnsmasq_started"],
-    'inotify': [dnsmasq_inotify, 'dsnmasq_inotify'],
-    'using nameserver': [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver'],
-    ' using nameserver': [dnsmasq_using_nameserver_domain, 'dnsmasq_using_nameserver_domain'],
-    "custom.list": [dnsmasq_custom_list, 'dnsmasq_custom_list'],
-    "TCP connection failed": [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed']
-}
+dnsmasq_templates = [
+    [dnsmasq_query, "dnsmasq_query", "query"],
+    [dnsmasq_reply, "dnsmasq_reply", "reply"],
+    [dnsmasq_cached, "dnsmasq_cached", "cached"],
+    [dnsmasq_cached_stale, "dnsmasq_cached_stale", "cached-stale"],
+    [dnsmasq_forward, "dnsmasq_forward", "forwarded"],
+    [dnsmasq_gravity_blocked, "dnsmasq_gravity_blocked", "gravity blocked"],
+    [dnsmasq_exactly_denied, "dnsmasq_exact_denied", "exactly denied"],
+    [dnsmasq_domain, "dnsmasq_domain", "domain"],
+    [dnsmasq_host_name, "dnsmasq_hostname_resolution", "hostname"],
+    [dnsmasq_config, "dnsmasq_config", "config"],
+    [dnsmasq_compile, "dnsmasq_compile_time_options", "compile time options"],
+    [dnsmasq_exactly_blacklisted, "dnsmasq_exact_blacklist", "exactly blacklisted"],
+    [dnsmasq_exiting, "dnsmasq_exiting_sigterm", "exiting on receipt of SIGTERM"],
+    [dnsmasq_host_name_resolution, "dnsmasq_hostname_resolution", "hosts"],
+    [dnsmasq_locally_known, "dnsmasq_locally_known", "locally-known"],
+    [dnsmasq_rate_limiting, "dnsmasq_rate_limiting", "Rate-limiting"],
+    [dnsmasq_read, "dnsmasq_read", "read "],
+    [dnsmasq_reply_truncated, "dnsmasq_reply_truncated", "reply is truncated"],
+    [dnsmasq_started, "dnsmasq_started", "started"],
+    [dnsmasq_inotify, 'dsnmasq_inotify', 'inotify'],
+    [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver', 'using nameserver'],
+    [dnsmasq_using_nameserver_domain, 'dnsmasq_using_nameserver_domain', ' using nameserver'],
+    [dnsmasq_custom_list, 'dnsmasq_custom_list', "custom.list"],
+    [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"]
+]
 
-ftl = {
-    'ERROR': [ftl_error, 'ftl_error'],
-    'INFO': [ftl_info, 'ftl_info'],
-    'WARNING': [ftl_warning, 'ftl_warning'],
-}
+ftl_templates = [
+    [ftl_error, 'ftl_error', 'ERROR'],
+    [ftl_info, 'ftl_info', 'INFO'],
+    [ftl_warning, 'ftl_warning', 'WARNING'],
+]
 
-webserver = {
-    'Initializing HTTP server': [webserver_initializing_http_server, 'webserver_initializing_server'],
-    'Authentication required': [webserver_authentication_required, 'webserver_authentication_required'],
-}
+webserver_templates = [
+    [webserver_initializing_http_server, 'webserver_initializing_server', 'Initializing HTTP server'],
+    [webserver_authentication_required, 'webserver_authentication_required', 'Authentication required'],
+]
 
-gravity = {
-    '[i]': [gravity, 'gravity_message'],
-    '[✓]' : [gravity, 'gravity_message'],
-}
+gravity_templates = [
+    [gravity, 'gravity_message', '[i]'],
+    [gravity, 'gravity_message', '[✓]'],
+]
 
-pihole_template_dict = {**pihole, **ftl, **webserver, **gravity}
+base_pihole_templates = dnsmasq_templates + ftl_templates + webserver_templates + gravity_templates
 
 
 # Merging events for consolidation
 pihole_merge_events_dict = {
-    "pihole": [value[-1] for value in pihole.values()],
-    "ftl": [value[-1] for value in ftl.values()],
-    'webserver': [value[-1] for value in webserver.values()],
-    'gravity': [value[-1] for value in gravity.values()]
+    "dnsmasq": [value[1] for value in dnsmasq_templates],
+    "ftl": [value[1] for value in ftl_templates],
+    "webserver": [value[1] for value in webserver_templates],
+    "gravity": [value[1] for value in gravity_templates]
 }

@@ -2,6 +2,10 @@ import unittest
 import pandas as pd
 from io import StringIO, BytesIO
 
+from parse import compile as parse_compile
+
+from template_log_parser.templates.definitions import SimpleTemplate
+
 from template_log_parser.log_functions import (
     _pre_filter_log_file,
     parse_function,
@@ -110,32 +114,26 @@ class TestPreProcessFunctions(unittest.TestCase):
             "user logged in to the controller from 172.0.0.1."
         )
 
-        simple_template = (
+        temp = (
             "{timestamp} {controller_name}  {local_time} Controller - - - "
             "{username} logged in to the controller from {ip}."
         )
 
-        simple_template_dict = {"logged in": [simple_template, "login"]}
+        simple_template_list = [SimpleTemplate(template=parse_compile(temp), event_type="login", search_string="logged in")]
 
-        self.assertIsInstance(parse_function(simple_event, simple_template_dict), tuple)
-        event_type, results = parse_function(simple_event, simple_template_dict)
-        self.assertIsInstance(event_type, str)
+        results = parse_function(simple_event, simple_template_list)
         self.assertIsInstance(results, dict)
-        self.assertEqual(event_type, "login")
+        self.assertEqual(results[event_type_column], "login")
 
         # Should return tuple, then string and dict respectively
         anomalous_event = "This event does not match any template."
-        self.assertIsInstance(
-            parse_function(anomalous_event, simple_template_dict), tuple
-        )
-        # Unknown event type should also pass without error, return str, dict
-        event_type_2, results_2 = parse_function(anomalous_event, simple_template_dict)
-        self.assertIsInstance(event_type_2, str)
+        # Unknown event type should also pass without error, return dict
+        results_2 = parse_function(anomalous_event, simple_template_list)
         self.assertIsInstance(results_2, dict)
         # Should return other event type
-        self.assertEqual(event_type_2, other_type_column)
-        # The key to its dict should be unparsed_text_column
-        self.assertEqual(list(results_2.keys()), [unparsed_text_column])
+        self.assertEqual(results_2[event_type_column], other_type_column)
+        # The key to its dict should be unparsed_text_column, event_type_column
+        self.assertEqual(list(results_2.keys()), [unparsed_text_column, event_type_column])
 
     def test_log_pre_process(self):
         """Test function to assert that log_pre_process returns a Pandas DataFrame with the correct three columns"""
@@ -157,7 +155,7 @@ class TestPreProcessFunctions(unittest.TestCase):
             logger.info(f"{built_in.name}: test log_pre_process")
             # Generate pre_process df using built_in sample_log_file and templates
             for file in file_types:
-                df = log_pre_process(file, built_in.templates)
+                df = log_pre_process(file=file, templates=built_in.templates)
                 # Assert df instance
                 self.assertIsInstance(df, pd.DataFrame)
 
@@ -165,22 +163,21 @@ class TestPreProcessFunctions(unittest.TestCase):
                 logger.info("checking log file length against Dataframe shape")
                 with open(built_in.sample_log_file, "r") as raw_log:
                     lines = len(raw_log.readlines())
-                    logger.debug("lines in logfile: ", lines)
+                    logger.debug(f"lines in logfile: {lines}")
                     self.assertEqual(lines, df.shape[0])
-                    logger.debug("rows in dataframe: ", df.shape[0])
+                    logger.debug(f"rows in dataframe: {df.shape[0]}")
                     # Assert template dictionary has the same number of items as the log file has lines
                     self.assertEqual(len(built_in.templates), lines)
                     logger.debug(f"length of template dictionary: {len(built_in.templates)}")
-
                 # Print all lines that are not accounted for by templates
-
-                logger.debug(f"Unparsed Lines: {df[df[event_type_column] == other_type_column]}")
+                other = df[df[event_type_column] == other_type_column]
+                logger.debug(f"Unparsed Lines: {other}")
 
                 # Assert no "Other" event types
                 self.assertTrue(other_type_column not in df[event_type_column].tolist())
 
                 expected_event_types = sorted(
-                    list([event[-1] for event in built_in.templates.values()])
+                    list([event[1] for event in built_in.templates])
                 )
                 actual_event_types = sorted(df[event_type_column].tolist())
                 logger.debug(
@@ -195,6 +192,7 @@ class TestPreProcessFunctions(unittest.TestCase):
                     expected_event_types,
                     actual_event_types,
                 )
+                logger.info("All event types accounted for")
 
                 improper_file_type = {}
                 self.assertRaises(

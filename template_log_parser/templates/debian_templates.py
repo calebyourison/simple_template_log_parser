@@ -1,4 +1,3 @@
-
 debug = "{time} {server_name} {process}: debug: {message}"
 id_process = "{time} {server_name} {process}[{id}]: {message}"
 kernel = "{time} {server_name} kernel: {message}"
@@ -9,15 +8,14 @@ rsyslogd = "{time} {server_name} rsyslogd: {message}"
 sudo = "{time} {server_name} sudo: {message}"
 upssched_cmd = "{time} {server_name} upssched-cmd: {message}"
 
-
-debian_template_dict = {
-    "]:": [id_process, "id_process"],
-    "kernel": [kernel, "kernel"],
-    'pam_unix': [pam_unix, 'pam_unix'],
-    'sudo': [sudo, 'sudo'],
-    "rsync": [rsync, "rsync"],
-    'rsyslogd': [rsyslogd, 'rsyslogd'],
-    'upssched-cmd': [upssched_cmd, 'upssched-cmd'],
-    'mtp-probe': [mtp_probe, 'mtp_probe'],
-    'debug': [debug, 'debug'],
-}
+base_debian_templates = [
+    [id_process, "id_process", "]:"],
+    [kernel, "kernel"],
+    [pam_unix, "pam_unix"],
+    [sudo, 'sudo'],
+    [rsync, "rsync"],
+    [rsyslogd, "rsyslogd"],
+    [upssched_cmd, 'upssched-cmd'],
+    [mtp_probe, 'mtp_probe', 'mtp-probe'],
+    [debug, 'debug'],
+]

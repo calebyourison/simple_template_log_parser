@@ -1,4 +1,4 @@
-from template_log_parser.templates.debian_templates import debian_template_dict
+from template_log_parser.templates.debian_templates import base_debian_templates
 
 apt_daemon = "{time} {server_name} {process}: {level}: {message}"
 dbus_daemon = '{time} {server_name} dbus-daemon: {message}'
@@ -14,27 +14,23 @@ sticky_notes = "{time} {server_name} sticky-notes-simple_sticky-notes{message}"
 ubuntu = "{time} {server_name} ubuntu-{process} {message}"
 vsce_sign = '{time} {server_name} vsce-sign: {message}'
 
-ubuntu_templates = {
-    ".des": [desktop, "desktop"],
-    ".desktop": [desktop_2, "desktop"],
-    ".deskto": [desktop_3, 'desktop'],
-    ".deskt": [desktop_4, 'desktop'],
-    "PackageKit": [package_kit, 'package_kit'],
-    "pycharm": [pycharm, "pycharm"],
-    'gdm': [gdm, 'gdm'],
-    'ubuntu': [ubuntu, 'ubuntu'],
-    'sticky-notes-simple_sticky-notes': [sticky_notes, 'sticky_notes'],
-    'dbus-daemon': [dbus_daemon, 'dbus_daemon'],
-    'AptDaemon': [apt_daemon, 'apt_daemon'],
-    'snapd': [snapd, 'snapd'],
-    'vsce-sign': [vsce_sign, 'vsce_sign']
+base_ubuntu_templates = [
+    [desktop, "desktop", ".des"],
+    [desktop_2, "desktop", ".desktop"],
+    [desktop_3, 'desktop', ".deskto"],
+    [desktop_4, 'desktop', ".deskt"],
+    [package_kit, 'package_kit', "PackageKit"],
+    [pycharm, "pycharm"],
+    [gdm, 'gdm'],
+    [ubuntu, 'ubuntu'],
+    [sticky_notes, 'sticky_notes', 'sticky-notes-simple_sticky-notes'],
+    [dbus_daemon, 'dbus_daemon', 'dbus-daemon'],
+    [apt_daemon, 'apt_daemon', 'AptDaemon'],
+    [snapd, 'snapd'],
+    [vsce_sign, 'vsce_sign','vsce-sign']
+]
 
-}
-
-ubuntu_template_dict = {
-    **ubuntu_templates,
-    **debian_template_dict
-}
+base_ubuntu_templates += base_debian_templates
 
 ubuntu_column_process_dict = {}
 ubuntu_merge_events_dict = {}
