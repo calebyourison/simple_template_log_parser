@@ -184,9 +184,9 @@ my_pihole_log_dict = built_in_process_log(built_in='pihole', file='my_pihole_log
 All built-ins support the addition of prefixes and/or suffixes
 
 
-As Open Media Vault and Ubuntu are based on Debian, their templates are combined with a Debian template dictionary.  
+As Open Media Vault and Ubuntu are based on Debian, their templates are combined with Debian templates.  
 This can be used separately if desired. 
-At present, the template dictionary for Debian events is very spartan; it serves as only a cursory classification mechanism. 
+At present, the templates for Debian events are very spartan; it serves as only a cursory classification mechanism. 
 
 ```bash
 my_debian_log_dict = built_in_process_log(built_in='debian', file='my_debian_log.log')
