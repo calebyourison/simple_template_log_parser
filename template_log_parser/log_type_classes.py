@@ -95,7 +95,7 @@ class BuiltInLogFileType:
         :param suffix: text to place at end of template
         :type suffix: str
         """
-        modified_base_templates = [[prefix + item[0] + suffix] + item[:1] for item in self.base_templates]
+        modified_base_templates = [[prefix + item[0] + suffix] + item[1:] for item in self.base_templates]
 
         self.templates = compile_templates(modified_base_templates, search_string_criteria='copy')
 

@@ -5,12 +5,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = ['template_log_parser', 'template_log_parser.templates']
 
-[tool.setuptools.package-data]
-mypkg = ["*.log"]
-
 [project]
 name = "template-log-parser"
-version = "0.8"
+version = "0.8.1"
 dependencies = [
   "pandas>=2.0.0",
   "parse==1.20.2",

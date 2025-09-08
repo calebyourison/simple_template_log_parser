@@ -21,21 +21,37 @@ class TestLogTypeClasses(unittest.TestCase):
             logger.info(f'Built-In {built_in.name}')
             built_in.modify_templates(prefix=prefix, suffix=suffix)
 
-            # From each simple_template namedtuple, pull its compiled template.format attribute for the base string
-            deconstructed_templates = [item.template.format for item in built_in.templates]
-            for template in deconstructed_templates:
-                # Should result in three pieces
-                parts = template.split(splitting_item)
+            pairs = zip(built_in.templates, built_in.base_templates)
+
+            for (modified_template, base_template) in pairs:
+                modified_compiled_template = modified_template.template.format
+                logger.debug(f'Modified template: {modified_template}')
+                parts = modified_compiled_template.split(splitting_item)
+
                 self.assertEqual(parts[0], prefix_base)
+                logger.debug(f"Actual prefix: ({parts[0]}), expected: ({prefix_base})")
+                self.assertEqual(parts[1], base_template[0])
+                logger.debug(f"Modified template string split from prefix/suffix ({parts[1]}) equals base template: ({base_template[0]})")
                 self.assertEqual(parts[2], suffix_base)
+                logger.debug(f"Actual suffix: ({parts[2]}), expected: ({suffix_base})")
+
+                self.assertEqual(modified_template[1], base_template[1])
+                logger.debug(f"Actual event type: ({modified_template[1]}) expected ({base_template[1]})")
+
+                # If base template had search string, it should match
+                if len(base_template) == 3:
+                    expected_search_string = base_template[2]
+
+                # If base template had no search string, it should equal event_type per 'copy'
+                else:
+                    expected_search_string = base_template[1]
+
+                self.assertEqual(modified_template[2], expected_search_string)
+                logger.debug(f"Actual search_string: ({modified_template[2]}), expected: ({expected_search_string})")
+
+        logger.info('OK')
 
 
-                original_template_string = parts[1]
-                logger.debug(f"Original template string: {original_template_string}")
-                # Ensure there is at least one item in the base templates that matches the original, could be used multiple times
-                base_template = [item for item in built_in.base_templates if item[0] == original_template_string]
-                logger.debug(f'Matching base templates ({len(base_template)}): {base_template}')
-                self.assertTrue(len(base_template) >= 1)
 
         logger.info("All templates accounted for")
 

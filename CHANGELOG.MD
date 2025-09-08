@@ -1,3 +1,6 @@
+#### 0.8.1
+-Bug fix, corrected built_in `modify_templates()` behavior which produced incorrect search_string resulting in improper matching
+
 #### 0.8
 ---
 -Modified `parse_function()` to return a dictionary instead of a tuple (breaking change), event_type included within dictionary
