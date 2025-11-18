@@ -9,8 +9,9 @@ packages = ['template_log_parser', 'template_log_parser.templates']
 name = "template-log-parser"
 version = "0.8.1"
 dependencies = [
-  "pandas>=2.0.0",
-  "parse==1.20.2",
+    "numpy>=2.0.0",
+    "pandas>=2.0.0",
+    "parse==1.20.2",
 ]
 requires-python = ">=3.9"
 authors = [
