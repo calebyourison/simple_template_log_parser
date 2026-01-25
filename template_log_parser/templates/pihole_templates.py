@@ -18,6 +18,7 @@ dnsmasq_locally_known = "{time} dnsmasq[{id}]: using only locally-known addresse
 dnsmasq_query = "{time} dnsmasq[{id}]: query[{query_type}] {destination} from {host_ip}"
 dnsmasq_rate_limiting = "{time} dnsmasq[{id}]: Rate-limiting {query} is {message}"
 dnsmasq_read = "{time} dnsmasq[{id}]: read {path} - {names} names"
+dnsmasq_regex_denied = "{time} dnsmasq[{id}]: regex denied {message}"
 dnsmasq_reply = "{time} dnsmasq[{id}]: reply {query} is {resolved_ip}"
 dnsmasq_reply_truncated = "{time} dnsmasq[{id}]: reply is truncated"
 dnsmasq_started = "{time} dnsmasq[{id}]: started, version {version} cachesize {cachesize}"
@@ -61,7 +62,8 @@ dnsmasq_templates = [
     [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver', 'using nameserver'],
     [dnsmasq_using_nameserver_domain, 'dnsmasq_using_nameserver_domain', ' using nameserver'],
     [dnsmasq_custom_list, 'dnsmasq_custom_list', "custom.list"],
-    [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"]
+    [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"],
+    [dnsmasq_regex_denied, 'dnsmasq_regex_denied', 'regex denied'],
 ]
 
 ftl_templates = [

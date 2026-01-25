@@ -38,3 +38,6 @@
 2025-06-13T14:13:28.956393+01:00 controller_X  2025-06-13 14:05:37 Controller - - - [gateway:54-AF-98-2D-07-90]: The physical connection status of [LAN4] was up.
 2025-07-12T05:10:13.419178+01:00 controller_X  2025-07-12 05:09:28 Controller - - - DHCP Server received DHCP Decline from [client:10-B7-C6-17-BD-0D]. IP address 1.1.1.1 is not available.
 2025-07-12T05:24:15.581309+01:00 controller_X  2025-07-12 05:23:41 Controller - - - DHCP Server rejected the request of the [client:10-B7-C6-17-BD-0D](IP: 2.8.0.2).
+2025-10-18T19:55:27.291224+01:00 controller_X  2025-10-18 19:55:22 Controller - - - Pending switch [switch:21-C1-D0-B7-3C-29:21-C1-D0-B7-3C-29] was discovered.
+2025-11-20T22:29:15.885955+01:00 controller_X  2025-11-20 22:28:20 Controller - - - WAN1: DHCP client renewing IP succeeded. (IP-Address=1.1.1.2, Mask=255.255.255.0, Gateway=1.1.1.1)
+2025-11-27T05:55:17.226850+01:00 controller_X  2025-11-27 05:54:13 Controller - - - [gateway:Main_Router:54-AF-98-2D-07-90]: The online detection result of [WAN1] was offline.

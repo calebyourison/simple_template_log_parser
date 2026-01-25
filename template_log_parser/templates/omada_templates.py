@@ -187,7 +187,7 @@ got_ip_address = (
 
 got_ip_address_2 = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-                    "[{network_device_type}:{network_device_mac}] got IP address {ip_address}/{subnet_mask}."
+    "[{network_device_type}:{network_device_mac}] got IP address {ip_address}/{subnet_mask}."
 )
 
 online_detection = (
@@ -196,9 +196,17 @@ online_detection = (
     "The online detection result of [{interface}] was {state}.#015"
 )
 
+online_detection_2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "[{network_device_type}:{network_device}:{network_device_mac}]: The online detection result of [{interface}] was {state}.")
+
+pending_device_discovered = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+     "Pending switch [{network_device_type}:{network_device}:{network_device_mac}] was discovered.")
+
 physical_connection_status = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-                              "[{network_device_type}:{network_device_mac}]: The physical connection status of [{interface}] was {state}."
+    "[{network_device_type}:{network_device_mac}]: The physical connection status of [{interface}] was {state}."
 )
 
 up_or_down = (
@@ -210,6 +218,10 @@ upgrade = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}] was upgrade to {result}"
 )
+
+wan_dhcp = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "{wan}: DHCP client {action} IP {result}. (IP-Address={ip_address}, Mask={subnet_mask}, Gateway={gateway})")
 
 # System ##############################################################################################################
 auto_backup = (
@@ -273,8 +285,11 @@ network_devices_activity_templates = [
     [got_ip_address, "device_dhcp_assign", "got IP address"],
     [got_ip_address_2, "unnamed_device_dhcp_assign", "got IP address "],
     [online_detection, "online_detection", "online detection"],
+    [online_detection_2, "online_detection", "online detection"],
     [upgrade, "upgrade"],
+    [pending_device_discovered, "pending_device", "Pending"],
     [physical_connection_status, "physical_connection_status", "physical connection status"],
+    [wan_dhcp, 'wan_dhcp', "IP"],
 ]
 
 system_templates = [

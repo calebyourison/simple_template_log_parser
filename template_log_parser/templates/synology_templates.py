@@ -19,6 +19,7 @@ back_online = "{time} {server_name} System {system_user}:#011Server back online.
 countdown = "{time} {server_name} System {system_user}:#011System started counting down to {state}."
 dns_setting_changed = "{time} {server_name} System {system_user}:#011DNS server setting was changed."
 download_task = "{time} {server_name} System {system_user}:#011Download task for [{task}] {result}."
+empty_recycle_bin = "{time} {server_name} System {system_user}:#011Start to empty recycle bin of shared folder [{folder}]."
 external_disk_ejected = "{time} {server_name} System {system_user}:#011External disk [{external_disk}] is ejected."
 external_disk_not_ejected_properly = "{time} {server_name} System {system_user}:#011The external device [{external_disk}] was not ejected properly. You should eject the device before unplugging it or turning it off."
 external_disk_failed_to_eject = "{time} {server_name} System {system_user}:#011The system failed to eject external disk [{external_disk}]."
@@ -105,6 +106,7 @@ general_system_templates = [
     [external_disk_initialized, "external_disk_initialized", "initialized the external disk"],
     [fan_speed_set, "fan_speed_set", "Fan speed was set"],
     [external_disk_renamed, "external_disk_renamed", "latter was renamed to"],
+    [empty_recycle_bin, "empty_recycle_bin", "empty recycle bin"]
 ]
 
 user_activity_templates = [
