@@ -2,7 +2,7 @@
 ---
 `template-log-parser` is designed to pull relevant information into DataFrame columns by way of user designed templates.  [parse](https://pypi.org/project/parse/) and [pandas](https://pypi.org/project/pandas/) perform the heavy lifting.
 
-You can utilize the included workflows (Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, Synology DSM, and Ubuntu) or build your own. 
+You can utilize the included [workflows](https://github.com/calebyourison/simple_template_log_parser/tree/master/template_workflows) (Kodi, Omada Controller, Open Media Vault, PFSense, PiHole, Synology DSM, and Ubuntu) or build your own. 
 
 ## Getting Started
 ---
