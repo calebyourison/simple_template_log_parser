@@ -1,19 +1,18 @@
 [build-system]
-requires = ["setuptools >= 80.9.0", "setuptools_scm>=9.2.0"]
+requires = ["setuptools >= 82.0.1", "setuptools_scm>=10.0.5"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ['template_log_parser', 'template_log_parser.templates']
+packages = ["template_log_parser"]
 
 [project]
 name = "template-log-parser"
-version = "0.8.1"
+version = "0.9"
 dependencies = [
-    "numpy>=2.0.0",
     "pandas>=2.0.0",
-    "parse==1.20.2",
+    "parse==1.22.0",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
   {name = "Caleb Yourison", email = "caleb.yourison@gmail.com"},
 ]

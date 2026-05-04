@@ -1,4 +1,4 @@
-from template_log_parser.templates.debian_templates import base_debian_templates
+from template_workflows.templates.debian import base_debian_templates
 
 apt_daemon = "{time} {server_name} {process}: {level}: {message}"
 dbus_daemon = '{time} {server_name} dbus-daemon: {message}'
@@ -14,7 +14,7 @@ sticky_notes = "{time} {server_name} sticky-notes-simple_sticky-notes{message}"
 ubuntu = "{time} {server_name} ubuntu-{process} {message}"
 vsce_sign = '{time} {server_name} vsce-sign: {message}'
 
-base_ubuntu_templates = [
+ubuntu_templates = [
     [desktop, "desktop", ".des"],
     [desktop_2, "desktop", ".desktop"],
     [desktop_3, 'desktop', ".deskto"],
@@ -30,7 +30,4 @@ base_ubuntu_templates = [
     [vsce_sign, 'vsce_sign','vsce-sign']
 ]
 
-base_ubuntu_templates += base_debian_templates
-
-ubuntu_column_process_dict = {}
-ubuntu_merge_events_dict = {}
+base_ubuntu_templates = ubuntu_templates + base_debian_templates

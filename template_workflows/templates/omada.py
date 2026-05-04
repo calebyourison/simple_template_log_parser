@@ -1,11 +1,3 @@
-from template_log_parser.column_functions import (
-    calc_time,
-    calc_data_usage,
-    split_name_and_mac,
-)
-
-# Base templates for Omada Log Analysis
-
 # Client Activity #####################################################################################################
 # Blocked
 blocked = (
@@ -177,6 +169,16 @@ device_disconnected = (
     "[{network_device_type}:{network_device}:{network_device_mac}] was disconnected."
 )
 
+device_failed_readoption = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "Failed to readopt [{network_device_type}:{network_device}:{network_device_mac}] automatically."
+)
+
+device_isolated = \
+    ("{time} {controller}  {site_date} {site_time} {site} - - - "
+     "[{network_device_type}:{network_device}:{network_device_mac}] was isolated."
+     )
+
 dhcps = "{time} {controller}  {site_date} {site_time} {site} - - - DHCPS initialization {result}"
 
 got_ip_address = (
@@ -280,6 +282,8 @@ login_templates = [
 network_devices_activity_templates = [
     [device_connected, "device_connected", "was connected."],
     [device_disconnected, "device_disconnected", "was disconnected."],
+    [device_isolated, "device_isolated", "isolated"],
+    [device_failed_readoption, "device_failed_readoption", "Failed to readopt"],
     [dhcps, "dhcps_initialization", "DHCPS initialization"],
     [up_or_down, "interface_up_or_down", "] of ["],
     [got_ip_address, "device_dhcp_assign", "got IP address"],
@@ -300,22 +304,4 @@ system_templates = [
     [operation_details, 'operation_details', "- {"]
 ]
 
-
 base_omada_templates = client_activity_templates + login_templates + network_devices_activity_templates + system_templates
-
-
-# Additional Dictionaries
-# Three columns need cleanup, connection time, data usage, and client_name/mac
-omada_column_process_dict = {
-    "connected_time": [calc_time, "conn_time_min"],
-    "data": [calc_data_usage, "data_usage_MB"],
-    "client_name_and_mac": [split_name_and_mac, ["client_name", "client_mac"]],
-}
-
-# Merging events for consolidation
-omada_merge_events_dict = {
-    "client_activity": [value[1] for value in client_activity_templates],
-    "logins": [value[1] for value in login_templates],
-    "network_device_activity": [value[1] for value in network_devices_activity_templates],
-    "system": [value[1] for value in system_templates],
-}

@@ -83,12 +83,3 @@ gravity_templates = [
 ]
 
 base_pihole_templates = dnsmasq_templates + ftl_templates + webserver_templates + gravity_templates
-
-
-# Merging events for consolidation
-pihole_merge_events_dict = {
-    "dnsmasq": [value[1] for value in dnsmasq_templates],
-    "ftl": [value[1] for value in ftl_templates],
-    "webserver": [value[1] for value in webserver_templates],
-    "gravity": [value[1] for value in gravity_templates]
-}

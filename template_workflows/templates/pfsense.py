@@ -1,7 +1,4 @@
-# Note: These templates adhere to syslog format
-
-from template_log_parser.column_functions import split_by_delimiter
-
+# Note: These templates adhere to syslog format (RFC 5424, with RFC 3339 microsecond precision time stamps)
 # # Filter Log
 
 # ICMP
@@ -42,6 +39,7 @@ filter_log_ipv6_in_ipv4 = "{time} {firewall} filterlog[{process_id}] {rule_info}
 # TCP
 filter_log_tcp_ipv4_bad_options = "{time} {firewall} filterlog[{process_id}] {rule_info},4,{ipv4_protocol_info},tcp,{tcp_ipv4_ip_info}[bad opt]{message}"
 filter_log_tcp_ipv4_error = "{time} {firewall} filterlog[{process_id}] {rule_info},4,{ipv4_protocol_info},tcp,{tcp_ipv4_error_ip_info},errormsg={message}"
+filter_log_tcp_ipv4_fragment = "{time} {firewall} filterlog[{process_id}] {rule_info},4,{ipv4_protocol_info},tcp,{fragment_info}"
 filter_log_tcp_ipv4 = "{time} {firewall} filterlog[{process_id}] {rule_info},4,{ipv4_protocol_info},tcp,{tcp_ipv4_ip_info}"
 
 # UDP
@@ -55,12 +53,12 @@ nginx = '{time} {firewall} nginx {dest_ip} - {user} [{timestamp}] "{type} {messa
 nginx_error = "{time} {firewall} nginx {message_time} [error] {message}"
 syslogd = "{time} {firewall} syslogd {message}"
 
-
 filter_log_templates = [
     # TCP
     # Search these templates before the standard tcp ipv4 template
     [filter_log_tcp_ipv4_error, "filter_tcp_ipv4_error", "tcp"],
     [filter_log_tcp_ipv4_bad_options, "filter_tcp_ipv4_bad_options", "tcp"],
+    [filter_log_tcp_ipv4_fragment, "filter_tcp_ipv4_fragment", "fragment"],
     [filter_log_tcp_ipv4, "filter_tcp_ipv4", "tcp"],  # Standard tcp ipv4 template
     # ICMP
     [filter_log_icmp_ipv4_address_mask, "filter_icmp_ipv4_address_mask", "address mask"],
@@ -106,129 +104,3 @@ general_templates = [
 ]
 
 base_pfsense_templates = filter_log_templates + general_templates
-
-# Rule Columns
-generic_rule_info_columns = [
-    "rule_number",
-    "sub_rule",
-    "anchor",
-    "tracker",
-    "real_interface",
-    "reason",
-    "action",
-    "direction",
-]
-
-# Protocol Columns
-generic_ipv4_protocol_info_columns = [
-    "tos",
-    "ecn",
-    "ttl",
-    "id",
-    "offset",
-    "flags",
-    "protocol_id",
-]
-
-icmp_ipv6_protocol_info_columns = [
-    "class",
-    "flow_label",
-    "hop_limit"
-]
-
-# IP Info Columns
-base_ipv4_ip_info_columns = [
-    "length",
-    "src_ip",
-    "dest_ip"
-]
-
-generic_ipv4_ip_info_columns = base_ipv4_ip_info_columns + ["data_length"]
-
-base_ipv4_tcp_udp_ip_info_columns = base_ipv4_ip_info_columns + [
-    "src_port",
-    "dest_port",
-    "data_length",
-]
-
-tcp_ipv4_ip_info_error_columns = base_ipv4_tcp_udp_ip_info_columns + ["tcp_flags"]
-
-tcp_ipv4_ip_info_columns = base_ipv4_tcp_udp_ip_info_columns + [
-    "tcp_flags",
-    "seq_number",
-    "ack_number",
-    "tcp_window",
-    "urg",
-    "tcp_options",
-]
-
-icmp_ipv6_ip_info_columns = [
-    "protocol_id",
-    "length",
-    "src_ip",
-    "dest_ip",
-    "icmp_data"
-]
-
-# Instance specific Columns
-icmp_ipv4_generic_info_columns = [
-    "icmp_id",
-    "icmp_sequence"
-]
-
-icmp_ipv4_unreachport_info_columns = [
-    "icmp_dest_ip",
-    "unreach_protocol",
-    "unreach_port",
-]
-icmp_ipv4_unreachproto_info_columns = [
-    "icmp_dest_ip",
-    "unreach_protocol"
-]
-
-icmp_ipv4_tstampreply_info_columns = [
-    "icmp_id",
-    "icmp_sequence",
-    "icmp_otime",
-    "icmp_rtime",
-    "icmp_ttime",
-]
-
-split_by_delimiter_column_pairs = {
-    # Generic
-    "rule_info": generic_rule_info_columns,
-    "ipv4_protocol_info": generic_ipv4_protocol_info_columns,
-    "ipv4_ip_info": generic_ipv4_ip_info_columns,
-    # ICMP
-    "icmp_ipv4_ip_info": base_ipv4_ip_info_columns,
-    "icmp_ipv4_reply_info": icmp_ipv4_generic_info_columns,
-    "icmp_ipv4_request_info": icmp_ipv4_generic_info_columns,
-    "icmp_ipv4_tstamp_info": icmp_ipv4_generic_info_columns,
-    "icmp_ipv4_tstampreply_info": icmp_ipv4_tstampreply_info_columns,
-    "icmp_ipv4_unreachport_info": icmp_ipv4_unreachport_info_columns,
-    "icmp_ipv4_unreachproto_info": icmp_ipv4_unreachproto_info_columns,
-    "icmp_ipv6_protocol_info": icmp_ipv6_protocol_info_columns,
-    "icmp_ipv6_ip_info": icmp_ipv6_ip_info_columns,
-    # SCTP
-    "sctp_ipv4_ip_info": base_ipv4_tcp_udp_ip_info_columns,
-    # TCP
-    "tcp_ipv4_ip_info": tcp_ipv4_ip_info_columns,
-    "tcp_ipv4_error_ip_info": tcp_ipv4_ip_info_error_columns,
-    # UDP
-    "udp_ipv4_ip_info": base_ipv4_tcp_udp_ip_info_columns,
-    # IPv4 in IPv6, IPv4 in IPv4, etc
-    "ipv4_in_ipv6_ip_info": base_ipv4_ip_info_columns,
-    "ipv4_in_ipv4_ip_info": base_ipv4_ip_info_columns,
-}
-
-pfsense_split_by_delimiter_process_dict = {
-    column: [split_by_delimiter, columns]
-    for column, columns in split_by_delimiter_column_pairs.items()
-}
-
-pfsense_column_process_dict = {**pfsense_split_by_delimiter_process_dict}
-
-pfsense_merge_events_dict = {
-    "filter_log": [value[1] for value in filter_log_templates],
-    "general": [value[1] for value in general_templates]
-}

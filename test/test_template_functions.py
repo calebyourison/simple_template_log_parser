@@ -1,7 +1,7 @@
 import unittest
 
-from template_log_parser.templates.template_functions import compile_templates
-from template_log_parser.templates.definitions import SimpleTemplate
+from template_log_parser.template_functions import compile_templates
+from template_log_parser.definitions import SimpleTemplate
 
 from test.resources import logger
 

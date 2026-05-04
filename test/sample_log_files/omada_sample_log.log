@@ -41,3 +41,5 @@
 2025-10-18T19:55:27.291224+01:00 controller_X  2025-10-18 19:55:22 Controller - - - Pending switch [switch:21-C1-D0-B7-3C-29:21-C1-D0-B7-3C-29] was discovered.
 2025-11-20T22:29:15.885955+01:00 controller_X  2025-11-20 22:28:20 Controller - - - WAN1: DHCP client renewing IP succeeded. (IP-Address=1.1.1.2, Mask=255.255.255.0, Gateway=1.1.1.1)
 2025-11-27T05:55:17.226850+01:00 controller_X  2025-11-27 05:54:13 Controller - - - [gateway:Main_Router:54-AF-98-2D-07-90]: The online detection result of [WAN1] was offline.
+2025-12-31T11:52:25.027778+01:00 controller_X  2026-12-31 11:52:23 Controller - - - [ap:ap_name:3C-7E-D2-50-19-D0] was isolated.
+2026-01-05T16:15:32.134240+01:00 controller_X  2026-01-05 16:15:29 Controller - - - Failed to readopt [ap:ap_name:3C-7E-D2-50-19-D0] automatically.

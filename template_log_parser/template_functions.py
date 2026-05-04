@@ -2,7 +2,7 @@ import re
 from parse import compile as parse_compile
 from typing import Literal
 
-from template_log_parser.templates.definitions import SimpleTemplate
+from template_log_parser.definitions import SimpleTemplate
 
 
 def compile_templates(templates: list[list[str]], search_string_criteria: Literal["find", "copy"] = "find") -> list[SimpleTemplate]:
@@ -45,3 +45,4 @@ def compile_templates(templates: list[list[str]], search_string_criteria: Litera
 
 
     return output
+

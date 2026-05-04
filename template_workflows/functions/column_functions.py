@@ -1,5 +1,3 @@
-# Pre-built functions to run on columns that need additional processing
-
 
 def split_name_and_mac(name_and_mac: str) -> tuple[str, str]:
     """Return a tuple of two strings including client name and client mac address after splitting string at colon.

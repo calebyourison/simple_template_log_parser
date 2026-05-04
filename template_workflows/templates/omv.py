@@ -1,4 +1,4 @@
-from template_log_parser.templates.debian_templates import base_debian_templates
+from template_workflows.templates.debian import base_debian_templates
 
 openmediavault_id_process = "{time} {server_name} openmediavault-{process}[{id}]: {message}"
 openmediavault_process = "{time} {server_name} openmediavault-{process} {message}"
@@ -24,8 +24,3 @@ omv_other_templates = [
 ]
 
 base_omv_templates = omv_process_templates + openmediavault_process_templates + omv_other_templates + base_debian_templates
-
-omv_merge_events_dict = {
-    "omv": [value[1] for value in omv_process_templates],
-    "openmediavault": [value[1] for value in openmediavault_process_templates]
-}

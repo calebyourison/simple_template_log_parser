@@ -1,8 +1,4 @@
-from template_log_parser.column_functions import (
-    calc_data_usage,
-    isolate_ip_from_parentheses,
-)
-
+# Note: These templates adhere to syslog format (BSD, RFC 3164)
 # Tasks
 backup_task = "{time} {server_name} {package_name} {system_user}:#011[{type}][{task_name}] {message}"
 backup_version_rotation = "{time} {server_name} {package_name} {system_user}:#011[{task_name}] Trigger version rotation."
@@ -131,18 +127,3 @@ user_activity_templates = [
 ]
 
 base_synology_templates = tasks_templates + general_system_templates + user_activity_templates
-
-# Additional Dictionaries
-
-synology_column_process_dict = {
-    "data_uploaded": [calc_data_usage, "data_uploaded_MB"],
-    "data_downloaded": [calc_data_usage, "data_download_MB"],
-    "client_ip": [isolate_ip_from_parentheses, "client_ip_address"],
-}
-
-# Merging events for consolidation
-synology_merge_events_dict = {
-    "tasks": [value[1] for value in tasks_templates],
-    "general_system": [value[1] for value in general_system_templates],
-    "user_activity": [value[1] for value in user_activity_templates]
-}

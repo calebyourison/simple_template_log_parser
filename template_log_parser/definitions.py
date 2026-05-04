@@ -15,6 +15,3 @@ class SimpleTemplate(NamedTuple):
     template: Parser
     event_type: str
     search_string: str
-
-
-

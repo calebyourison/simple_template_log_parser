@@ -1,261 +1,298 @@
 import unittest
 import pandas as pd
-import io
+from pandas.api.types import is_datetime64_any_dtype
+from io import StringIO, BytesIO
 from contextlib import redirect_stdout, redirect_stderr
 
-from template_log_parser.log_functions import (
-    log_pre_process,
-    run_functions_on_columns,
-    process_event_types,
-    merge_event_type_dfs,
+from parse import compile as parse_compile
+
+from template_log_parser.definitions import SimpleTemplate
+
+from template_log_parser.template_functions import compile_templates
+
+from template_log_parser.log_functions import parse_function, filter_line, log_pre_process, process_log
+
+from template_log_parser.definitions import (
+    event_type_column,
+    event_data_column,
+    other_type_column,
+    unparsed_text_column,
 )
-
-from template_log_parser.column_functions import (
-    split_name_and_mac,
-    calc_time,
-    calc_data_usage,
-    isolate_ip_from_parentheses,
-    split_by_delimiter,
-)
-
-
-from test.resources import sample_df, built_in_log_file_types
-from template_log_parser.log_functions import event_type_column
 
 from test.resources import logger
 
-class TestLogFunctions(unittest.TestCase):
-    """Defines a class to test functions that process overall log files"""
+from test.resources import (
+    debian_sample_log,
+    omada_sample_log,
+    omv_debian_sample_log,
+    pfsense_sample_log,
+    pihole_sample_log,
+    synology_sample_log,
+    ubuntu_debian_sample_log
+)
 
-    def test_run_functions_on_columns(self):
-        """Defines a test function to ensure run functions on columns is operating correctly"""
+from template_workflows.templates.debian import base_debian_templates
+from template_workflows.templates.omada import base_omada_templates
+from template_workflows.templates.omv import base_omv_templates
+from template_workflows.templates.pfsense import base_pfsense_templates
+from template_workflows.templates.pihole import base_pihole_templates
+from template_workflows.templates.synology import base_synology_templates
+from template_workflows.templates.ubuntu import base_ubuntu_templates
 
+template_pairs = {
+    "debian": {"templates": base_debian_templates, "file": debian_sample_log},
+    "omada": {"templates": base_omada_templates, "file": omada_sample_log},
+    "omv": {"templates": base_omv_templates, "file": omv_debian_sample_log},
+    "pfsense": {"templates": base_pfsense_templates, "file": pfsense_sample_log},
+    "pihole": {"templates": base_pihole_templates, "file": pihole_sample_log},
+    "synology": {"templates": base_synology_templates, "file": synology_sample_log},
+    "ubuntu": {"templates": base_ubuntu_templates, "file": ubuntu_debian_sample_log}
+}
 
-        # In order to pass arguments to column functions, kwargs dictionary is created
-        data_usage_kwargs = dict(increment="GB")
+class TestPreProcessFunctions(unittest.TestCase):
+    """Defines a class to test log functions"""
 
-        # Using all built-in column functions, add in one column that doesn't exist to ensure no error
-        function_dict = {
-            "column_that_does_not_exist": [len, "fake_column_name"],
-            "data": [calc_data_usage, "data_MB", data_usage_kwargs],
-            "client_name_and_mac": [split_name_and_mac, ["client_name", "client_mac"]],
-            "time_elapsed": [calc_time, "time_min"],
-            "ip_address_raw": [isolate_ip_from_parentheses, "ip_address_fixed"],
-            "delimited_data": [split_by_delimiter, ["one", "two"]],
-            "delimited_by_periods": [
-                split_by_delimiter,
-                ["period_one", "period_two"],
-                dict(delimiter="."),
-            ],
-        }
-
-        # Assert function returns a tuple
-        self.assertIsInstance(
-            run_functions_on_columns(
-                sample_df(),
-                additional_column_functions=function_dict,
-                datetime_columns=["utc_time", "time"],
-                localize_timezone_columns=["time"],
-            ),
-            tuple,
+    def test_parse_function(self):
+        """Test function to assert that parse function is returning a string event type and a dictionary of results"""
+        # Known event type with a verified template
+        simple_event = (
+            "2024-09-12T00:28:49.037352+01:00 gen_controller  2024-09-11 16:28:44 Controller - - - "
+            "user logged in to the controller from 172.0.0.1."
         )
 
-        df, list_of_columns = run_functions_on_columns(
-            sample_df(),
-            additional_column_functions=function_dict,
-            datetime_columns=["utc_time", "time"],
-            localize_timezone_columns=["time"],
+        temp = (
+            "{timestamp} {controller_name}  {local_time} Controller - - - "
+            "{username} logged in to the controller from {ip}."
         )
 
-        # Assert variables are df and list respectively
-        self.assertIsInstance(df, pd.DataFrame)
-        self.assertIsInstance(list_of_columns, list)
+        simple_template_list = [SimpleTemplate(template=parse_compile(temp), event_type="login", search_string="logged in")]
 
-        # Assert the expected columns are present
-        self.assertTrue(
-            (
-                [column for column in sample_df().columns]
-                + [
-                    "data_MB",
-                    "client_name",
-                    "client_mac",
-                    "time_min",
-                    "ip_address_fixed",
-                    "one",
-                    "two",
-                    "period_one",
-                    "period_two",
-                ]
-                == df.columns
-            ).all()
-        )
+        results = parse_function(simple_event, simple_template_list)
+        self.assertIsInstance(results, dict)
+        self.assertEqual(results[event_type_column], "login")
 
-        # Assert newly created columns have the correct data types
-        for index, row in df.iterrows():
-            self.assertIsInstance(row["data_MB"], float)
-            self.assertIsInstance(row["client_name"], str)
-            self.assertIsInstance(row["client_mac"], str)
-            self.assertIsInstance(row["time_min"], float)
-            self.assertIsInstance(row["ip_address_fixed"], str)
-            self.assertIsInstance(row["one"], str)
-            self.assertIsInstance(row["two"], str)
+        # Should return tuple, then string and dict respectively
+        anomalous_event = "This event does not match any template."
+        # Unknown event type should also pass without error, return dict
+        results_2 = parse_function(anomalous_event, simple_template_list)
+        self.assertIsInstance(results_2, dict)
+        # Should return other event type
+        self.assertEqual(results_2[event_type_column], other_type_column)
+        # The key to its dict should be unparsed_text_column, event_type_column
+        self.assertEqual(list(results_2.keys()), [unparsed_text_column, event_type_column])
 
-        # Assert timezone and no timezone for applicable datetime columns
-        self.assertTrue(df["utc_time"].dt.tz is not None)
-        self.assertTrue(df["time"].dt.tz is None)
+    def test_filter_line(self):
+        """Test function to assert that filter_line returns the correct boolean"""
+        sample_line = "It was the best of times. It was the worst of times."
 
-        # Assert return list of columns is equal to the keys from the column function dict EXCEPT 'column_that_does_not_exist'
-        self.assertEqual(
-            list_of_columns,
-            [
-                column
-                for column in function_dict.keys()
-                if column != "column_that_does_not_exist"
-            ],
-        )
+        # No input should be True
+        self.assertTrue(filter_line(sample_line))
 
-        # If a df is passed without any arguments, the same df should return along with an empty list
-        no_changes_df, empty_list = run_functions_on_columns(df.copy())
-        # Return df should equal the original df
-        self.assertTrue(no_changes_df.equals(df))
-        self.assertTrue(len(empty_list) == 0)
+        combinations = [
+            {"match_type": "any", "match": ["times", "spaceship", "earth"], "result": True},
+            {"match_type": "all", "match": ["times", "best", "worst", "It"], "result": True},
+            {"match_type": "any", "match": "earth", "result": False},
+            {"match_type": "all", "match": ["times", "earth"], "result": False},
+            {"eliminate_type": "any", "eliminate": ["earth", "mars", "saturn"], "result": True},
+            {"eliminate_type": "all", "eliminate":["best", "times", "earth"], "result": True},
+            {"eliminate_type": "any", "eliminate": ["best", "times", "earth"], "result": False},
+            {"eliminate_type": "all", "eliminate": ["best", "times", "worst"], "result": False},
+            {"eliminate_type": "any", "eliminate": ["best"], "match_type": "any", "match": ["best"], "result": False}
+        ]
 
-        # Exceptions
+        for combination in combinations:
+            match_type = combination.get("match_type", "any")
+            eliminate_type = combination.get("eliminate_type", "any")
+            match = combination.get("match", None)
+            eliminate = combination.get("eliminate", None)
+            expected_result = combination.get("result")
 
-        # Improper configuration
-        self.assertRaises(
-            ValueError,
-            run_functions_on_columns,
-            sample_df(),
-            {
-                "data": [
-                    len,
-                ]
-            },
-        )
+            result = filter_line(line=sample_line, match_type=match_type, eliminate_type=eliminate_type, match=match, eliminate=eliminate)
 
-        # Function not callable
-        self.assertRaises(
-            TypeError,
-            run_functions_on_columns,
-            sample_df(),
-            {"data": ["not_a_function", "data_transformed"]},
-        )
+            if expected_result:
+                self.assertTrue(result, combination)
 
-        # Invalid type for new column names
-        self.assertRaises(
-            RuntimeError,
-            run_functions_on_columns,
-            sample_df(),
-            {"client_name_and_mac": [len, 1]},
-        )
-
-        # General failure runtime
-        self.assertRaises(
-            RuntimeError,
-            run_functions_on_columns,
-            sample_df(),
-            {
-                "client_name_and_mac": [
-                    split_name_and_mac,
-                    ["client_name", "client_mac", "fake_column"],
-                ]
-            },
-        )
-
-        # dt conversion error, dt localization error, nothing raised, just print statements
-        f = io.StringIO()
-        f_err = io.StringIO()
-
-        with redirect_stdout(f), redirect_stderr(f_err):
-            run_functions_on_columns(sample_df(), {}, ["data"], ["data"])
-
-        print_statement = f.getvalue()
-
-        self.assertTrue("Error converting column" in print_statement)
-        self.assertTrue("Error localizing timezone in column" in print_statement)
-
-    def test_process_event_types(self):
-        """Defines a function to assert that process_event_types returns a dictionary of dfs correctly"""
-
-        # Using all built ins
-        for built_in in built_in_log_file_types:
-            logger.info(f"{built_in.name}: test process_event_types")
-            # Create sample df with correct three columns
-            df = log_pre_process(built_in.sample_log_file, built_in.templates)
-
-            # First run, using drop columns, and setting datetime columns
-            logger.info("Using drop columns")
-            dict_of_df = process_event_types(
-                df.copy(),
-                built_in.column_functions,
-                datetime_columns=built_in.datetime_columns,
-                localize_timezone_columns=built_in.localize_datetime_columns,
-                drop_columns=True,
-            )
-
-            # Assert a dictionary was returned
-            self.assertIsInstance(dict_of_df, dict)
-            # Assert list of dictionaries matches a list of unique event types from the original df
-            self.assertEqual(
-                (list(dict_of_df.keys())), df[event_type_column].unique().tolist()
-            )
-
-            # Set of columns that were processed
-            if built_in.column_functions:
-                drop_columns_list = list(built_in.column_functions.keys())
-                drop_columns = set(drop_columns_list)
             else:
-                drop_columns_list = []
-                drop_columns = set(drop_columns_list)
+                self.assertFalse(result, combination)
 
-            # Loop over all dfs
-            for df in dict_of_df.values():
-                # Assert each value is a pandas DataFrame
-                self.assertIsInstance(df, pd.DataFrame)
-                # Assert that the intersection of the two sets (drop_columns and df.columns) is empty, having len 0
-                # Meaning columns were dropped correctly
-                self.assertTrue(len(drop_columns.intersection(set(df.columns))) == 0)
-                # Assert timezone and no timezone for applicable datetime columns, "Other" df wouldn't have these columns
-                if built_in.datetime_columns:
-                    for column in built_in.datetime_columns:
-                        if column in df.columns:
-                            # Assert column is ANY form of pandas datetime, accounting for all formats
-                            self.assertTrue(
-                                pd.api.types.is_datetime64_any_dtype(df[column])
-                            )
 
-            logger.info("ok")
-            # New df
-            logger.info("Not using drop columns")
-            new_df = log_pre_process(built_in.sample_log_file, built_in.templates)
-            # Do not drop columns on this run
-            non_drop_dict_of_df = process_event_types(
-                new_df.copy(), built_in.column_functions, drop_columns=False
+    def test_log_pre_process(self):
+        """Test function to assert that log_pre_process returns a Pandas DataFrame with expected columns"""
+        for name, attributes in template_pairs.items():
+            logger.info(f"Checking {name} templates: log_pre_process")
+            templates = attributes.get("templates", [])
+
+            file_types = list()
+            file = attributes.get("file", "")
+
+            # String
+            file_types.append(file)
+
+            # BytesIO
+            with open(file, "rb") as f:
+                bytes_io_file = BytesIO(f.read())
+                file_types.append(bytes_io_file)
+
+            # StringIO
+            with open(file, "r") as f:
+                lines = f.read()
+                string_io_file = StringIO(lines)
+                file_types.append(string_io_file)
+
+            # Number of lines to account for
+            with open(file, "r") as f:
+                number_of_lines = len(f.readlines())
+
+            self.assertEqual(len(templates), number_of_lines)
+            logger.info("Length of template dictionary matches the length of logfile")
+
+            compiled_templates = compile_templates(templates)
+
+            expected_events = []
+            expected_columns = []
+            for template in compiled_templates:
+                columns = template.template.named_fields
+                for column in columns:
+                    expected_columns.append(column)
+
+                expected_events.append(template.event_type)
+
+            expected_columns.extend([event_data_column, event_type_column])
+
+            # Eliminate duplicate columns
+            expected_columns = sorted(set(expected_columns))
+
+            # Do no eliminate duplicates, more than one template can share an event type
+            expected_events = sorted(expected_events)
+
+            for f in file_types:
+                output = log_pre_process(file=f, templates=compiled_templates)
+
+                actual_columns = sorted(output.columns)
+
+                self.assertIsInstance(output, pd.DataFrame)
+
+                self.assertEqual(expected_columns, actual_columns)
+                logger.info(f"Expected {expected_columns} columns, found {actual_columns}")
+
+                actual_events = sorted(output[event_type_column])
+                self.assertEqual(expected_events, actual_events)
+
+                self.assertEqual(output.shape[0], number_of_lines)
+                logger.info(f"Expected {number_of_lines} rows in dataframe, found {output.shape[0]}")
+
+                # Print all lines that are not accounted for by templates
+                other = output[output[event_type_column] == other_type_column]
+                logger.debug(f"Unparsed Lines: {other}")
+
+                # Assert no "Other" event types
+                self.assertTrue(other_type_column not in output[event_type_column].tolist())
+
+                criteria = "open"
+
+                matched_output = log_pre_process(file=f, templates=compiled_templates, match=criteria)
+                for index, row in matched_output.iterrows():
+                    message = row[event_data_column]
+                    self.assertTrue(criteria in message)
+
+                eliminated_output = log_pre_process(file=f, templates=compiled_templates, eliminate=criteria)
+                for index, row in eliminated_output.iterrows():
+                    message = row[event_data_column]
+                    self.assertTrue(criteria not in message)
+
+            improper_file_type = {}
+            self.assertRaises(
+                ValueError,
+                log_pre_process,
+                improper_file_type,
+                compiled_templates
             )
-            # Not all processed columns would be present in every df, so this step creates one large df
-            concat_df = pd.concat([df for df in non_drop_dict_of_df.values()])
-            # Verify that every column is still present within the large df, meaning not dropped
-            for column in drop_columns_list:
-                self.assertTrue(column in concat_df.columns)
-            logger.info("ok")
-            logger.info(f"{built_in.name}: process_event_types ok")
 
-    def test_merge_event_type_dfs(self):
-        """Defines a test function to assert that dfs specified to be merged are done so correctly"""
-        # Using all built_ins
-        for built_in in built_in_log_file_types:
-            # First create dictionary of dfs:
-            pre_df = log_pre_process(built_in.sample_log_file, built_in.templates)
-            # No column manipulation or dropping for this test as it is addressed in other test functions
-            dict_of_dfs = process_event_types(pre_df.copy())
+    def test_process_log(self):
+        """Test function to assert that process_log returns the expected output"""
+        no_datetime_columns = ["pihole"]
 
-            # Merge events, if dictionary is present
-            if built_in.merge_events:
-                dict_of_dfs = merge_event_type_dfs(dict_of_dfs, built_in.merge_events)
-                # After the procedure assert the new_df name is present as a key
-                for new_df, old_dfs in built_in.merge_events.items():
-                    self.assertTrue(new_df in dict_of_dfs.keys())
-                    # Assert old df names are no longer present as keys
-                    for old_df in old_dfs:
-                        self.assertTrue(old_df not in dict_of_dfs.keys())
+        for name, attributes in template_pairs.items():
+            logger.info(f"Checking {name} templates: process_log")
+            templates = attributes.get("templates", [])
+
+            if name not in no_datetime_columns:
+                date_time_column = ["time"]
+            else:
+                date_time_column = None
+
+            file_types = list()
+            file = attributes.get("file", "")
+
+            # String
+            file_types.append(file)
+
+            # BytesIO
+            with open(file, "rb") as f:
+                bytes_io_file = BytesIO(f.read())
+                file_types.append(bytes_io_file)
+
+            # StringIO
+            with open(file, "r") as f:
+                lines = f.read()
+                string_io_file = StringIO(lines)
+                file_types.append(string_io_file)
+
+            # Number of lines to account for
+            with open(file, "r") as f:
+                number_of_lines = len(f.readlines())
+
+            self.assertEqual(len(templates), number_of_lines)
+            logger.info("Length of template dictionary matches the length of logfile")
+
+            compiled_templates = compile_templates(templates)
+
+            # Dictionary format
+            for f in file_types:
+                dict_output = process_log(f, compiled_templates, dict_format=True, datetime_columns=date_time_column)
+
+                expected_columns_per_key = {}
+                expected_keys = []
+                for template in compiled_templates:
+                    key = template.event_type
+                    expected_keys.append(key)
+                    expected_columns_per_key[key] = template.template.named_fields
+                    expected_columns_per_key[key] += [event_type_column, event_data_column]
+
+                # Remote duplicates
+                expected_keys = sorted(set(expected_keys))
+                logger.debug(f"Expected keys {len(expected_keys)}: {expected_keys}")
+                actual_keys = sorted(dict_output.keys())
+                logger.debug(f"Actual keys {len(actual_keys)}: {actual_keys}")
+
+                self.assertEqual(expected_keys, actual_keys)
+
+                for key in expected_columns_per_key:
+                    logger.debug(f"Checking key {key}")
+
+                    expected_columns = sorted(expected_columns_per_key[key])
+                    logger.debug(f"Expected columns: {len(expected_columns)}: {expected_columns}")
+
+                    mini_df = dict_output[key]
+                    actual_columns = sorted(mini_df.columns)
+                    logger.debug(f"Actual columns: {len(actual_columns)}: {actual_columns}")
+
+                    self.assertEqual(expected_columns, actual_columns)
+
+                    if date_time_column:
+                        self.assertTrue(is_datetime64_any_dtype(mini_df["time"]))
+
+            # DF version
+            # dt conversion error, dt localization error, nothing raised, just print statements
+            f = StringIO()
+            f_err = StringIO()
+
+            with redirect_stdout(f), redirect_stderr(f_err):
+                output = process_log(file, compiled_templates, dict_format=False, datetime_columns=[event_type_column])
+                self.assertIsInstance(output, pd.DataFrame)
+
+            print_statement = f.getvalue()
+
+            self.assertTrue("Error converting column" in print_statement)
+            self.assertTrue("to datetime:" in print_statement)
+

@@ -1,13 +1,12 @@
 import unittest
 
-from template_log_parser.column_functions import (
+from template_workflows.functions.column_functions import (
     split_name_and_mac,
     calc_time,
     calc_data_usage,
     isolate_ip_from_parentheses,
     split_by_delimiter,
 )
-
 
 
 class TestColumnFunctions(unittest.TestCase):
