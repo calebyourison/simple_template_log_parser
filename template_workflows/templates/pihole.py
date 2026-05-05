@@ -1,5 +1,6 @@
 
 # dnsmasq
+dnsmasq_blocked_upstream = "{time} dnsmasq[{id}]: blocked upstream with NULL address {domain} is {destination}"
 dnsmasq_cached = "{time} dnsmasq[{id}]: cached {query} is {cached_resolved_ip}"
 dnsmasq_cached_stale = "{time} dnsmasq[{id}]: cached-stale {query} is {cached_resolved_ip}"
 dnsmasq_compile = "{time} dnsmasq[{id}]: compile time options: {message}"
@@ -64,6 +65,7 @@ dnsmasq_templates = [
     [dnsmasq_custom_list, 'dnsmasq_custom_list', "custom.list"],
     [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"],
     [dnsmasq_regex_denied, 'dnsmasq_regex_denied', 'regex denied'],
+    [dnsmasq_blocked_upstream, "dnsmasq_blocked_upstream", "blocked upstream"]
 ]
 
 ftl_templates = [

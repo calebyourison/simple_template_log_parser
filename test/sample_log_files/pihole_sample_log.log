@@ -30,3 +30,4 @@ Jun 22 00:00:00 dnsmasq[50]: /etc/pihole/hosts/custom.list 10.0.0.199 is somehos
 2025-06-28 22:38:00.864 EST [49/T66743] ERROR: Cannot receive UDP DNS reply: Timeout - no response from upstream DNS server
 Jul 11 00:11:52 dnsmasq[235561]: TCP connection failed: Resource temporarily unavailable
 Dec  9 18:32:04 dnsmasq[67]: regex denied <name unprintable> is NODATA
+May  3 10:18:14 dnsmasq[53]: blocked upstream with NULL address thing.io is 0.0.0.0

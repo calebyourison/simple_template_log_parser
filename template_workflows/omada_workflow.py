@@ -53,7 +53,7 @@ def omada_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.DataF
         base_output["data_usage_MB"] = base_output.apply(
             lambda row: (
                 calc_data_usage(row["data"], increment="MB")
-                if isinstance(row["connected_time"], str)
+                if isinstance(row["data"], str)
                 else pd.NA
             ),
             axis=1,
@@ -64,7 +64,7 @@ def omada_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.DataF
         base_output[["client_name", "client_mac"]] = base_output.apply(
             lambda row: (
                 split_name_and_mac(row["client_name_and_mac"])
-                if isinstance(row["connected_time"], str)
+                if isinstance(row["client_name_and_mac"], str)
                 else (pd.NA, pd.NA)
             ),
             axis=1,
