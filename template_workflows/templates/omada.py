@@ -120,6 +120,11 @@ online_hw = (
     "went online on [{network_device_type}:{network_device}:{network_device_mac}] on {network} network."
 )
 
+online_hw2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}] "
+    "went online on [{network_device_type}:{network_device_mac}] on {network} network."
+)
+
 online_w = (
     "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}]"
     "  went online on [{network_device_type}:{network_device}:{network_device_mac}] "
@@ -264,6 +269,7 @@ client_activity_templates = [
     [disc_hw_recon, "hardwired_reconnect", "disconnected from network"],
     [disc_w_recon, "wireless_reconnect", "disconnected from SSID"],
     [online_hw, "hardwired_online", "went online"],
+    [online_hw2, "hardwired_online", "went online"],
     [offline_hw, "hardwired_offline", "went offline from network"],
     [online_w_username, "wireless_online_username", "went online on"],
     [online_w, "wireless_online", " went online on "],
