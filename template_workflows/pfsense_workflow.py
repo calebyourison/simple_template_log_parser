@@ -110,25 +110,31 @@ def pfsense_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.Dat
     templates = compile_templates(base_pfsense_templates)
 
     base_output = process_log(
-        file=file, templates=templates, dict_format=False, datetime_columns=["time"]
+        file=file, templates=templates, dict_format=True, datetime_columns=["time"]
     )
 
-    # Split at commas and create new columns, pd.NA where needed
-    for column, new_columns in split_by_delimiter_column_pairs.items():
-        if column in base_output.columns:
-            base_output[new_columns] = base_output.apply(
-                lambda row: (
-                    split_by_delimiter(row[column])
-                    if isinstance(row[column], str)
-                    else tuple([pd.NA for col in new_columns])
-                ),
-                axis=1,
-                result_type="expand",
-            )
+    processed_dfs = []
 
-            base_output = base_output.drop(columns=[column])
+    for df in base_output.values():
 
+    # # Split at commas and create new columns, pd.NA where needed
+        for column, new_columns in split_by_delimiter_column_pairs.items():
+            if column in df.columns:
+                df[new_columns] = df.apply(
+                    lambda row: (
+                        split_by_delimiter(row[column])
+                        if isinstance(row[column], str)
+                        else tuple([pd.NA for col in new_columns])
+                    ),
+                    axis=1,
+                    result_type="expand",
+                )
 
-    final_output = merge_events(base_output, pfsense_merge_events_dict)
+                df = df.drop(columns=[column])
+        processed_dfs.append(df)
+
+    processed = pd.concat(processed_dfs).reset_index(drop=True)
+
+    final_output = merge_events(processed, pfsense_merge_events_dict)
 
     return final_output
