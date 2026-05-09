@@ -7,7 +7,7 @@ packages = ["template_log_parser"]
 
 [project]
 name = "template-log-parser"
-version = "0.9"
+version = "0.9.1"
 dependencies = [
     "pandas>=2.0.0",
     "parse==1.22.0",

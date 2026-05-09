@@ -1,3 +1,8 @@
+#### 0.9.1
+- Bug fix, corrected process_log(dict=True) to return an empty dictionary when match/eliminate results in zero lines.
+
+---
+
 #### 0.9
 - Separated basic template log processing from supported log file types for simplicity (breaking change).
 

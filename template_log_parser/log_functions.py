@@ -14,6 +14,36 @@ from template_log_parser.definitions import (
 )
 
 
+def get_lines_from_file(
+        f: Union[str, Path, BytesIO, StringIO, TextIOBase],
+) -> list[str]:
+    """Return a list of strings from a flat file
+
+    :param f: Path to file or filelike object, most commonly in the format of some_log_process.log
+    :type f: str, Path, BytesIO, StringIO, TextIOBase
+
+    :return: list of string
+    :rtype: list[str]
+
+    :raise ValueError: If wrong file type is provided
+
+    """
+    if isinstance(f, (str, Path)):
+        with open(f, "r", encoding="utf-8") as file_obj:
+            return file_obj.read().splitlines()
+    elif isinstance(f, BytesIO):
+        f.seek(0)
+        return f.read().decode("utf-8").splitlines()
+    elif isinstance(f, (StringIO, TextIOBase)):
+        f.seek(0)
+        return f.read().splitlines()
+    else:
+        raise ValueError(
+            "Unsupported file type. Must be str, Path, BytesIO, StringIO, or TextIOBase."
+        )
+
+
+
 def parse_function(event: str, templates: list[SimpleTemplate]) -> dict[str, str]:
     """Return a dictionary of information parsed from a log file string based on matching template.
 
@@ -135,24 +165,6 @@ def log_pre_process(
     :note:
         eliminate applied second, and therefore supersedes any words in match should duplicate criteria exist.
     """
-
-    def get_lines_from_file(
-        f: Union[str, Path, BytesIO, StringIO, TextIOBase],
-    ) -> list[str]:
-        if isinstance(f, (str, Path)):
-            with open(f, "r", encoding="utf-8") as file_obj:
-                return file_obj.read().splitlines()
-        elif isinstance(f, BytesIO):
-            f.seek(0)
-            return f.read().decode("utf-8").splitlines()
-        elif isinstance(f, (StringIO, TextIOBase)):
-            f.seek(0)
-            return f.read().splitlines()
-        else:
-            raise ValueError(
-                "Unsupported file type. Must be str, Path, BytesIO, StringIO, or TextIOBase."
-            )
-
     parsed_results = []
 
     def parse_line(log_line: str) -> None:
@@ -243,6 +255,8 @@ def process_log(
     if not dict_format:
         return df
     else:
+        if df.empty:
+            return {}
         df_dict = {}
         # For every unique event_type create a copy df
         for event_type in df[event_type_column].unique().tolist():
