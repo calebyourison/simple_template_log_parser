@@ -14,6 +14,8 @@ log_file_path = "test.sample_log_files"
 
 debian_sample_log = files(log_file_path).joinpath("debian_sample_log.log")
 
+kodi_sample_log = files(log_file_path).joinpath("kodi_sample_log.log")
+
 omada_sample_log = files(log_file_path).joinpath("omada_sample_log.log")
 
 omv_sample_log = files(log_file_path).joinpath("omv_sample_log.log")

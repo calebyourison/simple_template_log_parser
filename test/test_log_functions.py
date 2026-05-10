@@ -23,6 +23,7 @@ from test.resources import logger
 
 from test.resources import (
     debian_sample_log,
+    kodi_sample_log,
     omada_sample_log,
     omv_debian_sample_log,
     pfsense_sample_log,
@@ -32,6 +33,7 @@ from test.resources import (
 )
 
 from template_workflows.templates.debian import base_debian_templates
+from template_workflows.templates.kodi import base_kodi_templates
 from template_workflows.templates.omada import base_omada_templates
 from template_workflows.templates.omv import base_omv_templates
 from template_workflows.templates.pfsense import base_pfsense_templates
@@ -41,6 +43,7 @@ from template_workflows.templates.ubuntu import base_ubuntu_templates
 
 template_pairs = {
     "debian": {"templates": base_debian_templates, "file": debian_sample_log},
+    "kodi": {"templates": base_kodi_templates, "file": kodi_sample_log},
     "omada": {"templates": base_omada_templates, "file": omada_sample_log},
     "omv": {"templates": base_omv_templates, "file": omv_debian_sample_log},
     "pfsense": {"templates": base_pfsense_templates, "file": pfsense_sample_log},
@@ -256,10 +259,14 @@ class TestPreProcessFunctions(unittest.TestCase):
                 for template in compiled_templates:
                     key = template.event_type
                     expected_keys.append(key)
-                    expected_columns_per_key[key] = template.template.named_fields
-                    expected_columns_per_key[key] += [event_type_column, event_data_column]
+                    # Same event type might have multiple templates with different columns
+                    if key in expected_columns_per_key.keys():
+                        expected_columns_per_key[key].extend(template.template.named_fields)
+                    else:
+                        expected_columns_per_key[key] = template.template.named_fields
+                        expected_columns_per_key[key] += [event_type_column, event_data_column]
 
-                # Remote duplicates
+                # Remove duplicates
                 expected_keys = sorted(set(expected_keys))
                 logger.debug(f"Expected keys {len(expected_keys)}: {expected_keys}")
                 actual_keys = sorted(dict_output.keys())
@@ -270,7 +277,8 @@ class TestPreProcessFunctions(unittest.TestCase):
                 for key in expected_columns_per_key:
                     logger.debug(f"Checking key {key}")
 
-                    expected_columns = sorted(expected_columns_per_key[key])
+                    # Remove duplicates
+                    expected_columns = sorted(list(set(expected_columns_per_key[key])))
                     logger.debug(f"Expected columns: {len(expected_columns)}: {expected_columns}")
 
                     mini_df = dict_output[key]
@@ -296,3 +304,6 @@ class TestPreProcessFunctions(unittest.TestCase):
             self.assertTrue("Error converting column" in print_statement)
             self.assertTrue("to datetime:" in print_statement)
 
+            # Ensure no matches pass without error when dict=True
+            no_matches = process_log(f, compiled_templates, dict_format=True, match=["unlikely", "to", "match", "dfds"], match_type="all")
+            self.assertEqual(no_matches, {})

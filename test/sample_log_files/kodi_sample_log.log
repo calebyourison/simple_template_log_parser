@@ -1,0 +1,28 @@
+2026-05-08 00:19:09.661 T:498      info <general>: Starting Kodi (21.3 (21.3.0) Git:20251031-a3a448d26b). Platform: Android ARM 64-bit
+2026-05-08 00:19:09.661 T:498      info <general>: Using Release Kodi x64
+2026-05-08 00:19:09.661 T:498      info <general>: Kodi compiled 2025-12-13 by Clang 9.0.9 (https://android.googlesource.com/toolchain/llvm-project a2a1e703c0edb03ba29944e529ccbf457742737b) for Android ARM 64-bit API level 21 (API level 21)
+2026-05-08 00:19:09.661 T:498      info <general>: FFmpeg version/source: 6.0.1-Kodi
+2026-05-08 00:19:09.662 T:498      info <general>: Host CPU: ARMv8 Processor rev 1 (v8l), 4 cores available
+2026-05-08 00:19:09.662 T:498      info <general>: Product: mdarcy, Device: mdarcy, Board: darcy - Manufacturer: NVIDIA, Brand: NVIDIA, Model: SHIELD Android TV, Hardware: darcy
+2026-05-08 00:19:09.709 T:498      info <general>: Contents of special://profile/advancedsettings.xml are... <advancedsettings> <videodatabase> <type>mysql</type> <host>0.0.0.0</host> <port>0000</port> <user>some_user</user> <pass>*****</pass> </videodatabase></advancedsettings>
+2026-05-08 00:19:09.665 T:498      info <general>: special://xbmc/ is mapped to: /data/user/0/org.xbmc.kodi/cache/apk/assets
+2026-05-08 00:19:09.709 T:498   warning <CSettingsManager>: missing version attribute
+2026-05-08 04:43:35.915 T:7       debug <general>: CSkinSettings: no <skinsettings> tag found
+2026-05-08 00:19:09.960 T:498      info <general>: Mediacodec decoder: OMX.google.aac.decoder
+2026-05-08 00:19:09.962 T:498      info <general>: EGL_VERSION = 1.5 Android META-EGL
+2026-05-08 00:19:10.160 T:498      info <general>: Loading special://xbmc/system/keymaps/mouse.xml
+2026-05-08 04:43:20.933 T:7        info <general>: CRenderSystemGL::InitRenderSystem - Version: 4.6 (Core Profile) Mesa 26.0.4 (git-d9e5e36b19), Major: 4, Minor: 6
+2026-05-08 22:40:23.025 T:26319   error <general>: CVideoPlayer::OpenInputStream - error opening [videodb://tvshows/path/]
+2026-05-08 04:43:21.647 T:12       info <general>: * Adding remote mapping for device 'mceusb'
+2026-05-08 21:09:13.998 T:20141    info <general>: Creating audio thread
+2026-05-08 04:43:21.049 T:40       info <general>: Skipped 1 duplicate messages..
+2026-05-08 00:19:11.040 T:510      info <general>:     Device 1 m_deviceName : AudioTrack (IEC) m_displayName : AudioTrack (IEC) m_displayNameExtra: Kodi IEC packer (recommended) m_deviceType : AE_DEVTYPE_HDMI m_channels : FL, FR, FC, LFE, SL, SR, BL, BR, BC, BLOC, BROC m_sampleRates : 32000,44100,48000,88200,96000,176400,192000 m_dataFormats : AE_FMT_S16LE,AE_FMT_FLOAT,AE_FMT_RAW,AE_FMT_RAW m_streamTypes : STREAM_TYPE_AC3,STREAM_TYPE_DTSHD_CORE,STREAM_TYPE_DTS_1024,STREAM_TYPE_DTS_2048,STREAM_TYPE_DTS_512,STREAM_TYPE_EAC3,STREAM_TYPE_DTSHD,STREAM_TYPE_DTSHD_MA,STREAM_TYPE_TRUEHD
+2026-05-08 21:08:52.028 T:17117    info <general>: Opening stream: 1 source: 256
+2026-05-08 21:08:55.312 T:17117    info <general>: Closing stream player 2
+2026-05-08 00:21:10.338 T:843      info <general>: Creating InputStream
+2026-05-08 01:06:41.527 T:843      info <general>: Deleting audio codec
+2026-05-08 00:19:11.177 T:567      info <general>: Running database version Epg16
+2026-05-09 07:19:20.687 T:15347    info <general>: Stopping all
+2026-05-09 07:54:08.115 T:30959    info <general>:   load new skin...
+2026-05-09 07:19:09.087 T:16268    info <general>: deleting video codec
+2026-05-09 07:09:40.578 T:15347    info <general>: loading settings
