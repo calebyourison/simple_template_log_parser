@@ -11,6 +11,7 @@
 2025-05-26T06:45:52+01:00 ubuntu_pc gdm-password]: gkr-pam: unlocked login keyring
 2025-06-02T05:26:30+01:00 ubuntu_pc vsce-sign: Package file size:  75101
 2025-07-05T05:13:05+01:00 ubuntu_pc snap-store_ubuntu-software.deskt Warning: Schema “org.gnome.system.locale” has path “/system/locale/”.  Paths starting with “/apps/”, “/desktop/” or “/system/” are deprecated.
+2026-05-10T05:12:25+01:00 ubuntu_pc nautilus: thread_start [291]:some message
 2025-03-04T16:21:38+01:00 debian_pc sudo:     root : PWD=/ ; USER=root ; COMMAND=/bin/sh -c \\/var\\/lib\\/openmediavault\\/cron\\.d\\/userdefined-a6abba22-44bb-44f7-bd34-8408c5c23284
 2025-04-06T15:19:43+01:00 debian_pc upssched-cmd: UPS ups - Line Power Fail, system running on battery power. Shutdown imminent in 180 seconds.
 2025-04-06T23:59:08+01:00 debian_pc rsync-c9335dc7-4918-4b54-a0e8-5f The synchronisation has completed successfully.

@@ -7,6 +7,7 @@ desktop_2 = "{time} {server_name} {process}.desktop{message}"
 desktop_3 = "{time} {server_name} {process}.deskto{message}"
 desktop_4 = "{time} {server_name} {process}.deskt {message}"
 gdm = "{time} {server_name} gdm{process}: {action}: {message}"
+nautilus = "{time} {server_name} nautilus: {message}"
 package_kit = "{time} {server_name} PackageKit: {message}"
 pycharm = "{time} {server_name} pycharm-{process} {message}"
 snapd = "{time} {server_name} {process}.snapd- {message}"
@@ -19,6 +20,7 @@ ubuntu_templates = [
     [desktop_2, "desktop", ".desktop"],
     [desktop_3, 'desktop', ".deskto"],
     [desktop_4, 'desktop', ".deskt"],
+    [nautilus, "nautilus", "nautilus"],
     [package_kit, 'package_kit', "PackageKit"],
     [pycharm, "pycharm"],
     [gdm, 'gdm'],
