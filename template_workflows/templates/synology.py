@@ -16,6 +16,7 @@ countdown = "{time} {server_name} System {system_user}:#011System started counti
 dns_setting_changed = "{time} {server_name} System {system_user}:#011DNS server setting was changed."
 download_task = "{time} {server_name} System {system_user}:#011Download task for [{task}] {result}."
 empty_recycle_bin = "{time} {server_name} System {system_user}:#011Start to empty recycle bin of shared folder [{folder}]."
+empty_all_recycle_bins = "{time} {server_name} System {system_user}:#011Start to empty all recycle bins."
 external_disk_ejected = "{time} {server_name} System {system_user}:#011External disk [{external_disk}] is ejected."
 external_disk_not_ejected_properly = "{time} {server_name} System {system_user}:#011The external device [{external_disk}] was not ejected properly. You should eject the device before unplugging it or turning it off."
 external_disk_failed_to_eject = "{time} {server_name} System {system_user}:#011The system failed to eject external disk [{external_disk}]."
@@ -54,7 +55,8 @@ folder_access = "{time} {server_name} Connection: User [{user}] from [{client_ip
 cleared_notifications = "{time} {server_name} System {system_user}:#011Cleared [{user}] all notifications successfully."
 new_user = "{time} {server_name} System {system_user}:#011User [{modified_user}] was created."
 deleted_user = "{time} {server_name} System {system_user}:#011System successfully deleted User [{modified_user}]."
-renamed_user = "{time} {server_name} System {system_ser}:#011User [{user}] was renamed to [{modified}]."
+renamed_user = "{time} {server_name} System {system_user}:#011User [{user}] was renamed to [{modified}]."
+user_password_change = "{time} {server_name} System {system_user}:#011Password of the user [{user}] was changed."
 user_app_privilege = "{time} {server_name} System {system_user}:#011The app privilege on app [{app}] for user [{user}] {message}"
 user_group = "{time} {server_name} System {system_user}:#011User [{user}] was {action} the group [{group}]."
 win_file_service_event = "{time} {server_name} WinFileService Event: {event}, Path: {path}, File/Folder: {file_or_folder}, Size: {size}, User: {user}, IP: {client_ip}"
@@ -102,7 +104,8 @@ general_system_templates = [
     [external_disk_initialized, "external_disk_initialized", "initialized the external disk"],
     [fan_speed_set, "fan_speed_set", "Fan speed was set"],
     [external_disk_renamed, "external_disk_renamed", "latter was renamed to"],
-    [empty_recycle_bin, "empty_recycle_bin", "empty recycle bin"]
+    [empty_recycle_bin, "empty_recycle_bin", "empty recycle bin"],
+    [empty_all_recycle_bins, "empty_all_recycle_bins", "recycle bins"]
 ]
 
 user_activity_templates = [
@@ -119,6 +122,7 @@ user_activity_templates = [
     [new_user, "new_user", "was created"],
     [deleted_user, "deleted_user", "deleted"],
     [renamed_user, "renamed_user", "renamed"],
+    [user_password_change, "user_password_change", "Password of the user"],
     [user_app_privilege, "user_app_privilege", "app privilege"],
     [user_group, "user_group", "group"],
     [win_file_service_event, "win_file_service_event", "WinFileService Event"],
