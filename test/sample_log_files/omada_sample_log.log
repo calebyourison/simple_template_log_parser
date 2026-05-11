@@ -44,3 +44,5 @@
 2025-12-31T11:52:25.027778+01:00 controller_X  2026-12-31 11:52:23 Controller - - - [ap:ap_name:3C-7E-D2-50-19-D0] was isolated.
 2026-01-05T16:15:32.134240+01:00 controller_X  2026-01-05 16:15:29 Controller - - - Failed to readopt [ap:ap_name:3C-7E-D2-50-19-D0] automatically.
 2026-04-22T07:47:14.757908+01:00 controller_X  2026-04-22 07:47:10 Controller - - - [client:DC-D6-32-73-4e-a9] went online on [switch:21-C1-D0-B7-3C-29] on ABC network.
+2026-04-23T01:07:15.128731+01:00 controller_X  2026-04-23 01:04:43 Controller - - - Cloud access is disconnected due to network disconnection.
+2026-04-23T01:12:10.118557+01:00 controller_X  2026-04-23 01:05:52 Controller - - - Successfully access the cloud.

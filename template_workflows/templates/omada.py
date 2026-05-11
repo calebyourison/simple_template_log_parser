@@ -241,6 +241,9 @@ auto_backup_2 = (
     "Backup Schedule executed with generating file {filename}."
 )
 
+cloud_access = "{time} {controller}  {site_date} {site_time} {site} - - - Successfully access the cloud."
+cloud_disconnected = "{time} {controller}  {site_date} {site_time} {site} - - - Cloud access is disconnected {details}."
+
 log_storage_limit = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "The number of logs is about to reach the storage limit of the Controller. "
@@ -307,7 +310,9 @@ system_templates = [
     [auto_backup_2, "auto_backup", "Backup Schedule"],
     [log_storage_limit, "log_storage_limit", "about to reach the storage limit"],
     [resolved, "resolved", "Resolved"],
-    [operation_details, 'operation_details', "- {"]
+    [operation_details, 'operation_details', "- {"],
+    [cloud_access, "cloud_access", "Successfully access the cloud"],
+    [cloud_disconnected, "cloud_disconnected", "Cloud access is disconnected"]
 ]
 
 base_omada_templates = client_activity_templates + login_templates + network_devices_activity_templates + system_templates
