@@ -16,6 +16,7 @@ dnsmasq_host_name_resolution = "{time} dnsmasq[{id}]: /etc/hosts {host_ip} is {h
 dnsmasq_host_name = "{time} dnsmasq[{id}]: Pi-hole hostname {host_name} is {host_ip}"
 dnsmasq_inotify = "{time} dnsmasq[{id}]: inotify: {message}"
 dnsmasq_locally_known = "{time} dnsmasq[{id}]: using only locally-known addresses for {result}"
+dnsmasq_not_set = "{time} dnsmasq[{id}]: <not set> {domain} is {destination}"
 dnsmasq_query = "{time} dnsmasq[{id}]: query[{query_type}] {destination} from {host_ip}"
 dnsmasq_rate_limiting = "{time} dnsmasq[{id}]: Rate-limiting {query} is {message}"
 dnsmasq_read = "{time} dnsmasq[{id}]: read {path} - {names} names"
@@ -65,7 +66,8 @@ dnsmasq_templates = [
     [dnsmasq_custom_list, 'dnsmasq_custom_list', "custom.list"],
     [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"],
     [dnsmasq_regex_denied, 'dnsmasq_regex_denied', 'regex denied'],
-    [dnsmasq_blocked_upstream, "dnsmasq_blocked_upstream", "blocked upstream"]
+    [dnsmasq_blocked_upstream, "dnsmasq_blocked_upstream", "blocked upstream"],
+    [dnsmasq_not_set, "dnsmasq_not_set", "<not set>"]
 ]
 
 ftl_templates = [
