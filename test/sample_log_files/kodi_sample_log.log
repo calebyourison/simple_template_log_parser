@@ -26,3 +26,6 @@
 2026-05-09 07:54:08.115 T:30959    info <general>:   load new skin...
 2026-05-09 07:19:09.087 T:16268    info <general>: deleting video codec
 2026-05-09 07:09:40.578 T:15347    info <general>: loading settings
+2026-05-12 04:28:17.847 T:61       info <general>: [Syslog] Service started
+2026-05-12 04:30:02.433 T:7        info <general>: UpdateSizeVariables: Surface size changed: 1910x947 -> 1430x699
+2026-05-12 04:28:14.738 T:7        info <general>: New Cache GUI Settings (replacement of cache in advancedsettings.xml) are: Buffer Mode: 4 Memory Size: 20 MB Read Factor: 4.00 x Chunk Size : 131072 bytes

@@ -24,6 +24,10 @@ kodi_merge_events_dict = {
     "warning": [value[1] for value in warning_templates],
 }
 
+eliminate_text = [
+    "-----------------------------------------------------------------------"
+]
+
 
 def join_whitespace_lines(lines:list[str]) -> list[str]:
     """Lines beginning with whitespace to be associated with preceding line(s)"""
@@ -110,7 +114,7 @@ def kodi_log(file: str | BytesIO | StringIO | TextIOBase, split_text:str=None) -
 
     templates = compile_templates(base_kodi_templates)
 
-    base_output = process_log(file=string, templates=templates, dict_format=False)
+    base_output = process_log(file=string, templates=templates, dict_format=False, eliminate=eliminate_text)
 
     final_output = merge_events(base_output, kodi_merge_events_dict)
 
