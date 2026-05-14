@@ -25,6 +25,7 @@ running = "{time} T:{T} {level} <{category}>: Running {info}"
 stopping = "{time} T:{T} {level} <{category}>: Stopping {info}"
 graphics_library = "{time} T:{T} {level} <{category}>: {graphics_type}_{feature} = {info}"
 load = "{time} T:{T} {level} <{category}>:   load {info}"
+loaded = "{time} T:{T} {level} <{category}>: Loaded {info}"
 loading = "{time} T:{T} {level} <{category}>: Loading {config}"
 loading_2 = "{time} T:{T} {level} <{category}>: loading {config}"
 update = "{time} T:{T} {level} <{category}>: Update{attribute}: {info}"
@@ -70,6 +71,7 @@ general_templates = [
     [loading, "loading", "Loading"],
     [loading_2, "loading", "loading"],
     [load, "load", "load"],
+    [loaded, "loaded", "Loaded"],
     [update, "update", "Update"],
     [remote_mapping, "remote_mapping", "remote mapping"],
     [skipped_duplicate_messages, "duplicate_messages", "Skipped"],

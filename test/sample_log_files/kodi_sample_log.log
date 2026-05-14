@@ -29,3 +29,4 @@
 2026-05-12 04:28:17.847 T:61       info <general>: [Syslog] Service started
 2026-05-12 04:30:02.433 T:7        info <general>: UpdateSizeVariables: Surface size changed: 1910x947 -> 1430x699
 2026-05-12 04:28:14.738 T:7        info <general>: New Cache GUI Settings (replacement of cache in advancedsettings.xml) are: Buffer Mode: 4 Memory Size: 20 MB Read Factor: 4.00 x Chunk Size : 131072 bytes
+2026-05-13 04:19:30.373 T:7        info <general>: Loaded settings file from special://profile/advancedsettings.xml
