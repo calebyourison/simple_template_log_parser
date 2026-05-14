@@ -1,6 +1,7 @@
 debug = "{time} {server_name} {process}: debug: {message}"
 id_process = "{time} {server_name} {process}[{id}]: {message}"
 kernel = "{time} {server_name} kernel: {message}"
+kernel_2 = "{time} {server_name} kernel:"
 pam_unix = "{time} {server_name} {process}: pam_unix({session}): {message}"
 mtp_probe = "{time} {server_name} mtp-probe: {message}"
 rsync = "{time} {server_name} rsync-{id} {message}"
@@ -18,4 +19,5 @@ base_debian_templates = [
     [upssched_cmd, 'upssched-cmd'],
     [mtp_probe, 'mtp_probe', 'mtp-probe'],
     [debug, 'debug'],
+    [kernel_2, "kernel"]
 ]
