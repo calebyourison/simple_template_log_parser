@@ -165,7 +165,7 @@ class TestPreProcessFunctions(unittest.TestCase):
             # Eliminate duplicate columns
             expected_columns = sorted(set(expected_columns))
 
-            # Do no eliminate duplicates, more than one template can share an event type
+            # Do not eliminate duplicates, more than one template can share an event type
             expected_events = sorted(expected_events)
 
             for f in file_types:
