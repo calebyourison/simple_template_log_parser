@@ -30,3 +30,9 @@
 2026-05-12 04:30:02.433 T:7        info <general>: UpdateSizeVariables: Surface size changed: 1910x947 -> 1430x699
 2026-05-12 04:28:14.738 T:7        info <general>: New Cache GUI Settings (replacement of cache in advancedsettings.xml) are: Buffer Mode: 4 Memory Size: 20 MB Read Factor: 4.00 x Chunk Size : 131072 bytes
 2026-05-13 04:19:30.373 T:7        info <general>: Loaded settings file from special://profile/advancedsettings.xml
+2026-05-18 17:19:14.536 T:3552     info <general>: MYSQL: Connected to version 10.11.11-MariaDB
+2026-05-18 19:33:38.616 T:22346    info <general>: CDVDSubtitlesLibass: Using libass version 1701000
+2026-05-18 17:22:23.298 T:3938     info <general>: OpenStream: Allowing max Out-Of-Sync Value of 50 ms
+2026-05-18 18:55:15.791 T:3485     info <general>: VideoPlayer: finished waiting
+2026-05-18 17:22:23.379 T:3503     info <general>: Audiotrack buffer params are: period time = 32.083 ms, period size = 12320 bytes, num periods = 4
+2026-05-18 17:22:23.379 T:3503     info <general>: Created Audiotrackbuffer with playing time of 128.333333 ms min buffer size: 49280 bytes
