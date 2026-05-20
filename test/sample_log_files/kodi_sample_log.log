@@ -36,3 +36,7 @@
 2026-05-18 18:55:15.791 T:3485     info <general>: VideoPlayer: finished waiting
 2026-05-18 17:22:23.379 T:3503     info <general>: Audiotrack buffer params are: period time = 32.083 ms, period size = 12320 bytes, num periods = 4
 2026-05-18 17:22:23.379 T:3503     info <general>: Created Audiotrackbuffer with playing time of 128.333333 ms min buffer size: 49280 bytes
+2026-05-19 15:51:21.689 T:29111    info <general>: JSONRPC v13.5.0: Successfully initialized
+2026-05-19 15:51:17.462 T:29111    info <general>: CAndroidUtils: window resolution: 1920x1080
+2026-05-19 20:26:19.531 T:26272    info <general>: Finding audio codec for: 86056
+2026-05-19 16:49:48.814 T:10195    info <general>: CLangInfo: loading resource.language.en_gb language strings...

@@ -21,6 +21,7 @@ closing = "{time} T:{T} {level} <{category}>: Closing {info}"
 creating = "{time} T:{T} {level} <{category}>: Creating {info}"
 deleting = "{time} T:{T} {level} <{category}>: Deleting {info}"
 deleting_2 = "{time} T:{T} {level} <{category}>: deleting {info}"
+finding = "{time} T:{T} {level} <{category}>: Finding {info}"
 opening = "{time} T:{T} {level} <{category}>: Opening {info}"
 running = "{time} T:{T} {level} <{category}>: Running {info}"
 stopping = "{time} T:{T} {level} <{category}>: Stopping {info}"
@@ -62,7 +63,14 @@ program_action_templates = [
 ]
 
 # Add an entry for each verified program search name to avoid capturing irrelevant events
-program_action_search_names = ["CDVDSubtitlesLibass", "OpenStream", "VideoPlayer"]
+program_action_search_names = [
+    "CDVDSubtitlesLibass",
+    "OpenStream",
+    "VideoPlayer",
+    "JSONRPC",
+    "CAndroid",
+    "CLangInfo"
+]
 
 for name in program_action_search_names:
     program_action_templates.append([program_action_2, "program_action", name])
@@ -72,6 +80,7 @@ general_templates = [
     [creating, "creating", "Creating"],
     [deleting, "deleting", "Deleting"],
     [deleting_2, "deleting", "deleting"],
+    [finding, "finding", "Finding"],
     [opening, "opening", "Opening"],
     [running, "running", "Running"],
     [stopping, "stopping", "Stopping"],
