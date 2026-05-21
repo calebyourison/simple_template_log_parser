@@ -40,3 +40,8 @@
 2026-05-19 15:51:17.462 T:29111    info <general>: CAndroidUtils: window resolution: 1920x1080
 2026-05-19 20:26:19.531 T:26272    info <general>: Finding audio codec for: 86056
 2026-05-19 16:49:48.814 T:10195    info <general>: CLangInfo: loading resource.language.en_gb language strings...
+2026-05-20 16:34:07.331 T:25175    info <general>: Saving skin settings
+2026-05-20 23:37:55.864 T:23213    info <general>: Minimum size we need for stream: 33960 Bytes
+2026-05-20 16:24:51.794 T:25175    info <general>: Instancing CRendererMediaCodecSurface
+2026-05-20 15:22:27.274 T:25188    info <general>: Trying to open: samplerate: 48000, channelMask: 12, encoding: 4
+2026-05-20 15:11:23.995 T:25175    info <general>: Register - new keyboard device registered on application->keyboard: Keyboard (0000:0000)

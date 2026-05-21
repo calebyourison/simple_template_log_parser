@@ -22,8 +22,10 @@ creating = "{time} T:{T} {level} <{category}>: Creating {info}"
 deleting = "{time} T:{T} {level} <{category}>: Deleting {info}"
 deleting_2 = "{time} T:{T} {level} <{category}>: deleting {info}"
 finding = "{time} T:{T} {level} <{category}>: Finding {info}"
+instancing = "{time} T:{T} {level} <{category}>: Instancing {instance}"
 opening = "{time} T:{T} {level} <{category}>: Opening {info}"
 running = "{time} T:{T} {level} <{category}>: Running {info}"
+saving = "{time} T:{T} {level} <{category}>: Saving {info}"
 stopping = "{time} T:{T} {level} <{category}>: Stopping {info}"
 graphics_library = "{time} T:{T} {level} <{category}>: {graphics_type}_{feature} = {info}"
 load = "{time} T:{T} {level} <{category}>:   load {info}"
@@ -38,6 +40,9 @@ service = "{time} T:{T} {level} <{category}>: [{service_name}] {info}"
 mysql = "{time} T:{T} {level} <{category}>: MYSQL: {info}"
 created_audio_buffer = "{time} T:{T} {level} <{category}>: Created Audiotrackbuffer with {info}"
 audio_buffer_params = "{time} T:{T} {level} <{category}>: Audiotrack buffer params are: {info}"
+minimum_stream_size = "{time} T:{T} {level} <{category}>: Minimum size we need for stream: {bytes} Bytes"
+trying_to_open = "{time} T:{T} {level} <{category}>: Trying to open: samplerate: {samplerate}, channelMask: {channel_mask}, encoding: {encoding}"
+register_device = "{time} T:{T} {level} <{category}>: Register - new {device} device registered on {application}->{info}"
 
 
 debug_message = "{time} T:{T} debug <{category}>: {message}"
@@ -96,7 +101,12 @@ general_templates = [
     [service, "service", ">: ["],
     [mysql, "mysql", "MYSQL"],
     [audio_buffer_params, "audio_buffer_params", "buffer params"],
-    [created_audio_buffer, "created_audio_buffer", " Created Audiotrack"]
+    [created_audio_buffer, "created_audio_buffer", " Created Audiotrack"],
+    [saving, "saving", "Saving"],
+    [minimum_stream_size, "minimum_stream_size", "Minimum size"],
+    [instancing, "instancing", "Instancing"],
+    [trying_to_open, "trying_to_open", "Trying to open"],
+    [register_device, "register_device", "Register"],
 ]
 
 
