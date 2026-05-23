@@ -45,3 +45,14 @@
 2026-05-20 16:24:51.794 T:25175    info <general>: Instancing CRendererMediaCodecSurface
 2026-05-20 15:22:27.274 T:25188    info <general>: Trying to open: samplerate: 48000, channelMask: 12, encoding: 4
 2026-05-20 15:11:23.995 T:25175    info <general>: Register - new keyboard device registered on application->keyboard: Keyboard (0000:0000)
+2026-05-22 13:09:45.187 T:25898    info <general>: External storage path = /storage/emulated/0; status = ok; Permissions = WRITE_EXTERNAL_STORAGE
+2026-05-22 13:09:45.214 T:25898    info <general>: Local hostname: mbrshield.lan
+2026-05-22 13:09:45.214 T:25898    info <general>: Log File is located: /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log
+2026-05-22 13:09:45.239 T:25898    info <general>: creating subdirectories
+2026-05-22 13:09:46.095 T:25911    info <general>: Multi channel Float is supported
+2026-05-22 19:51:00.970 T:21925    info <general>: userdata folder: special://masterprofile/
+2026-05-22 19:51:01.422 T:21925    info <general>: load keymapping
+2026-05-22 19:51:02.944 T:21925    info <general>: LoadFontsFromFile: Loading <fontset> with name 'Default' from '/data/user/0/org.xbmc.kodi/cache/apk/assets/addons/skin.estuary/xml/Font.xml'
+2026-05-22 19:54:48.069 T:22532    info <general>: CPeripheralBusAndroid: scanning for input devices...
+2026-05-22 19:57:07.548 T:23602    info <general>: CMediaSourceSettings: loading media sources from special://masterprofile/sources.xml
+2026-05-22 19:57:09.595 T:23602    info <general>: starting zeroconf publishing
