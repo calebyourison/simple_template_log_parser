@@ -1,12 +1,16 @@
 # System info
+default_audio_player = "{time} T:{T} {level} <{category}>: Default Audio Player: {player}"
 device = "{time} T:{T} {level} <{category}>:     Device {device_number} m_deviceName :{name}m_displayName :{display_name}m_displayNameExtra:{display_name_extra}m_deviceType :{type}m_channels :{channels}m_sampleRates :{sample_rates}m_dataFormats :{data_formats}m_streamTypes :{stream_types}"
 external_storage = "{time} T:{T} {level} <{category}>: External storage path = {path}; status = {status}; Permissions = {permissions}"
 file_contents = "{time} T:{T} {level} <{category}>: Contents of {file} are... {contents}"
 ffmpeg_version = "{time} T:{T} {level} <{category}>: FFmpeg version/source: {version}"
+global_locale = "{time} T:{T} {level} <{category}>: global locale set to {locale}"
+gui_format = "{time} T:{T} {level} <{category}>: GUI format {format}, Display {display}"
 host_cpu = "{time} T:{T} {level} <{category}>: Host CPU: {cpu}, {cores} cores available"
 kodi_compiled = "{time} T:{T} {level} <{category}>: Kodi compiled {compiled_date} by {compiler} for {platform}"
 local_hostname = "{time} T:{T} {level} <{category}>: Local hostname: {hostname}"
 log_file_location = "{time} T:{T} {level} <{category}>: Log File is located: {path}"
+log_level = '{time} T:{T} {level} <{category}>: Log level changed to "{level}"'
 mapped_directory = "{time} T:{T} {level} <{category}>: {kodi_directory} is mapped to: {local_directory}"
 product = "{time} T:{T} {level} <{category}>: Product: {product}, Device: {device} Board: {board} Manufacturer: {manufacturer} Brand: {brand} Model: {model} Hardware: {hardware}"
 starting_kodi = "{time} T:{T} {level} <{category}>: Starting Kodi ({version}). Platform: {platform}"
@@ -85,7 +89,10 @@ program_action_search_names = [
     "CLangInfo",
     "CMedia",
     "CPeripheral",
-    "Load"
+    "Load",
+    "CKeyboard",
+    "ZeroconfAndroid",
+    "GLES",
 ]
 
 for name in program_action_search_names:
@@ -126,14 +133,18 @@ general_templates = [
 
 
 system_info_templates = [
+    [default_audio_player, "default_audio_player", "Default Audio Player"],
     [device, "device", "Device"],
     [external_storage, "external_storage", "External storage"],
     [file_contents, "file_contents", "Contents"],
     [ffmpeg_version, "ffmpeg_version", "FFmpeg"],
+    [global_locale, "global_locale", "global locale"],
+    [gui_format, "gui_format", "GUI format"],
     [host_cpu, "host_cpu", "Host CPU"],
     [kodi_compiled, "kodi_compiled", "Kodi compiled"],
     [local_hostname, "local_hostname", "Local hostname"],
     [log_file_location, "log_file_location", "Log File is located"],
+    [log_level, "log_level", "Log level"],
     [mapped_directory, "mapped_directory", "is mapped to"],
     [product, "product", "Product"],
     [userdata_folder, "userdata_folder", "userdata folder"],

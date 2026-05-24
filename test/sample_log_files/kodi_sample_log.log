@@ -56,3 +56,10 @@
 2026-05-22 19:54:48.069 T:22532    info <general>: CPeripheralBusAndroid: scanning for input devices...
 2026-05-22 19:57:07.548 T:23602    info <general>: CMediaSourceSettings: loading media sources from special://masterprofile/sources.xml
 2026-05-22 19:57:09.595 T:23602    info <general>: starting zeroconf publishing
+2026-05-23 11:59:21.051 T:24009    info <general>: Log level changed to "info"
+2026-05-23 11:59:21.051 T:24009    info <general>: Default Audio Player: paplayer
+2026-05-23 11:59:21.491 T:24009    info <general>: GLES: Enabling VSYNC
+2026-05-23 11:59:21.510 T:24009    info <general>: GUI format 1920x1080, Display 3840x2160 @ 59.940060 - Full Screen
+2026-05-23 16:06:40.522 T:15729    info <general>: CKeyboardLayoutManager: loading keyboard layouts from special://xbmc/system/keyboardlayouts...
+2026-05-23 21:00:26.467 T:12710    info <general>: global locale set to en_US.UTF-8
+2026-05-23 21:00:31.711 T:12793    info <general>: ZeroconfAndroid: Kodi (test.lan). now registered and active
