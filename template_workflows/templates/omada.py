@@ -131,6 +131,12 @@ online_w = (
     'with SSID "{ssid}" on channel {channel}.'
 )
 
+online_w2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}]"
+    "  went online on [{network_device_type}:{network_device_mac}] "
+    'with SSID "{ssid}" on channel {channel}.'
+)
+
 online_w_username = (
     "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}] "
     "(IP: {client_ip}, Username:{username}) went online on "
@@ -231,6 +237,8 @@ wan_dhcp = (
     "{wan}: DHCP client {action} IP {result}. (IP-Address={ip_address}, Mask={subnet_mask}, Gateway={gateway})")
 
 # System ##############################################################################################################
+alert_resolve = "{time} {controller}  {site_date} {site_time} {site} - - - ALERT_RESOLVE"
+
 auto_backup = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "Auto Backup executed with generating file {filename}."
@@ -276,6 +284,7 @@ client_activity_templates = [
     [offline_hw, "hardwired_offline", "went offline from network"],
     [online_w_username, "wireless_online_username", "went online on"],
     [online_w, "wireless_online", " went online on "],
+    [online_w2, "wireless_online", "went online on"],
     [online_w_no_username, "wireless_online_no_username", " went online "],
     [offline_w_username, "wireless_offline_username", "went offline from SSID"],
     [offline_w, "wireless_offline", "went offline from SSID "],
@@ -312,7 +321,8 @@ system_templates = [
     [resolved, "resolved", "Resolved"],
     [operation_details, 'operation_details', "- {"],
     [cloud_access, "cloud_access", "Successfully access the cloud"],
-    [cloud_disconnected, "cloud_disconnected", "Cloud access is disconnected"]
+    [cloud_disconnected, "cloud_disconnected", "Cloud access is disconnected"],
+    [alert_resolve, "alert_resolve", "ALERT_RESOLVE"]
 ]
 
 base_omada_templates = client_activity_templates + login_templates + network_devices_activity_templates + system_templates

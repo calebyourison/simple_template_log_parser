@@ -46,3 +46,5 @@
 2026-04-22T07:47:14.757908+01:00 controller_X  2026-04-22 07:47:10 Controller - - - [client:DC-D6-32-73-4e-a9] went online on [switch:21-C1-D0-B7-3C-29] on ABC network.
 2026-04-23T01:07:15.128731+01:00 controller_X  2026-04-23 01:04:43 Controller - - - Cloud access is disconnected due to network disconnection.
 2026-04-23T01:12:10.118557+01:00 controller_X  2026-04-23 01:05:52 Controller - - - Successfully access the cloud.
+2026-05-26T18:36:03.235565+01:00 controller_X  2026-05-26 18:36:01 Controller - - - ALERT_RESOLVE
+2026-05-27T21:50:53.021797+01:00 controller_X  2026-05-27 21:50:42 Controller - - - [client:DC-D6-32-73-4e-a9]  went online on [ap:3C-7E-D2-50-19-D0] with SSID "SSID 10" on channel 6.
