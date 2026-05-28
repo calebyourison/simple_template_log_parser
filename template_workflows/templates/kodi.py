@@ -10,11 +10,12 @@ host_cpu = "{time} T:{T} {level} <{category}>: Host CPU: {cpu}, {cores} cores av
 kodi_compiled = "{time} T:{T} {level} <{category}>: Kodi compiled {compiled_date} by {compiler} for {platform}"
 local_hostname = "{time} T:{T} {level} <{category}>: Local hostname: {hostname}"
 log_file_location = "{time} T:{T} {level} <{category}>: Log File is located: {path}"
-log_level = '{time} T:{T} {level} <{category}>: Log level changed to "{level}"'
+log_level = '{time} T:{T} {level} <{category}>: Log level changed to "{log_level}"'
+disabled_debug = "{time} T:{T} {level} <{category}>: Disabled debug logging due to GUI setting. Level {log_level}."
 mapped_directory = "{time} T:{T} {level} <{category}>: {kodi_directory} is mapped to: {local_directory}"
 product = "{time} T:{T} {level} <{category}>: Product: {product}, Device: {device} Board: {board} Manufacturer: {manufacturer} Brand: {brand} Model: {model} Hardware: {hardware}"
 starting_kodi = "{time} T:{T} {level} <{category}>: Starting Kodi ({version}). Platform: {platform}"
-userdata_folder = "{time} T:{T} {level} <{category}>: userdata folder: {path}"
+folder = "{time} T:{T} {level} <{category}>: {folder} folder{path}"
 using_release = "{time} T:{T} {level} <{category}>: Using Release {release}"
 new_cache_gui_settings = "{time} T:{T} {level} <{category}>: New Cache GUI Settings (replacement of cache in {replaced_cache}) are: Buffer Mode: {buffer_mode} Memory Size: {memory_size} Read Factor: {read_factor} x Chunk Size : {chunk_size}"
 
@@ -93,6 +94,7 @@ program_action_search_names = [
     "CKeyboard",
     "ZeroconfAndroid",
     "GLES",
+    "XBMCApp"
 ]
 
 for name in program_action_search_names:
@@ -145,9 +147,10 @@ system_info_templates = [
     [local_hostname, "local_hostname", "Local hostname"],
     [log_file_location, "log_file_location", "Log File is located"],
     [log_level, "log_level", "Log level"],
+    [disabled_debug, "disabled_debug_logging", "Disabled debug logging"],
     [mapped_directory, "mapped_directory", "is mapped to"],
     [product, "product", "Product"],
-    [userdata_folder, "userdata_folder", "userdata folder"],
+    [folder, "folder", "folder"],
     [using_release, "using_release", "Using Release"],
     [starting_kodi, "starting_kodi", "Starting Kodi"],
     [new_cache_gui_settings, "new_cache_gui_settings", "New Cache GUI Settings"],
