@@ -137,6 +137,12 @@ online_w2 = (
     'with SSID "{ssid}" on channel {channel}.'
 )
 
+online_w_ip = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - [{client}:{client_name_and_mac}]"
+    " (IP: {client_ip}) went online on [{network_device_type}:{network_device_mac}] "
+    'with SSID "{ssid}" on channel {channel}.'
+)
+
 online_w_username = (
     "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}] "
     "(IP: {client_ip}, Username:{username}) went online on "
@@ -282,13 +288,14 @@ client_activity_templates = [
     [online_hw, "hardwired_online", "went online"],
     [online_hw2, "hardwired_online", "went online"],
     [offline_hw, "hardwired_offline", "went offline from network"],
-    [online_w_username, "wireless_online_username", "went online on"],
+    [online_w_username, "wireless_online", "went online on"],
     [online_w, "wireless_online", " went online on "],
     [online_w2, "wireless_online", "went online on"],
-    [online_w_no_username, "wireless_online_no_username", " went online "],
-    [offline_w_username, "wireless_offline_username", "went offline from SSID"],
+    [online_w_ip, "wireless_online", "went online on"],
+    [online_w_no_username, "wireless_online", " went online "],
+    [offline_w_username, "wireless_offline", "went offline from SSID"],
     [offline_w, "wireless_offline", "went offline from SSID "],
-    [offline_w_no_username, "wireless_offline_no_username", " went offline from SSID"],
+    [offline_w_no_username, "wireless_offline", " went offline from SSID"],
     [roaming, "roaming"],
     ]
 

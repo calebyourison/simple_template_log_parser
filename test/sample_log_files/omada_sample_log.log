@@ -48,3 +48,4 @@
 2026-04-23T01:12:10.118557+01:00 controller_X  2026-04-23 01:05:52 Controller - - - Successfully access the cloud.
 2026-05-26T18:36:03.235565+01:00 controller_X  2026-05-26 18:36:01 Controller - - - ALERT_RESOLVE
 2026-05-27T21:50:53.021797+01:00 controller_X  2026-05-27 21:50:42 Controller - - - [client:DC-D6-32-73-4e-a9]  went online on [ap:3C-7E-D2-50-19-D0] with SSID "SSID 10" on channel 6.
+2026-05-29T14:13:13.958453+01:00 controller_X  2026-05-29 14:12:52 Controller - - - [client:DC-D6-32-73-4e-a9] (IP: 9.9.9.9) went online on [ap:3C-7E-D2-50-19-D0] with SSID "SSID 10" on channel 6.
