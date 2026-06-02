@@ -65,3 +65,4 @@
 2026-05-23 21:00:31.711 T:12793    info <general>: ZeroconfAndroid: Kodi (test.lan). now registered and active
 2026-05-25 19:36:59.798 T:20801    info <general>: XBMCApp: Stopping the application...
 2026-05-27 20:03:31.557 T:20084    info <general>: Disabled debug logging due to GUI setting. Level 0.
+2026-05-30 04:51:32.489 T:39       info <general>: CAESinkALSA - Unable to open device "upmix" for playback

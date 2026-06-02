@@ -23,6 +23,7 @@ new_cache_gui_settings = "{time} T:{T} {level} <{category}>: New Cache GUI Setti
 thread = "{time} T:{T} {level} <{category}>: {action}"
 program_action = "{time} T:{T} {level} <{category}>: {program}::{action}"
 program_action_2 = "{time} T:{T} {level} <{category}>: {program}: {action}"
+program_action_3 = "{time} T:{T} {level} <{category}>: {program} - {action}"
 
 
 # General
@@ -80,8 +81,8 @@ program_action_templates = [
     [program_action, "program_action", "::"],
 ]
 
-# Add an entry for each verified program search name to avoid capturing irrelevant events
-program_action_search_names = [
+# Add an entry for each verified program search names to avoid capturing irrelevant events
+program_action_2_search_names = [
     "CDVDSubtitlesLibass",
     "OpenStream",
     "VideoPlayer",
@@ -97,8 +98,15 @@ program_action_search_names = [
     "XBMCApp"
 ]
 
-for name in program_action_search_names:
+for name in program_action_2_search_names:
     program_action_templates.append([program_action_2, "program_action", name])
+
+program_action_3_search_names = [
+    "CAESinkALSA"
+]
+
+for name in program_action_3_search_names:
+    program_action_templates.append([program_action_3, "program_action", name])
 
 general_templates = [
     [closing, "closing", "Closing"],
