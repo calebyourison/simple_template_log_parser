@@ -49,3 +49,4 @@
 2026-05-26T18:36:03.235565+01:00 controller_X  2026-05-26 18:36:01 Controller - - - ALERT_RESOLVE
 2026-05-27T21:50:53.021797+01:00 controller_X  2026-05-27 21:50:42 Controller - - - [client:DC-D6-32-73-4e-a9]  went online on [ap:3C-7E-D2-50-19-D0] with SSID "SSID 10" on channel 6.
 2026-05-29T14:13:13.958453+01:00 controller_X  2026-05-29 14:12:52 Controller - - - [client:DC-D6-32-73-4e-a9] (IP: 9.9.9.9) went online on [ap:3C-7E-D2-50-19-D0] with SSID "SSID 10" on channel 6.
+2026-06-04T15:50:17.119706+01:00 controller_X  2026-06-04 15:49:56 Controller - - - [client:DC-D6-32-73-4e-a9] is roaming from [ap:3C-7E-D2-50-19-D0][Channel 1] to [ap:48-32-54-D0-E6-4D][Channel 36] with SSID "SSID 89"

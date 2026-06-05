@@ -163,6 +163,11 @@ roaming = (
     "with SSID {roaming_ssid}"
 )
 
+roaming_2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - [client:{client_name_and_mac}] "
+    "is roaming from [{network_device_type}:{network_device_mac}][Channel {channel}] to "
+    '[{roaming_network_device_type}:{roaming_network_device_mac}][Channel {roaming_channel}] with SSID "{ssid}"'
+)
 
 # Logins ##############################################################################################################
 login = (
@@ -296,7 +301,8 @@ client_activity_templates = [
     [offline_w_username, "wireless_offline", "went offline from SSID"],
     [offline_w, "wireless_offline", "went offline from SSID "],
     [offline_w_no_username, "wireless_offline", " went offline from SSID"],
-    [roaming, "roaming"],
+    [roaming, "roaming", "roaming from"],
+    [roaming_2, "roaming", "roaming from"],
     ]
 
 login_templates = [
