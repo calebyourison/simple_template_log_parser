@@ -18,6 +18,7 @@ starting_kodi = "{time} T:{T} {level} <{category}>: Starting Kodi ({version}). P
 folder = "{time} T:{T} {level} <{category}>: {folder} folder{path}"
 using_release = "{time} T:{T} {level} <{category}>: Using Release {release}"
 new_cache_gui_settings = "{time} T:{T} {level} <{category}>: New Cache GUI Settings (replacement of cache in {replaced_cache}) are: Buffer Mode: {buffer_mode} Memory Size: {memory_size} Read Factor: {read_factor} x Chunk Size : {chunk_size}"
+no_webserver_whitelist_paths = "{time} T:{T} {level} <{category}>: Webserver extra whitelist paths:"
 
 # Program actions
 thread = "{time} T:{T} {level} <{category}>: {action}"
@@ -95,14 +96,18 @@ program_action_2_search_names = [
     "CKeyboard",
     "ZeroconfAndroid",
     "GLES",
-    "XBMCApp"
+    "XBMCApp",
+    "ES",
+    "UDP",
+    "ARM Features",
 ]
 
 for name in program_action_2_search_names:
     program_action_templates.append([program_action_2, "program_action", name])
 
 program_action_3_search_names = [
-    "CAESinkALSA"
+    "CAESinkALSA",
+    'Process',
 ]
 
 for name in program_action_3_search_names:
@@ -162,6 +167,7 @@ system_info_templates = [
     [using_release, "using_release", "Using Release"],
     [starting_kodi, "starting_kodi", "Starting Kodi"],
     [new_cache_gui_settings, "new_cache_gui_settings", "New Cache GUI Settings"],
+    [no_webserver_whitelist_paths, "no_webserver_whitelist_paths", "Webserver extra whitelist paths"],
 ]
 
 base_kodi_templates = debug_templates + warning_templates + error_templates + program_action_templates  + general_templates + system_info_templates

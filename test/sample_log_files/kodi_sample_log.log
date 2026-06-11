@@ -66,3 +66,8 @@
 2026-05-25 19:36:59.798 T:20801    info <general>: XBMCApp: Stopping the application...
 2026-05-27 20:03:31.557 T:20084    info <general>: Disabled debug logging due to GUI setting. Level 0.
 2026-05-30 04:51:32.489 T:39       info <general>: CAESinkALSA - Unable to open device "upmix" for playback
+2026-06-08 22:18:40.702 T:5144     info <general>: Process - eof reading from demuxer
+2026-06-10 18:50:38.987 T:18314    info <general>: Webserver extra whitelist paths:
+2026-06-10 18:50:42.837 T:18421    info <general>: ES: Starting UDP Event server on port 9777
+2026-06-10 18:50:42.837 T:18421    info <general>: UDP: Listening on port 9777 (ipv6 : false)
+2026-06-10 21:29:25.382 T:31894    info <general>: ARM Features: Neon enabled
