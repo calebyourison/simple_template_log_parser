@@ -19,6 +19,7 @@ folder = "{time} T:{T} {level} <{category}>: {folder} folder{path}"
 using_release = "{time} T:{T} {level} <{category}>: Using Release {release}"
 new_cache_gui_settings = "{time} T:{T} {level} <{category}>: New Cache GUI Settings (replacement of cache in {replaced_cache}) are: Buffer Mode: {buffer_mode} Memory Size: {memory_size} Read Factor: {read_factor} x Chunk Size : {chunk_size}"
 no_webserver_whitelist_paths = "{time} T:{T} {level} <{category}>: Webserver extra whitelist paths:"
+file_does_not_exist = "{time} T:{T} {level} <{category}>: {file} does not exist. Skipping."
 
 # Program actions
 thread = "{time} T:{T} {level} <{category}>: {action}"
@@ -58,6 +59,7 @@ minimum_stream_size = "{time} T:{T} {level} <{category}>: Minimum size we need f
 trying_to_open = "{time} T:{T} {level} <{category}>: Trying to open: samplerate: {samplerate}, channelMask: {channel_mask}, encoding: {encoding}"
 register_device = "{time} T:{T} {level} <{category}>: Register - new {device} device registered on {application}->{info}"
 is_supported = "{time} T:{T} {level} <{category}>: {info} is supported"
+skin = "{time} T:{T} {level} <{category}>: {info}"
 
 
 debug_message = "{time} T:{T} debug <{category}>: {message}"
@@ -146,6 +148,16 @@ general_templates = [
     [is_supported, "supported", "is supported"],
 ]
 
+skin_search_names = [
+    "Unloaded skin",
+    "initialize new skin",
+    "skin loaded"
+]
+
+
+for name in skin_search_names:
+    general_templates.append([skin, "skin", name])
+
 
 system_info_templates = [
     [default_audio_player, "default_audio_player", "Default Audio Player"],
@@ -168,6 +180,7 @@ system_info_templates = [
     [starting_kodi, "starting_kodi", "Starting Kodi"],
     [new_cache_gui_settings, "new_cache_gui_settings", "New Cache GUI Settings"],
     [no_webserver_whitelist_paths, "no_webserver_whitelist_paths", "Webserver extra whitelist paths"],
+    [file_does_not_exist, "file_does_not_exist", "does not exist"],
 ]
 
 base_kodi_templates = debug_templates + warning_templates + error_templates + program_action_templates  + general_templates + system_info_templates

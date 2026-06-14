@@ -71,3 +71,7 @@
 2026-06-10 18:50:42.837 T:18421    info <general>: ES: Starting UDP Event server on port 9777
 2026-06-10 18:50:42.837 T:18421    info <general>: UDP: Listening on port 9777 (ipv6 : false)
 2026-06-10 21:29:25.382 T:31894    info <general>: ARM Features: Neon enabled
+2026-06-11 20:06:07.779 T:25423    info <general>: Unloaded skin
+2026-06-11 20:06:07.875 T:25423    info <general>:   initialize new skin...
+2026-06-11 20:06:07.941 T:25423    info <general>:   skin loaded...
+2026-06-11 18:56:55.733 T:17604    info <general>: special://masterprofile/playercorefactory.xml does not exist. Skipping.
