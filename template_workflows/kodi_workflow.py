@@ -100,7 +100,7 @@ def link_devices(lines: list[str]) -> list[str]:
 
     return output
 
-def kodi_log(file: str | BytesIO | StringIO | TextIOBase, split_text:str=None) -> dict[str, pd.DataFrame]:
+def kodi_log(file: str | BytesIO | StringIO | TextIOBase, split_text:str|None=None) -> dict[str, pd.DataFrame]:
     """Workflow for Kodi log files"""
     lines = get_lines_from_file(file)
     if split_text:
