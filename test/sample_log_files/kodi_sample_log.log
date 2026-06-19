@@ -75,3 +75,12 @@
 2026-06-11 20:06:07.875 T:25423    info <general>:   initialize new skin...
 2026-06-11 20:06:07.941 T:25423    info <general>:   skin loaded...
 2026-06-11 18:56:55.733 T:17604    info <general>: special://masterprofile/playercorefactory.xml does not exist. Skipping.
+2026-06-18 18:06:55.315 T:14542    info <general>: The executable running is: /data/app/lib/arm64/libkodi.so
+2026-06-18 18:06:55.656 T:14542    info <general>: Checking resolution 16
+2026-06-18 18:06:57.762 T:14542    info <general>: removing tempfiles
+2026-06-18 18:06:56.767 T:14558    info <general>: Enumerated AUDIOTRACK devices:
+2026-06-18 18:06:56.767 T:14558    info <general>: Found 1 Lists of Devices
+2026-06-18 20:04:47.828 T:28301    info <general>: initialize done
+2026-06-18 20:04:45.629 T:28301    info <general>: No settings file to load (special://xbmc/system/advancedsettings.xml)
+2026-06-18 20:06:20.946 T:28301    info <general>: Samba is idle. Closing the remaining connections
+2026-06-18 23:52:18.256 T:29291    info <general>: Storing total System Uptime

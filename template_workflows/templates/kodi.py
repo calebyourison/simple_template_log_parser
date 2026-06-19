@@ -59,7 +59,12 @@ minimum_stream_size = "{time} T:{T} {level} <{category}>: Minimum size we need f
 trying_to_open = "{time} T:{T} {level} <{category}>: Trying to open: samplerate: {samplerate}, channelMask: {channel_mask}, encoding: {encoding}"
 register_device = "{time} T:{T} {level} <{category}>: Register - new {device} device registered on {application}->{info}"
 is_supported = "{time} T:{T} {level} <{category}>: {info} is supported"
-skin = "{time} T:{T} {level} <{category}>: {info}"
+general_message = "{time} T:{T} {level} <{category}>: {info}"
+found_device_lists = "{time} T:{T} {level} <{category}>: Found {lists} Lists of Devices"
+samba_idle = "{time} T:{T} {level} <{category}>: Samba is idle. {info}"
+no_settings_file = "{time} T:{T} {level} <{category}>: No settings file to load ({path})"
+executable_running = "{time} T:{T} {level} <{category}>: The executable running is: {executable}"
+checking_resolution = "{time} T:{T} {level} <{category}>: Checking resolution {resolution}"
 
 
 debug_message = "{time} T:{T} debug <{category}>: {message}"
@@ -146,6 +151,16 @@ general_templates = [
     [trying_to_open, "trying_to_open", "Trying to open"],
     [register_device, "register_device", "Register"],
     [is_supported, "supported", "is supported"],
+    [general_message, "removing_tempfiles", "removing tempfiles"],
+    [found_device_lists, "found_device_lists", "Lists of Devices"],
+    [general_message, "initialize_done", "initialize done"],
+    [samba_idle, "samba_idle", "Samba"],
+    [no_settings_file, "no_settings_file", "No settings file"],
+    [executable_running, "executable_running, executable running"],
+    [general_message, "storing_system_uptime", "Storing total System Uptime"],
+    [general_message, "enumerated_devices", "AUDIOTRACK"],
+    [checking_resolution, "checking_resolution", "Checking resolution"],
+
 ]
 
 skin_search_names = [
@@ -154,9 +169,9 @@ skin_search_names = [
     "skin loaded"
 ]
 
-
 for name in skin_search_names:
-    general_templates.append([skin, "skin", name])
+    general_templates.append([general_message, "skin", name])
+
 
 
 system_info_templates = [
