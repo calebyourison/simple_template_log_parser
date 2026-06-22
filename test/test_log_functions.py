@@ -3,8 +3,7 @@ import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype
 from io import StringIO, BytesIO
 from contextlib import redirect_stdout, redirect_stderr
-
-from parse import compile as parse_compile
+import parse
 
 from template_log_parser.definitions import SimpleTemplate
 
@@ -68,7 +67,7 @@ class TestPreProcessFunctions(unittest.TestCase):
             "{username} logged in to the controller from {ip}."
         )
 
-        simple_template_list = [SimpleTemplate(template=parse_compile(temp), event_type="login", search_string="logged in")]
+        simple_template_list = [SimpleTemplate(template=parse.compile(temp), event_type="login", search_string="logged in")]
 
         results = parse_function(simple_event, simple_template_list)
         self.assertIsInstance(results, dict)
@@ -105,9 +104,17 @@ class TestPreProcessFunctions(unittest.TestCase):
 
         for combination in combinations:
             match_type = combination.get("match_type", "any")
+            assert match_type in ["any", "all"]
+
             eliminate_type = combination.get("eliminate_type", "any")
+            assert eliminate_type in ["any", "all"]
+
             match = combination.get("match", None)
+            assert isinstance(match, (type(None), str, list))
+
             eliminate = combination.get("eliminate", None)
+            assert isinstance(eliminate, (type(None), str, list))
+
             expected_result = combination.get("result")
 
             result = filter_line(line=sample_line, match_type=match_type, eliminate_type=eliminate_type, match=match, eliminate=eliminate)
@@ -186,7 +193,7 @@ class TestPreProcessFunctions(unittest.TestCase):
 
                 # Print all lines that are not accounted for by templates
                 other = output[output[event_type_column] == other_type_column]
-                logger.debug(f"Unparsed Lines: {other}")
+                logger.debug(f"Unparsed Lines: {other.to_string()}")
 
                 # Assert no "Other" event types
                 self.assertTrue(other_type_column not in output[event_type_column].tolist())

@@ -1,5 +1,5 @@
 import re
-from parse import compile as parse_compile
+import parse
 from typing import Literal
 
 from template_log_parser.definitions import SimpleTemplate
@@ -25,7 +25,7 @@ def compile_templates(templates: list[list[str]], search_string_criteria: Litera
 
     for item in templates:
         template = item[0]
-        compiled_template = parse_compile(template)
+        compiled_template = parse.compile(template)
         event_type = item[1]
 
         if len(item) == 3:
