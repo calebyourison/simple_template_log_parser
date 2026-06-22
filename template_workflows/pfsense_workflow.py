@@ -113,7 +113,7 @@ def pfsense_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.Dat
         file=file, templates=templates, dict_format=True, datetime_columns=["time"]
     )
 
-    processed_dfs = []
+    processed_dfs: list[pd.DataFrame] = []
 
     for df in base_output.values():
 
@@ -124,7 +124,7 @@ def pfsense_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.Dat
                     lambda row: (
                         split_by_delimiter(row[column])
                         if isinstance(row[column], str)
-                        else tuple([pd.NA for col in new_columns])
+                        else tuple([pd.NA for _ in new_columns])
                     ),
                     axis=1,
                     result_type="expand",

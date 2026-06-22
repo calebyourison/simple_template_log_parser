@@ -19,7 +19,7 @@ omv_merge_events_dict = {
     "debian": [value[1] for value in base_debian_templates]
 }
 
-def omv_log(file: str | BytesIO | StringIO | TextIOBase, eliminate:list[str]=None) -> dict[str, pd.DataFrame]:
+def omv_log(file: str | BytesIO | StringIO | TextIOBase, eliminate:list[str]|None=None) -> dict[str, pd.DataFrame]:
     """Workflow for OMV log files"""
     templates = compile_templates(base_omv_templates)
 
