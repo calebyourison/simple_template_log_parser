@@ -107,6 +107,11 @@ program_action_2_search_names = [
     "ES",
     "UDP",
     "ARM Features",
+    "VideoInfoScanner",
+    "CreateNewWindow",
+    "SetResolutionExternal",
+    "AddOnLog",
+    "InitWindowSystem",
 ]
 
 for name in program_action_2_search_names:

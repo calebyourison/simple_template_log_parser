@@ -84,3 +84,8 @@
 2026-06-18 20:04:45.629 T:28301    info <general>: No settings file to load (special://xbmc/system/advancedsettings.xml)
 2026-06-18 20:06:20.946 T:28301    info <general>: Samba is idle. Closing the remaining connections
 2026-06-18 23:52:18.256 T:29291    info <general>: Storing total System Uptime
+2026-06-20 05:27:14.249 T:47       info <general>: VideoInfoScanner: Starting scan ..
+2026-06-20 05:26:49.276 T:7        info <general>: CreateNewWindow: Starting windowed size 1910x947
+2026-06-20 05:26:49.310 T:7        info <general>: SetResolutionExternal: Kodi asked to switch mode to 1910x947 @0.000 Hz on output "" windowed
+2026-06-20 05:26:50.883 T:7        info <general>: AddOnLog: peripheral.joystick: Enabling joystick interface "linux"
+2026-06-20 10:55:19.600 T:7        info <general>: InitWindowSystem: Connecting to Wayland server
