@@ -89,3 +89,8 @@
 2026-06-20 05:26:49.310 T:7        info <general>: SetResolutionExternal: Kodi asked to switch mode to 1910x947 @0.000 Hz on output "" windowed
 2026-06-20 05:26:50.883 T:7        info <general>: AddOnLog: peripheral.joystick: Enabling joystick interface "linux"
 2026-06-20 10:55:19.600 T:7        info <general>: InitWindowSystem: Connecting to Wayland server
+2026-06-26 04:30:19.630 T:7        info <general>: Wayland presentation clock: 1
+2026-06-26 04:30:19.669 T:7        info <general>: RetroPlayer[RENDER]: Registering renderer factory for OpenGL
+2026-06-26 04:30:19.718 T:7        info <general>: GetOSScreenSaverImpl: Using idle-inhibit-unstable-v1 protocol for screen saver inhibition
+2026-06-26 04:30:45.163 T:7        info <general>: Selected UPower as PowerSyscall
+2026-06-26 04:30:45.256 T:7        info <general>: GL: Enabling VSYNC

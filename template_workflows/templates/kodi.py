@@ -11,7 +11,7 @@ kodi_compiled = "{time} T:{T} {level} <{category}>: Kodi compiled {compiled_date
 local_hostname = "{time} T:{T} {level} <{category}>: Local hostname: {hostname}"
 log_file_location = "{time} T:{T} {level} <{category}>: Log File is located: {path}"
 log_level = '{time} T:{T} {level} <{category}>: Log level changed to "{log_level}"'
-disabled_debug = "{time} T:{T} {level} <{category}>: Disabled debug logging due to GUI setting. Level {log_level}."
+debug_state = "{time} T:{T} {level} <{category}>: {state} debug logging due to GUI setting{setting}"
 mapped_directory = "{time} T:{T} {level} <{category}>: {kodi_directory} is mapped to: {local_directory}"
 product = "{time} T:{T} {level} <{category}>: Product: {product}, Device: {device} Board: {board} Manufacturer: {manufacturer} Brand: {brand} Model: {model} Hardware: {hardware}"
 starting_kodi = "{time} T:{T} {level} <{category}>: Starting Kodi ({version}). Platform: {platform}"
@@ -20,6 +20,8 @@ using_release = "{time} T:{T} {level} <{category}>: Using Release {release}"
 new_cache_gui_settings = "{time} T:{T} {level} <{category}>: New Cache GUI Settings (replacement of cache in {replaced_cache}) are: Buffer Mode: {buffer_mode} Memory Size: {memory_size} Read Factor: {read_factor} x Chunk Size : {chunk_size}"
 no_webserver_whitelist_paths = "{time} T:{T} {level} <{category}>: Webserver extra whitelist paths:"
 file_does_not_exist = "{time} T:{T} {level} <{category}>: {file} does not exist. Skipping."
+selected_program_as = "{time} T:{T} {level} <{category}>: Selected {program} as {as}"
+wayland_presentation_clock = "{time} T:{T} {level} <{category}>: Wayland presentation clock: {clock}"
 
 # Program actions
 thread = "{time} T:{T} {level} <{category}>: {action}"
@@ -112,6 +114,9 @@ program_action_2_search_names = [
     "SetResolutionExternal",
     "AddOnLog",
     "InitWindowSystem",
+    "RetroPlayer[RENDER]",
+    "GL",
+    "GetOSScreenSaverImpl",
 ]
 
 for name in program_action_2_search_names:
@@ -163,7 +168,7 @@ general_templates = [
     [no_settings_file, "no_settings_file", "No settings file"],
     [executable_running, "executable_running, executable running"],
     [general_message, "storing_system_uptime", "Storing total System Uptime"],
-    [general_message, "enumerated_devices", "AUDIOTRACK"],
+    [general_message, "enumerated_devices", "Enumerated"],
     [checking_resolution, "checking_resolution", "Checking resolution"],
 
 ]
@@ -192,7 +197,7 @@ system_info_templates = [
     [local_hostname, "local_hostname", "Local hostname"],
     [log_file_location, "log_file_location", "Log File is located"],
     [log_level, "log_level", "Log level"],
-    [disabled_debug, "disabled_debug_logging", "Disabled debug logging"],
+    [debug_state, "debug_logging", "debug logging"],
     [mapped_directory, "mapped_directory", "is mapped to"],
     [product, "product", "Product"],
     [folder, "folder", "folder"],
@@ -201,6 +206,8 @@ system_info_templates = [
     [new_cache_gui_settings, "new_cache_gui_settings", "New Cache GUI Settings"],
     [no_webserver_whitelist_paths, "no_webserver_whitelist_paths", "Webserver extra whitelist paths"],
     [file_does_not_exist, "file_does_not_exist", "does not exist"],
+    [selected_program_as, "selected_program_as", "Selected"],
+    [wayland_presentation_clock, "wayland_presentation_clock", "Wayland"],
 ]
 
 base_kodi_templates = debug_templates + warning_templates + error_templates + program_action_templates  + general_templates + system_info_templates
