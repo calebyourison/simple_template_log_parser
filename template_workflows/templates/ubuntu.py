@@ -6,6 +6,7 @@ desktop = "{time} {server_name} {process}.des {message}"
 desktop_2 = "{time} {server_name} {process}.desktop{message}"
 desktop_3 = "{time} {server_name} {process}.deskto{message}"
 desktop_4 = "{time} {server_name} {process}.deskt {message}"
+firmware_updater = "{time} {server_name} firmware-updater.firmware-update {message}"
 gdm = "{time} {server_name} gdm{process}: {action}: {message}"
 nautilus = "{time} {server_name} nautilus: {message}"
 package_kit = "{time} {server_name} PackageKit: {message}"
@@ -23,6 +24,7 @@ ubuntu_templates = [
     [nautilus, "nautilus", "nautilus"],
     [package_kit, 'package_kit', "PackageKit"],
     [pycharm, "pycharm"],
+    [firmware_updater, "firmware_updater", "firmware-updater"],
     [gdm, 'gdm'],
     [ubuntu, 'ubuntu'],
     [sticky_notes, 'sticky_notes', 'sticky-notes-simple_sticky-notes'],
