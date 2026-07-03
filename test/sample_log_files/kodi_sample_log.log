@@ -94,3 +94,7 @@
 2026-06-26 04:30:19.718 T:7        info <general>: GetOSScreenSaverImpl: Using idle-inhibit-unstable-v1 protocol for screen saver inhibition
 2026-06-26 04:30:45.163 T:7        info <general>: Selected UPower as PowerSyscall
 2026-06-26 04:30:45.256 T:7        info <general>: GL: Enabling VSYNC
+2026-06-30 22:24:06.363 T:2711     info <general>: CDVDAudioCodecAndroidMediaCodec: Unknown hints.codec(86060)
+2026-07-03 04:07:04.827 T:22120    info <general>: OnSleep: Running sleep jobs
+2026-07-03 04:07:07.939 T:22120    info <general>: PumpPowerEvents: OnSleep called
+2026-07-03 04:07:08.455 T:22120    info <general>: OnWake: Running resume jobs

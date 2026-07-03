@@ -117,6 +117,10 @@ program_action_2_search_names = [
     "RetroPlayer[RENDER]",
     "GL",
     "GetOSScreenSaverImpl",
+    "CDVDAudioCodecAndroidMediaCodec",
+    "PumpPowerEvents",
+    "OnWake",
+    "OnSleep",
 ]
 
 for name in program_action_2_search_names:
