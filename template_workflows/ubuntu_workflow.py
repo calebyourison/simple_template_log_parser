@@ -16,11 +16,11 @@ ubuntu_merge_events_dict = {
     "debian": [value[1] for value in base_debian_templates],
 }
 
-def ubuntu_log(file: str | BytesIO | StringIO | TextIOBase) -> dict[str, pd.DataFrame]:
+def ubuntu_log(file: str | BytesIO | StringIO | TextIOBase, eliminate:list[str]|None=None) -> dict[str, pd.DataFrame]:
     """Workflow for Ubuntu log files"""
     templates = compile_templates(base_ubuntu_templates)
 
-    base_output = process_log(file=file, templates=templates, dict_format=False, datetime_columns=["time"])
+    base_output = process_log(file=file, templates=templates, dict_format=False, datetime_columns=["time"], eliminate=eliminate)
 
     final_output = merge_events(base_output, ubuntu_merge_events_dict)
 
