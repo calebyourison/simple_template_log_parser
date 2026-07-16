@@ -98,3 +98,4 @@
 2026-07-03 04:07:04.827 T:22120    info <general>: OnSleep: Running sleep jobs
 2026-07-03 04:07:07.939 T:22120    info <general>: PumpPowerEvents: OnSleep called
 2026-07-03 04:07:08.455 T:22120    info <general>: OnWake: Running resume jobs
+2026-07-12 17:43:37.487 T:1820     info <general>: Got device sleep intent

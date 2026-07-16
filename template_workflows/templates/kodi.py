@@ -67,6 +67,7 @@ samba_idle = "{time} T:{T} {level} <{category}>: Samba is idle. {info}"
 no_settings_file = "{time} T:{T} {level} <{category}>: No settings file to load ({path})"
 executable_running = "{time} T:{T} {level} <{category}>: The executable running is: {executable}"
 checking_resolution = "{time} T:{T} {level} <{category}>: Checking resolution {resolution}"
+intent = "{time} T:{T} {level} <{category}>: Got {intent} intent"
 
 
 debug_message = "{time} T:{T} debug <{category}>: {message}"
@@ -174,6 +175,7 @@ general_templates = [
     [general_message, "storing_system_uptime", "Storing total System Uptime"],
     [general_message, "enumerated_devices", "Enumerated"],
     [checking_resolution, "checking_resolution", "Checking resolution"],
+    [intent, "got_intent", "intent"],
 
 ]
 
