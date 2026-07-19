@@ -4,6 +4,7 @@ kernel = "{time} {server_name} kernel: {message}"
 kernel_2 = "{time} {server_name} kernel:"
 pam_unix = "{time} {server_name} {process}: pam_unix({session}): {message}"
 mtp_probe = "{time} {server_name} mtp-probe: {message}"
+result = "{time} {server_name} {process}: result: {result}"
 rsync = "{time} {server_name} rsync-{id} {message}"
 rsyslogd = "{time} {server_name} rsyslogd: {message}"
 sudo = "{time} {server_name} sudo: {message}"
@@ -14,6 +15,7 @@ base_debian_templates = [
     [kernel, "kernel"],
     [pam_unix, "pam_unix"],
     [sudo, 'sudo'],
+    [result, "result", "result"],
     [rsync, "rsync"],
     [rsyslogd, "rsyslogd"],
     [upssched_cmd, 'upssched-cmd'],

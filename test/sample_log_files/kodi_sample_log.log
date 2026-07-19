@@ -99,3 +99,5 @@
 2026-07-03 04:07:07.939 T:22120    info <general>: PumpPowerEvents: OnSleep called
 2026-07-03 04:07:08.455 T:22120    info <general>: OnWake: Running resume jobs
 2026-07-12 17:43:37.487 T:1820     info <general>: Got device sleep intent
+2026-07-17 15:54:18.314 T:23406    info <general>: [metadata.themoviedb.org.python]: Find movie with title 'Some Title' from year '2000'
+2026-07-17 23:34:14.021 T:29830    info <general>: MYSQL server has gone. Will try 4 more attempt(s) to reconnect.

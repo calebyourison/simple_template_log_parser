@@ -54,7 +54,9 @@ mediacodec_decoder = "{time} T:{T} {level} <{category}>: Mediacodec decoder: {de
 remote_mapping = "{time} T:{T} {level} <{category}>: * {action} remote mapping for {device}"
 skipped_duplicate_messages = "{time} T:{T} {level} <{category}>: Skipped {number} duplicate messages.."
 service = "{time} T:{T} {level} <{category}>: [{service_name}] {info}"
+service_2 = "{time} T:{T} {level} <{category}>: [{service_name}]: {info}"
 mysql = "{time} T:{T} {level} <{category}>: MYSQL: {info}"
+mysql_2 = "{time} T:{T} {level} <{category}>: MYSQL {info}"
 created_audio_buffer = "{time} T:{T} {level} <{category}>: Created Audiotrackbuffer with {info}"
 audio_buffer_params = "{time} T:{T} {level} <{category}>: Audiotrack buffer params are: {info}"
 minimum_stream_size = "{time} T:{T} {level} <{category}>: Minimum size we need for stream: {bytes} Bytes"
@@ -157,7 +159,9 @@ general_templates = [
     [remote_mapping, "remote_mapping", "remote mapping"],
     [skipped_duplicate_messages, "duplicate_messages", "Skipped"],
     [service, "service", ">: ["],
+    [service_2, "service", ">: ["],
     [mysql, "mysql", "MYSQL"],
+    [mysql_2, "mysql", "MYSQL"],
     [audio_buffer_params, "audio_buffer_params", "buffer params"],
     [created_audio_buffer, "created_audio_buffer", " Created Audiotrack"],
     [saving, "saving", "Saving"],
