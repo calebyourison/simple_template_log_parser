@@ -214,6 +214,12 @@ got_ip_address_2 = (
     "[{network_device_type}:{network_device_mac}] got IP address {ip_address}/{subnet_mask}."
 )
 
+monitor_link_down = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "[{network_device_type}:{network_device}:{network_device_mac}] reported monitor link down due to {message}. "
+    "Please check the network connectivity."
+)
+
 online_detection = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}]: "
@@ -319,6 +325,7 @@ network_devices_activity_templates = [
     [up_or_down, "interface_up_or_down", "] of ["],
     [got_ip_address, "device_dhcp_assign", "got IP address"],
     [got_ip_address_2, "unnamed_device_dhcp_assign", "got IP address "],
+    [monitor_link_down, "monitor_link_down", "monitor link down"],
     [online_detection, "online_detection", "online detection"],
     [online_detection_2, "online_detection", "online detection"],
     [upgrade, "upgrade"],
