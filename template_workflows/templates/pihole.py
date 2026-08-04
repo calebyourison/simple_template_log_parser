@@ -39,6 +39,7 @@ webserver_authentication_required = '[{time}] Authentication required, redirecti
 
 # Gravity
 gravity = '{trim}[{result}]{message}'
+empty_line = ""
 
 dnsmasq_templates = [
     [dnsmasq_query, "dnsmasq_query", "query"],
@@ -84,6 +85,7 @@ webserver_templates = [
 gravity_templates = [
     [gravity, 'gravity_message', '[i]'],
     [gravity, 'gravity_message', '[✓]'],
+    [empty_line, "gravity_empty_line", ""]
 ]
 
 base_pihole_templates = dnsmasq_templates + ftl_templates + webserver_templates + gravity_templates
