@@ -56,7 +56,7 @@ disc_w_recon = (
 # DHCP
 dhcp_assign = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-    "DHCP Server allocated IP address {client_ip} for the client[MAC: {client_mac}].#015"
+    "DHCP Server allocated IP address {client_ip} for the client[MAC: {client_mac}]."
 )
 
 dhcp_assign_2 = ("{time} {controller}  {site_date} {site_time} {site} - - - "
@@ -64,7 +64,7 @@ dhcp_assign_2 = ("{time} {controller}  {site_date} {site_time} {site} - - - "
 
 dhcp_decline = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-    "DHCP Server received DHCP Decline from client {client_mac}. IP address {client_ip} is not available.#015"
+    "DHCP Server received DHCP Decline from client {client_mac}. IP address {client_ip} is not available."
 )
 
 dhcp_decline_2 = (
@@ -74,7 +74,7 @@ dhcp_decline_2 = (
 
 dhcp_reject = (
     "{time} {controller}  {site_date} {site_time} {site} - - - DHCP Server rejected the request"
-    " of the client[MAC: {client_mac} IP: {client_ip}].#015"
+    " of the client[MAC: {client_mac} IP: {client_ip}]."
 )
 
 dhcp_reject_2 = (
@@ -223,7 +223,7 @@ monitor_link_down = (
 online_detection = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "[{network_device_type}:{network_device}:{network_device_mac}]: "
-    "The online detection result of [{interface}] was {state}.#015"
+    "The online detection result of [{interface}] was {state}."
 )
 
 online_detection_2 = (
@@ -241,7 +241,7 @@ physical_connection_status = (
 
 up_or_down = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
-    "[{interface}] of [{network_device_type}:{network_device}:{network_device_mac}] is {state}.#015"
+    "[{interface}] of [{network_device_type}:{network_device}:{network_device_mac}] is {state}."
 )
 
 upgrade = (
