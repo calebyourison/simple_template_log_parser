@@ -253,6 +253,11 @@ wan_dhcp = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "{wan}: DHCP client {action} IP {result}. (IP-Address={ip_address}, Mask={subnet_mask}, Gateway={gateway})")
 
+wan_dhcp_2 = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "{wan}: DHCP client {action} IP address succeeded. (IP-Address={ip_address})"
+)
+
 # System ##############################################################################################################
 alert_resolve = "{time} {controller}  {site_date} {site_time} {site} - - - ALERT_RESOLVE"
 
@@ -331,7 +336,8 @@ network_devices_activity_templates = [
     [upgrade, "upgrade"],
     [pending_device_discovered, "pending_device", "Pending"],
     [physical_connection_status, "physical_connection_status", "physical connection status"],
-    [wan_dhcp, 'wan_dhcp', "IP"],
+    [wan_dhcp, "wan_dhcp", "IP"],
+    [wan_dhcp_2, "wan_dhcp", "IP"]
 ]
 
 system_templates = [
