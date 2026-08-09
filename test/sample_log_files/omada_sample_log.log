@@ -52,3 +52,4 @@
 2026-06-04T15:50:17.119706+01:00 controller_X  2026-06-04 15:49:56 Controller - - - [client:DC-D6-32-73-4e-a9] is roaming from [ap:3C-7E-D2-50-19-D0][Channel 1] to [ap:48-32-54-D0-E6-4D][Channel 36] with SSID "SSID 89"
 2026-07-23T04:40:56.049339+01:00 controller_X  2026-07-23 04:40:52 Controller - - - [ap:ap_name:3C-7E-D2-50-19-D0] reported monitor link down due to failure of TCP connection to the Controller on port 29817. Please check the network connectivity.
 2026-08-05T03:38:58.266418+01:00 controller_X  2026-08-05 03:37:16 Controller - - - WAN1: DHCP client releasing IP address succeeded. (IP-Address=0.0.0.0 )
+2026-08-08T17:49:38.678731+01:00 controller_X  2026-08-08 17:49:35 Controller - - - [ap:ap_name:3C-7E-D2-50-19-D0]] was reconnected in 12 minutes.

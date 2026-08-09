@@ -191,6 +191,11 @@ device_disconnected = (
     "[{network_device_type}:{network_device}:{network_device_mac}] was disconnected."
 )
 
+device_reconnected = (
+    "{time} {controller}  {site_date} {site_time} {site} - - - "
+    "[{network_device_type}:{network_device}:{network_device_mac}] was reconnected in {minutes} minutes."
+)
+
 device_failed_readoption = (
     "{time} {controller}  {site_date} {site_time} {site} - - - "
     "Failed to readopt [{network_device_type}:{network_device}:{network_device_mac}] automatically."
@@ -324,6 +329,7 @@ login_templates = [
 network_devices_activity_templates = [
     [device_connected, "device_connected", "was connected."],
     [device_disconnected, "device_disconnected", "was disconnected."],
+    [device_reconnected, "device_reconnected", 'was reconnected'],
     [device_isolated, "device_isolated", "isolated"],
     [device_failed_readoption, "device_failed_readoption", "Failed to readopt"],
     [dhcps, "dhcps_initialization", "DHCPS initialization"],
