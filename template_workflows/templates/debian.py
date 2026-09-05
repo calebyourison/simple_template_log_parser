@@ -1,5 +1,6 @@
 debug = "{time} {server_name} {process}: debug: {message}"
 id_process = "{time} {server_name} {process}[{id}]: {message}"
+id_process_2 = "{time} {server_name} {process}[{id} {message}" # long process name not proceeded by "]:"
 kernel = "{time} {server_name} kernel: {message}"
 kernel_2 = "{time} {server_name} kernel:"
 pam_unix = "{time} {server_name} {process}: pam_unix({session}): {message}"
@@ -21,5 +22,6 @@ base_debian_templates = [
     [upssched_cmd, 'upssched-cmd'],
     [mtp_probe, 'mtp_probe', 'mtp-probe'],
     [debug, 'debug'],
-    [kernel_2, "kernel"]
+    [kernel_2, "kernel"],
+    [id_process_2, "id_process", "["],
 ]

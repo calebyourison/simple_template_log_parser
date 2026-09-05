@@ -9,3 +9,4 @@
 2025-07-03T04:05:11+01:00 debian_pc 05efi: debug: /dev/some_sda partition scheme is gpt
 2026-05-12T18:54:50+01:00 debian_pc kernel:
 2026-07-17T07:45:17+01:00 debian_pc 20microsoft: result: Microsoft/Boot/bootmgfw.efi:Windows Boot Manager:Windows
+2026-09-04T06:10:52+01:00 debian_pc systemd-networkd-wait-online[118 Timeout occurred while waiting for network connectivity.
