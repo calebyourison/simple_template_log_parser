@@ -33,3 +33,4 @@ Jul 11 00:11:52 dnsmasq[235561]: TCP connection failed: Resource temporarily una
 Dec  9 18:32:04 dnsmasq[67]: regex denied <name unprintable> is NODATA
 May  3 10:18:14 dnsmasq[53]: blocked upstream with NULL address thing.io is 0.0.0.0
 May 10 04:40:48 dnsmasq[52]: <not set> thing.io is 0.0.0.0
+Sep  4 05:18:10 dnsmasq[53]: nameserver 0.0.0.0 refused to do a recursive query

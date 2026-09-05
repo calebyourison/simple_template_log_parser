@@ -1,6 +1,6 @@
 
 # dnsmasq
-dnsmasq_blocked_upstream = "{time} dnsmasq[{id}]: blocked upstream with NULL address {domain} is {destination}"
+dnsmasq_blocked_upstream = "{time} dnsmasq[{id}]: blocked upstream with {domain_details} is {destination}"
 dnsmasq_cached = "{time} dnsmasq[{id}]: cached {query} is {cached_resolved_ip}"
 dnsmasq_cached_stale = "{time} dnsmasq[{id}]: cached-stale {query} is {cached_resolved_ip}"
 dnsmasq_compile = "{time} dnsmasq[{id}]: compile time options: {message}"
@@ -25,8 +25,9 @@ dnsmasq_reply = "{time} dnsmasq[{id}]: reply {query} is {resolved_ip}"
 dnsmasq_reply_truncated = "{time} dnsmasq[{id}]: reply is truncated"
 dnsmasq_started = "{time} dnsmasq[{id}]: started, version {version} cachesize {cachesize}"
 dnsmasq_tcp_connection_failed = "{time} dnsmasq[{id}]: TCP connection failed: {message}"
-dnsmasq_using_nameserver = "{time} dnsmasq[{id}]: using nameserver {nameserver_ip}#53"
-dnsmasq_using_nameserver_domain = "{time} dnsmasq[{id}]: using nameserver {nameserver_ip}#53 for domain {domain}"
+dnsmasq_using_nameserver = "{time} dnsmasq[{id}]: using nameserver {nameserver}"
+dnsmasq_using_nameserver_domain = "{time} dnsmasq[{id}]: using nameserver {nameserver} for domain {domain}"
+dnsmasq_nameserver_refused_recursive = "{time} dnsmasq[{id}]: nameserver {nameserver} refused to do a recursive query"
 
 # ftl
 ftl_error = "{time} [{ids}] ERROR: {message}"
@@ -62,13 +63,14 @@ dnsmasq_templates = [
     [dnsmasq_reply_truncated, "dnsmasq_reply_truncated", "reply is truncated"],
     [dnsmasq_started, "dnsmasq_started", "started"],
     [dnsmasq_inotify, 'dsnmasq_inotify', 'inotify'],
-    [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver', 'using nameserver'],
     [dnsmasq_using_nameserver_domain, 'dnsmasq_using_nameserver_domain', ' using nameserver'],
+    [dnsmasq_using_nameserver, 'dnsmasq_using_nameserver', 'using nameserver'],
     [dnsmasq_custom_list, 'dnsmasq_custom_list', "custom.list"],
     [dnsmasq_tcp_connection_failed, 'dnsmasq_tcp_connection_failed', "TCP connection failed"],
     [dnsmasq_regex_denied, 'dnsmasq_regex_denied', 'regex denied'],
     [dnsmasq_blocked_upstream, "dnsmasq_blocked_upstream", "blocked upstream"],
-    [dnsmasq_not_set, "dnsmasq_not_set", "<not set>"]
+    [dnsmasq_not_set, "dnsmasq_not_set", "<not set>"],
+    [dnsmasq_nameserver_refused_recursive, "dnsmasq_nameserver_refused_recursive_query", "refused to do a recursive query"]
 ]
 
 ftl_templates = [
