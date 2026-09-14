@@ -1,5 +1,6 @@
 
 # dnsmasq
+dnsmasq_bad_address = "{time} dnsmasq[{id}]: Bad address in {flag} at line {line} of {path}"
 dnsmasq_blocked_upstream = "{time} dnsmasq[{id}]: blocked upstream with {domain_details} is {destination}"
 dnsmasq_cached = "{time} dnsmasq[{id}]: cached {query} is {cached_resolved_ip}"
 dnsmasq_cached_stale = "{time} dnsmasq[{id}]: cached-stale {query} is {cached_resolved_ip}"
@@ -10,6 +11,7 @@ dnsmasq_domain = "{time} dnsmasq[{id}]: {type} domain {query} is {result}"
 dnsmasq_exactly_blacklisted = "{time} dnsmasq[{id}]: exactly blacklisted {query} is {result}"
 dnsmasq_exactly_denied = "{time} dnsmasq[{id}]: exactly denied {query} is {result}"
 dnsmasq_exiting = "{time} dnsmasq[{id}]: exiting on receipt of SIGTERM"
+dnsmasq_failed_to_start = "{time} dnsmasq[{id}]: FAILED to start up"
 dnsmasq_forward = "{time} dnsmasq[{id}]: forwarded {query} to {dns_server}"
 dnsmasq_gravity_blocked = "{time} dnsmasq[{id}]: gravity blocked {query} is {result}"
 dnsmasq_host_name_resolution = "{time} dnsmasq[{id}]: /etc/hosts {host_ip} is {host_name}"
@@ -70,7 +72,9 @@ dnsmasq_templates = [
     [dnsmasq_regex_denied, 'dnsmasq_regex_denied', 'regex denied'],
     [dnsmasq_blocked_upstream, "dnsmasq_blocked_upstream", "blocked upstream"],
     [dnsmasq_not_set, "dnsmasq_not_set", "<not set>"],
-    [dnsmasq_nameserver_refused_recursive, "dnsmasq_nameserver_refused_recursive_query", "refused to do a recursive query"]
+    [dnsmasq_nameserver_refused_recursive, "dnsmasq_nameserver_refused_recursive_query", "refused to do a recursive query"],
+    [dnsmasq_failed_to_start, "dnsmasq_failed_to_start", "FAILED to start"],
+    [dnsmasq_bad_address, "dnsmasq_bad_address", "Bad address in"],
 ]
 
 ftl_templates = [
