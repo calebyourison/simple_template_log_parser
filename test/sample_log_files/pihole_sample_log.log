@@ -36,3 +36,4 @@ May 10 04:40:48 dnsmasq[52]: <not set> thing.io is 0.0.0.0
 Sep  4 05:18:10 dnsmasq[53]: nameserver 0.0.0.0 refused to do a recursive query
 Sep 13 07:25:36 dnsmasq[8227]: FAILED to start up
 Sep 13 07:25:36 dnsmasq[8227]: Bad address in --address at line 144 of /etc/pihole/dnsmasq.conf.temp
+Sep 15 06:20:15 dnsmasq[58993]: bad option at line 144 of /etc/pihole/dnsmasq.conf.temp

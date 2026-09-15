@@ -1,6 +1,7 @@
 
 # dnsmasq
 dnsmasq_bad_address = "{time} dnsmasq[{id}]: Bad address in {flag} at line {line} of {path}"
+dnsmasq_bad_option = "{time} dnsmasq[{id}]: bad option at line {line} of {path}"
 dnsmasq_blocked_upstream = "{time} dnsmasq[{id}]: blocked upstream with {domain_details} is {destination}"
 dnsmasq_cached = "{time} dnsmasq[{id}]: cached {query} is {cached_resolved_ip}"
 dnsmasq_cached_stale = "{time} dnsmasq[{id}]: cached-stale {query} is {cached_resolved_ip}"
@@ -75,6 +76,7 @@ dnsmasq_templates = [
     [dnsmasq_nameserver_refused_recursive, "dnsmasq_nameserver_refused_recursive_query", "refused to do a recursive query"],
     [dnsmasq_failed_to_start, "dnsmasq_failed_to_start", "FAILED to start"],
     [dnsmasq_bad_address, "dnsmasq_bad_address", "Bad address in"],
+    [dnsmasq_bad_option, "dnsmasq_bad_option", "bad option at"],
 ]
 
 ftl_templates = [
