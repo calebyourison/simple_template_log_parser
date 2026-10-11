@@ -43,6 +43,7 @@ running = "{time} T:{T} {level} <{category}>: Running {info}"
 saving = "{time} T:{T} {level} <{category}>: Saving {info}"
 starting = "{time} T:{T} {level} <{category}>: starting {info}"
 stopping = "{time} T:{T} {level} <{category}>: Stopping {info}"
+stopping_2 = "{time} T:{T} {level} <{category}>: stopping {info}"
 graphics_library = "{time} T:{T} {level} <{category}>: {graphics_type}_{feature} = {info}"
 load = "{time} T:{T} {level} <{category}>:   load {info}"
 load_2 = "{time} T:{T} {level} <{category}>: load {info}"
@@ -148,6 +149,7 @@ general_templates = [
     [running, "running", "Running"],
     [starting, "starting", "starting"],
     [stopping, "stopping", "Stopping"],
+    [stopping_2, "stopping", "stopping"],
     [mediacodec_decoder, "mediacodec_decoder", "Mediacodec decoder"],
     [graphics_library, "graphics_library", "GL_"],
     [loading, "loading", "Loading"],
