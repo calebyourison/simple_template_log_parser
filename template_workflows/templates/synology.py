@@ -58,6 +58,7 @@ deleted_user = "{time} {server_name} System {system_user}:#011System successfull
 renamed_user = "{time} {server_name} System {system_user}:#011User [{user}] was renamed to [{modified}]."
 user_password_change = "{time} {server_name} System {system_user}:#011Password of the user [{user}] was changed."
 user_app_privilege = "{time} {server_name} System {system_user}:#011The app privilege on app [{app}] for user [{user}] {message}"
+user_description_change = "{time} {server_name} System {system_user}:#011The description of the user [{user}] was changed to [{description}]."
 user_group = "{time} {server_name} System {system_user}:#011User [{user}] was {action} the group [{group}]."
 win_file_service_event = "{time} {server_name} WinFileService Event: {event}, Path: {path}, File/Folder: {file_or_folder}, Size: {size}, User: {user}, IP: {client_ip}"
 configuration_export = "{time} {server_name} System {system_user}:#011System successfully exported configurations."
@@ -124,6 +125,7 @@ user_activity_templates = [
     [renamed_user, "renamed_user", "renamed"],
     [user_password_change, "user_password_change", "Password of the user"],
     [user_app_privilege, "user_app_privilege", "app privilege"],
+    [user_description_change, "user_description_change", "description"],
     [user_group, "user_group", "group"],
     [win_file_service_event, "win_file_service_event", "WinFileService Event"],
     [configuration_export, "configuration_export", "exported configurations"],
