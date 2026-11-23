@@ -7,6 +7,7 @@ omv_process = "{time} {server_name} omv-{process}: {message}"
 omv_id_process_2 = "{time} {server_name} omv-{process}[{id}]:"
 conf = "{time} {server_name} conf_{version}: {message}"
 php = "{time} {server_name} php{version}: {action}: {message}"
+empty_samba_recycle = "{time} {server_name} samba-recycle-{id} Please wait, empty recyle bin of <{folder_path}> ..."
 
 
 omv_process_templates = [
@@ -23,6 +24,7 @@ openmediavault_process_templates = [
 omv_other_templates = [
     [conf, "conf", "conf_"],
     [php, 'php', "php"],
+    [empty_samba_recycle, "empty_samba_recycle", "samba-recycle"]
 ]
 
 base_omv_templates = omv_process_templates + openmediavault_process_templates + omv_other_templates + base_debian_templates
